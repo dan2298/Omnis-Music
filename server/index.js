@@ -38,7 +38,7 @@ app.get('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
     // console.log('======== song', song)
 })
 
-const port = 7000
+const port = process.env.PORT || 7000
 
 app.listen(port, () => {
     console.log('listening on ' + port)
