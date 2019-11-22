@@ -31,10 +31,12 @@ app.post('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
         // if (cmd.stderr) throw cmd.stderr
         // console.log('cmd', cmd)
         // console.log('name', path.join(__dirname, 'songs', req.body.name))
+        console.log('cmd done')
         const dir = 'server/songs/'
-        console.log(`${dir}STUPID (feat. Yung  Baby Tate) - Ashnikko.mp3 STUPID.mp3`)
-
+        // console.log(`${dir}STUPID (feat. Yung  Baby Tate) - Ashnikko.mp3 STUPID.mp3`)
         const cmd2 = await exec(`mv '${dir}${req.body.name}' ${dir}${fileName}`)
+        console.log('passed')
+
         // console.log('cmd', cmd2.stdout)
         // const file2 = path.join(__dirname, 'songs', 'STUPID')
         res.send(fileName)
