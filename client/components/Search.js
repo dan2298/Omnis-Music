@@ -81,10 +81,10 @@ export default class Search extends React.Component {
         const url = 'https://omnis-music.herokuapp.com/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
         // console.log(url)
-        const source = { uri: `${url}${spotifyUrl}` }
         console.log(source.uri)
-        const file = axios.post(`${url}${spotifyUrl}`, { name: fileName })
+        const file = await axios.post(`${url}${spotifyUrl}`, { name: fileName })
         console.log('=====file', file)
+        const source = { uri: file }
         // console.log((`localhost:7000/spotify/${spotifyUrl}`))
         if (song.preview_url.length) {
             try {
