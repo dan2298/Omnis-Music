@@ -19,20 +19,22 @@ app.get('/', (req, res, next) => {
     res.json('Working')
 })
 
-app.get('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
+app.post('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
     // path.join(__dirname, 'songs')
     // console.log(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/album/2uDTi1PlpSpvAv7IRAoAEU`)
     // const url = req.params.url
-    console.log('============= here')
-    // let cmd;
-    // try {
-    //     cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)
-    //     if (cmd.stderr) throw cmd.stderr
-    //     const file = path.join(__dirname, 'songs', 'highest', 'highest.mp3')
-    //     res.send(file)
-    // } catch (error) {
-    //     console.log('ERROR FETCHING DATA', error)
-    // }
+    console.log('body', req.body)
+    // res.send('hi')
+    try {
+        // const cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)
+        // if (cmd.stderr) throw cmd.stderr
+        console.log('name', path.join(__dirname, 'songs', req.body.name))
+        const file = path.join(__dirname, 'songs', req.body.name)
+        console.log('done')
+        res.send(file)
+    } catch (error) {
+        console.log('ERROR FETCHING DATA', error)
+    }
     // console.log('====== cmd ', cmd)
     // const song = cmd.stdout
     // console.log('======== song', song)

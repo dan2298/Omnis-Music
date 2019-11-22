@@ -74,17 +74,24 @@ export default class Search extends React.Component {
     }
 
     async startPlaying(song) {
+        console.log('song')
         // <audio src-'/spotify/album/asdfasdfasdfsadf'></audio>
         // const soundObject = new Audio.Sound();
-        const url = song.external_urls.spotify.slice(8)
+        const fileName = `${song.name} - ${song.artists[0].name}.mp3`
+        const url = 'https://omnis-music.herokuapp.com/spotify/'
+        const spotifyUrl = song.external_urls.spotify.slice(8)
         // console.log(url)
-        const source = { uri: `localhost:7000/spotify/${url}` }
+        const source = { uri: `${url}${spotifyUrl}` }
         console.log(source.uri)
+        const file = axios.post(`${url}${spotifyUrl}`, { name: fileName })
+        console.log('=====file', file)
+        // console.log((`localhost:7000/spotify/${spotifyUrl}`))
         if (song.preview_url.length) {
             try {
                 // <audio src-'/spotify/album/asdfasdfasdfsadf'></audio>
                 const soundObject = new Audio.Sound();
                 // const source = { uri: song.preview_url }
+
                 const status = { shouldPlay: true, volume: 1.0 }
                 await soundObject.loadAsync(source, status, false)
                 await soundObject.playAsync();
