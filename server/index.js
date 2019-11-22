@@ -24,7 +24,7 @@ app.post('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
     // console.log(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/album/2uDTi1PlpSpvAv7IRAoAEU`)
     console.log('body', req.body)
     const fileName = req.body.name.split('-')[0].trim().split(' ').join('-');
-    console.log(fileName)
+    console.log('file in server', fileName)
     // res.send('hi')
     try {
         const cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)

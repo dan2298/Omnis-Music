@@ -84,13 +84,14 @@ export default class Search extends React.Component {
         console.log(fileName.split('-')[0].trim().split(' ').join('-'))
         try {
             const { data } = await axios.post(`${url}${spotifyUrl}`, { name: fileName })
+            // source = require(`../../server/songs/${data}`)
             console.log(data)
-            source = require(`../../server/songs/${data}`)
         } catch (error) {
             console.log(error)
         }
         // const file = await axios.get(`/ spotify / ${ spotifyUrl }`)
-        console.log('=====source', source)
+        console.log('=====file', file)
+        // const source = require('../../server/songs/STUPID')
         // console.log(source)
 
         if (song.preview_url.length) {
