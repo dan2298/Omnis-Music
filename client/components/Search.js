@@ -74,34 +74,18 @@ export default class Search extends React.Component {
     }
 
     async startPlaying(song) {
-        // <audio src-'/spotify/album/asdfasdfasdfsadf'></audio>
-        // const soundObject = new Audio.Sound();
         const fileName = `${song.name} - ${song.artists[0].name}.mp3`
-        const url = 'https://omnis-music.herokuapp.com/spotify/'
+        // const url = 'https://omnis-music.herokuapp.com/spotify/'
+        const localUrl = 'http://192.168.86.211:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
-        // console.log(`/spotify/${spotifyUrl}`)
-        let source;
-        // console.log(fileName.split('-')[0].trim().split(' ').join('-'))
-        try {
-            const { data } = await axios.post(`${url}${spotifyUrl}`, { name: fileName })
-            // source = require(`../../server/songs/${data}`)
-            console.log('data', data)
-        } catch (error) {
-            console.log(error, ':')
-        }
-        // const file = await axios.get(`/ spotify / ${ spotifyUrl }`)
-        // console.log('=====file', file) 
-        // const source = require('../../server/songs/STUPID')
-        // console.log(source)
+        // console.log(source.uri)
 
         if (song.preview_url.length) {
             try {
-                // <audio src-'/spotify/album/asdfasdfasdfsadf'></audio>
                 const soundObject = new Audio.Sound();
-                // const source = { uri: song.preview_url }
+                const source = { uri: encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`) }
                 const status = { shouldPlay: true, volume: 1.0 }
                 await soundObject.loadAsync(source, status, false)
-                // console.log(soundObject)
                 await soundObject.playAsync();
             } catch (err) {
                 console.log(err)
@@ -145,8 +129,6 @@ export default class Search extends React.Component {
                     data={this.state.searchResults}
                     renderItem={result => {
                         // console.log(result.item)
-                        // console.log(result.item.preview_url)
-                        // console.log('=====================')
                         return (
                             <TouchableOpacity onPress={this.startPlaying.bind(this, result.item)}>
                                 <View style={{ borderColor: 'white', borderBottomWidth: 1 }}>
@@ -166,5 +148,5 @@ export default class Search extends React.Component {
 //make a simple server that can accept a url and respond with a file thats downloaded (mp3)
 //server needs to use exec with spotify dl
 
-// sqllite3
+//sqllite3
 //firebase

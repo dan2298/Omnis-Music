@@ -29,6 +29,17 @@ const styles = StyleSheet.create({
     searchBar: {
         width: '70%',
         color: 'white',
+    },
+    header: {
+        width: '100%',
+        height: 90,
+        paddingTop: 36,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    headerTitle: {
+        color: 'white'
     }
 });
 

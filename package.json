@@ -1,7 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start-dev": "expo start & nodemon server",
+    "start-dev": "expo start",
     "start": "nodemon server",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -24,6 +24,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-sound": "^0.11.0",
     "react-native-web": "^0.11.7",
+    "react-navigation": "^4.0.10",
     "youtube-api-search": "0.0.5"
   },
   "devDependencies": {

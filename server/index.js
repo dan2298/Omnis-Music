@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
 const { exec } = require('child-process-promise')
+const fs = require('fs')
 
 const app = express();
 
@@ -19,34 +20,26 @@ app.get('/', (req, res, next) => {
     res.json('Working')
 })
 
-app.post('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
-    // path.join(__dirname, 'songs')
-    // console.log(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/album/2uDTi1PlpSpvAv7IRAoAEU`)
-    console.log('body', req.body)
-    const fileName = req.body.name.split('-')[0].trim().split(' ').join('-');
-    console.log('file in server', fileName)
-    // res.send('hi')
+app.get('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
+    const fileName = req.query.name
+    const file2 = path.join(__dirname, 'songs', fileName)
     try {
-        const cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)
-        // if (cmd.stderr) throw cmd.stderr
-        // console.log('cmd', cmd)
-        // console.log('name', path.join(__dirname, 'songs', req.body.name))
-        console.log('cmd done')
-        const dir = 'server/songs/'
-        // console.log(`${dir}STUPID (feat. Yung  Baby Tate) - Ashnikko.mp3 STUPID.mp3`)
-        const cmd2 = await exec(`mv '${dir}${req.body.name}' ${dir}${fileName}`)
-        console.log('passed')
-
-        // console.log('cmd', cmd2.stdout)
-        // const file2 = path.join(__dirname, 'songs', 'STUPID')
-        res.send(fileName)
-    } catch (error) {
-        console.log('ERROR FETCHING DATA IN ROUTES', error)
+        if (fs.existsSync(file2)) {
+            res.sendFile(file2)
+        } else {
+            console.log('in progress')
+            const cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)
+            console.log('done')
+            res.sendFile(file2)
+        }
+    } catch (err) {
+        console.error(err)
     }
-    // console.log('====== cmd ', cmd)
-    // const song = cmd.stdout
-    // console.log('======== song', song)
 })
+
+// app.get('/youtube/', async (req, res, next) => {
+
+// })
 
 const port = process.env.PORT || 7000
 
