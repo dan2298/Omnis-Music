@@ -7,7 +7,7 @@ const Downloads = props => {
     return (
         <View style={styles}>
             <Header title={'Downloads'}></Header>
-            <Text>hi</Text>
+            <Text style={{ color: 'white' }}>No Downloads</Text>
         </View>
     );
 }

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        // height: 500
+        height: '100%'
     },
     list: {
         width: '100%',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         width: '70%',
         color: 'white',
     },
-    header: {
+    headerBar: {
         width: '100%',
         height: 90,
         paddingTop: 36,
@@ -39,7 +39,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     headerTitle: {
-        color: 'white'
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16
+    },
+    searchResults: {
+        flex: 1
     }
 });
 
