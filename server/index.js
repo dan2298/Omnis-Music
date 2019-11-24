@@ -3,8 +3,10 @@ const express = require('express')
 const morgan = require('morgan')
 const { exec } = require('child-process-promise')
 const fs = require('fs')
+const defaultSongPath = path.join(__dirname, 'songs')
 
 const app = express();
+
 
 app.use(morgan('dev'))
 
@@ -22,24 +24,37 @@ app.get('/', (req, res, next) => {
 
 app.get('/spotify/open.spotify.com/:type/:url', async (req, res, next) => {
     const fileName = req.query.name
-    const file2 = path.join(__dirname, 'songs', fileName)
+    const file = path.join(__dirname, 'songs', fileName)
     try {
-        if (fs.existsSync(file2)) {
-            res.sendFile(file2)
+        if (fs.existsSync(file)) {
+            res.sendFile(file)
         } else {
             console.log('in progress')
-            const cmd = await exec(`spotifydl -o ${path.join(__dirname, 'songs')} open.spotify.com/${req.params.type}/${req.params.url}`)
+            const cmd = await exec(`spotifydl -o ${defaultSongPath} open.spotify.com/${req.params.type}/${req.params.url}`)
             console.log('done')
-            res.sendFile(file2)
+            res.sendFile(file)
         }
     } catch (err) {
         console.error(err)
     }
 })
 
-// app.get('/youtube/', async (req, res, next) => {
-
-// })
+app.get('/www.youtube.com/:videoId', async (req, res, next) => {
+    console.log('here')
+    const fileName = `${req.query.name}.mp3`
+    const url = `https://www.youtube.com/watch?v=${req.params.videoId}`
+    const file = path.join(__dirname, 'songs', fileName)
+    try {
+        if (fs.existsSync(file)) {
+            res.sendFile(file)
+        } else {
+            const cmd = await exec(`youtube-dl --extract-audio --audio-format mp3 -o "${defaultSongPath}/%(title)s.%(ext)s" ${url}`)
+            res.sendFile(file)
+        }
+    } catch (err) {
+        console.error(err)
+    }
+})
 
 const port = process.env.PORT || 7000
 

@@ -8,6 +8,7 @@ import YTSearch from 'youtube-api-search'
 import SearchBar from './SearchBar';
 import SongList from './SongList';
 import styles from '../../styles'
+import * as FileSystem from 'expo-file-system';
 
 export default class Search extends React.Component {
     constructor() {
@@ -69,15 +70,41 @@ export default class Search extends React.Component {
         }
     }
 
-    async startPlaying(song) {
-        console.log(song)
+    async spotifyPlay(song) {
+        const downloadedFiles = await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`)
         const fileName = `${song.name} - ${song.artists[0].name}.mp3`
-        // const url = 'https://omnis-music.herokuapp.com/spotify/'
+        const saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
+
         const localUrl = 'http://192.168.86.211:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
+
+        const songFile = encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`)
+
+        if (!downloadedFiles.includes(saveFileName)) {
+            //download locally
+            await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
+        }
+        const checker = await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`)
+        console.log(checker)
         try {
             const soundObject = new Audio.Sound();
-            const source = { uri: encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`) }
+            const source = { uri: await `${FileSystem.documentDirectory}songs/${saveFileName}` }
+            const status = { shouldPlay: true, volume: 1.0 }
+            await soundObject.loadAsync(source, status, false)
+            await soundObject.playAsync();
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async youtubePlay(song) {
+        const fileName = song.snippet.title
+        const localUrl = 'http://192.168.86.211:7000/'
+        const url = `www.youtube.com/${song.id.videoId}?name=${fileName}`
+        try {
+            const soundObject = new Audio.Sound();
+            const source = { uri: encodeURI(localUrl + url) }
+            console.log(source)
             const status = { shouldPlay: true, volume: 1.0 }
             await soundObject.loadAsync(source, status, false)
             await soundObject.playAsync();
@@ -93,10 +120,10 @@ export default class Search extends React.Component {
                 {/* Youtube List */}
                 <ScrollView>
                     <Text style={{ color: 'red' }}>Youtube</Text>
-                    <SongList type='youtube' youtubeSearchResults={this.state.youtubeSearchResults}></SongList>
+                    <SongList type='youtube' youtubeSearchResults={this.state.youtubeSearchResults} youtubePlay={this.youtubePlay}></SongList>
                     {/* Spotify List */}
                     <Text style={{ color: 'green' }}>Spotify</Text>
-                    <SongList type='spotify' spotifySearchResults={this.state.spotifySearchResults} startPlaying={this.startPlaying}></SongList>
+                    <SongList type='spotify' spotifySearchResults={this.state.spotifySearchResults} spotifyPlay={this.spotifyPlay}></SongList>
                 </ScrollView>
             </View>
         )
@@ -106,5 +133,6 @@ export default class Search extends React.Component {
 //make a simple server that can accept a url and respond with a file thats downloaded (mp3)
 //server needs to use exec with spotify dl
 
+// const url = 'https://omnis-music.herokuapp.com/spotify/'
 //sqllite3
 //firebase
