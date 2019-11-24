@@ -1,24 +1,22 @@
 import React from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { Audio } from 'expo-av'
-import axios from 'axios';
-import spotifyToken from '../../spotify-token'
-import youtubeToken from '../../youtube-token'
-import YTSearch from 'youtube-api-search'
-import SearchBar from './SearchBar';
-import SongList from './SongList';
+
+import { connect } from 'react-redux'
+import { getYTSongs } from '../store/youtube'
+import { getSpotSongs } from '../store/spotify'
+
+import SearchBar from '../components/SearchBar';
+import SongList from '../components/SongList';
 import styles from '../../styles'
 import * as FileSystem from 'expo-file-system';
 
-export default class Search extends React.Component {
+class Search extends React.Component {
     constructor() {
         super()
         this.state = {
             input: '',
-            spotifySearchResults: [],
-            youtubeSearchResults: []
         }
-        this.apiWorking = this.apiWorking.bind(this)
         this.searchInputHandler = this.searchInputHandler.bind(this)
     }
 
@@ -34,8 +32,8 @@ export default class Search extends React.Component {
                 playThroughEarpieceAndroid: true
             })
             // this.loadAudio()
-        } catch (e) {
-            console.log(e)
+        } catch (err) {
+            console.log(err)
         }
     }
 
@@ -44,34 +42,13 @@ export default class Search extends React.Component {
     }
 
     apiWorking = async () => {
-        const url = 'https://api.spotify.com/v1/search'
-        const token = await spotifyToken()
-        const youtubeApiKey = youtubeToken
-
-        const searchYT = term => {
-            YTSearch({ key: youtubeApiKey, term }, videos => {
-                this.setState({ youtubeSearchResults: videos })
-            })
-        }
-        // const uri = `${url}?type=album,artist,track,playlist&limit=20&q=${encodeURIComponent(this.state.input)}*`
         if (this.state.input) {
-            searchYT(this.state.input)
-            const uri = `${url}?type=track&limit=10&q=${encodeURIComponent(this.state.input)}*`
-            const { data } = await axios.get(uri, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            this.setState({ spotifySearchResults: data.tracks.items })
-        } else {
-            console.log('empty search')
+            this.props.getYTSongs(this.state.input)
+            this.props.getSpotSongs(this.state.input)
         }
     }
 
     async spotifyPlay(song) {
-        const downloadedFiles = await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`)
         const fileName = `${song.name} - ${song.artists[0].name}.mp3`
         const saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
 
@@ -80,12 +57,11 @@ export default class Search extends React.Component {
 
         const songFile = encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`)
 
-        if (!downloadedFiles.includes(saveFileName)) {
+        if (!this.props.songs.includes(saveFileName)) {
             //download locally
             await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
         }
-        const checker = await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`)
-        console.log(checker)
+
         try {
             const soundObject = new Audio.Sound();
             const source = { uri: await `${FileSystem.documentDirectory}songs/${saveFileName}` }
@@ -104,7 +80,6 @@ export default class Search extends React.Component {
         try {
             const soundObject = new Audio.Sound();
             const source = { uri: encodeURI(localUrl + url) }
-            console.log(source)
             const status = { shouldPlay: true, volume: 1.0 }
             await soundObject.loadAsync(source, status, false)
             await soundObject.playAsync();
@@ -120,18 +95,34 @@ export default class Search extends React.Component {
                 {/* Youtube List */}
                 <ScrollView>
                     <Text style={{ color: 'red' }}>Youtube</Text>
-                    <SongList type='youtube' youtubeSearchResults={this.state.youtubeSearchResults} youtubePlay={this.youtubePlay}></SongList>
+                    <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubePlay={this.youtubePlay}></SongList>
                     {/* Spotify List */}
                     <Text style={{ color: 'green' }}>Spotify</Text>
-                    <SongList type='spotify' spotifySearchResults={this.state.spotifySearchResults} spotifyPlay={this.spotifyPlay}></SongList>
+                    <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyPlay={this.spotifyPlay}></SongList>
                 </ScrollView>
             </View>
         )
     }
 }
 
-//make a simple server that can accept a url and respond with a file thats downloaded (mp3)
-//server needs to use exec with spotify dl
+const mapStateToProps = state => {
+    return {
+        songs: state.songs,
+        spotifySongs: state.spotifySongs,
+        youtubeSongs: state.youtubeSongs
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        getYTSongs: (input) =>
+            dispatch(getYTSongs(input)),
+        getSpotSongs: (input) =>
+            dispatch(getSpotSongs(input)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search)
 
 // const url = 'https://omnis-music.herokuapp.com/spotify/'
 //sqllite3
