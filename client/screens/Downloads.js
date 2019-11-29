@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import styles from '../../styles'
 import Header from '../components/Header'
 import Song from '../components/Song'
+import SongBar from '../components/SongBar'
+import { getCurrentSong } from '../store'
 
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
@@ -11,24 +14,11 @@ import { connect } from 'react-redux';
 import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av'
 
-{/* <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onPlayPausePressed}
-            disabled={this.state.isLoading}
-          >
-            <Image
-              style={styles.button}
-              source={
-                this.state.isPlaying
-                  ? ICON_PAUSE_BUTTON.module
-                  : ICON_PLAY_BUTTON.module
-              }
-            />
-          </TouchableHighlight> */}
-
-
 class Downloads extends React.Component {
+    static navigationOptions = {
+        header: null
+    }
+
     constructor() {
         super()
         this.playbackInstance = null;
@@ -48,6 +38,8 @@ class Downloads extends React.Component {
             throughEarpiece: false
         }
         this.loadPlayback = this.loadPlayback.bind(this)
+        this.playback = this.playback.bind(this)
+        this.onPlayPause = this.onPlayPause.bind(this)
     }
 
     async componentDidMount() {
@@ -67,13 +59,13 @@ class Downloads extends React.Component {
     }
 
     async loadPlayback(song) {
-        // console.log('here', song)
+        this.setState({ ...this.state, isPlaying: false })
         if (this.playbackInstance != null) {
             await this.playbackInstance.unloadAsync();
             // this.playbackInstance.setOnPlaybackStatusUpdate(null);
             this.playbackInstance = null;
         }
-        const source = { uri: await `${FileSystem.documentDirectory}songs/${song}` }
+        const source = { uri: await `${FileSystem.documentDirectory}songs/${song.songName}` }
         const initialStatus = {
             shouldPlay: this.state.isPlaying,
             rate: this.state.rate,
@@ -86,7 +78,8 @@ class Downloads extends React.Component {
             initialStatus,
             this._onPlaybackStatusUpdate
         );
-
+        this.playbackInstance = sound;
+        this.onPlayPause()
     }
 
     async onPlayPause() {
@@ -101,38 +94,55 @@ class Downloads extends React.Component {
         }
     }
 
+    playback(song) {
+        if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
+            console.log('in here')
+            this.loadPlayback(song)
+        } else {
+            this.onPlayPause()
+        }
+        this.props.getCurrentSong(song)
+    }
+
     render() {
-        // console.log(this.playbackInstance)
-        console.log(this.state)
+        const { navigate } = this.props.navigation
         return (
+
             <View style={styles.downloadContainer}>
-                <Header title={'Downloads'}></Header>
-                <ScrollView>
-                    {this.props.songs.map((song, idx) => {
-                        let ytName; let ytPic; let ytChannel;
-                        let sptName; let sptArtist; let sptPic;
-                        if (song.info.snippet) {
-                            ytName = song.info.snippet.title
-                            ytChannel = song.info.snippet.channelTitle
-                            ytPic = song.info.snippet.thumbnails.default.url
-                        } else {
-                            sptArtist = song.info.artists[0].name
-                            sptName = song.info.name
-                            sptPic = song.info.album.images[0].url
-                        }
-                        return (
-                            <Song key={idx}
-                                name={ytName ? ytName : sptName}
-                                creator={ytChannel ? ytChannel : sptArtist}
-                                img={ytPic ? ytPic : sptPic}
-                                type={ytName ? 'Youtube' : 'Spotify'}
-                                loadPlayback={this.loadPlayback}
-                                songName={song.name}
-                            >
-                            </Song>
-                        )
-                    })}
-                </ScrollView>
+                <LinearGradient colors={['#3f6b6b', '#121212']} style={styles.header} >
+                    <Header title={'Downloads'}></Header>
+                    <ScrollView>
+                        {this.props.songs.map((song, idx) => {
+                            let ytName; let ytPic; let ytChannel;
+                            let sptName; let sptArtist; let sptPic;
+                            if (song.info.snippet) {
+                                ytName = song.info.snippet.title
+                                ytChannel = song.info.snippet.channelTitle
+                                ytPic = song.info.snippet.thumbnails.high.url
+                            } else {
+                                sptArtist = song.info.artists[0].name
+                                sptName = song.info.name
+                                sptPic = song.info.album.images[0].url
+                            }
+                            return (
+                                <Song key={idx}
+                                    name={ytName ? ytName : sptName}
+                                    playback={this.playback}
+                                    creator={ytChannel ? ytChannel : sptArtist}
+                                    img={ytPic ? ytPic : sptPic}
+                                    type={ytName ? 'Youtube' : 'Spotify'}
+                                    songName={song.name}
+                                >
+                                </Song>
+                            )
+                        })}
+                    </ScrollView>
+                    {this.props.currentSong.name ?
+                        <TouchableOpacity onPress={() => navigate("CurrentSong")}>
+                            <SongBar isPlaying={this.state.isPlaying} onPlayPause={this.onPlayPause}></SongBar>
+                        </TouchableOpacity> : <View></View>
+                    }
+                </LinearGradient>
             </View>
         )
     }
@@ -140,8 +150,15 @@ class Downloads extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        songs: state.songs
+        songs: state.songs,
+        currentSong: state.currentSong,
     }
 }
 
-export default connect(mapStateToProps)(Downloads)
+const mapDispatchToProps = dispatch => {
+    return {
+        getCurrentSong: (song) => dispatch(getCurrentSong(song))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Downloads)

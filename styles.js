@@ -30,37 +30,12 @@ const styles = StyleSheet.create({
         width: '70%',
         color: 'white',
     },
-    headerBar: {
-        width: '100%',
-        height: 90,
-        paddingTop: 36,
-        backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    headerTitle: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16
-    },
     searchResults: {
         flex: 1
     },
     downloadContainer: {
         flex: 1
     },
-    infoContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        margin: 5
-    },
-    songContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        borderColor: 'white',
-        borderBottomWidth: 1
-    }
 });
 
 export default styles;

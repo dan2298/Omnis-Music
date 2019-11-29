@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, ScrollView, AsyncStorage } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
 import { getYTSongs, getSpotSongs, getSongs } from '../store'
@@ -10,6 +11,10 @@ import styles from '../../styles'
 import * as FileSystem from 'expo-file-system';
 
 class Search extends React.Component {
+    static navigationOptions = {
+        header: null
+    }
+
     constructor() {
         super()
         this.state = {
@@ -36,7 +41,8 @@ class Search extends React.Component {
         const localUrl = 'http://192.168.86.211:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
         const songFile = encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`)
-        if (!this.props.songs.includes(saveFileName)) {
+        const listSongs = this.props.songs.map(song => song.name)
+        if (!listSongs.includes(saveFileName)) {
             //download locally
             await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
         }
@@ -56,7 +62,8 @@ class Search extends React.Component {
         const localUrl = 'http://192.168.86.211:7000/'
         const url = `www.youtube.com/${song.id.videoId}?name=${fileName}`
         const songFile = encodeURI(localUrl + url)
-        if (!this.props.songs.includes(saveFileName)) {
+        const listSongs = this.props.songs.map(song => song.name)
+        if (!listSongs.includes(saveFileName)) {
             //download locally
             await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
         }
@@ -70,18 +77,19 @@ class Search extends React.Component {
     }
 
     render() {
-
         return (
             <View style={styles.searchResults}>
-                <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
-                <ScrollView>
-                    {/* Youtube List */}
-                    <Text style={{ color: 'red' }}>Youtube</Text>
-                    <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
-                    {/* Spotify List */}
-                    <Text style={{ color: 'green' }}>Spotify</Text>
-                    <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
-                </ScrollView>
+                <LinearGradient colors={['#3f6b6b', '#121212']} style={styles.header} >
+                    <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
+                    <ScrollView>
+                        {/* Youtube List */}
+                        <Text style={{ color: 'red' }}>Youtube</Text>
+                        <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
+                        {/* Spotify List */}
+                        <Text style={{ color: 'green' }}>Spotify</Text>
+                        <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
+                    </ScrollView>
+                </LinearGradient>
             </View>
         )
     }
