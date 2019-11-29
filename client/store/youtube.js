@@ -14,12 +14,9 @@ export function getYTSongs(input) {
     const youtubeApiKey = youtubeToken
     return async dispatch => {
         try {
-            const searchYT = input => {
-                YTSearch({ key: youtubeApiKey, input }, videos => {
-                    dispatch(gotYTSongs(videos))
-                })
-            }
-            searchYT()
+            YTSearch({ key: youtubeApiKey, term: input }, (videos) => {
+                dispatch(gotYTSongs(videos))
+            })
         } catch (err) {
             console.log(err)
         }

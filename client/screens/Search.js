@@ -1,10 +1,8 @@
 import React from 'react';
-import { Text, View, ScrollView } from 'react-native';
-import { Audio } from 'expo-av'
+import { Text, View, ScrollView, AsyncStorage } from 'react-native';
 
 import { connect } from 'react-redux'
-import { getYTSongs } from '../store/youtube'
-import { getSpotSongs } from '../store/spotify'
+import { getYTSongs, getSpotSongs, getSongs } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -20,23 +18,6 @@ class Search extends React.Component {
         this.searchInputHandler = this.searchInputHandler.bind(this)
     }
 
-    async componentDidMount() {
-        try {
-            await Audio.setAudioModeAsync({
-                allowsRecordingIOS: false,
-                interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-                playsInSilentModeIOS: true,
-                interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-                shouldDuckAndroid: true,
-                staysActiveInBackground: true,
-                playThroughEarpieceAndroid: true
-            })
-            // this.loadAudio()
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     searchInputHandler = input => {
         this.setState({ input })
     }
@@ -48,57 +29,58 @@ class Search extends React.Component {
         }
     }
 
-    async spotifyPlay(song) {
+    spotifyDl = async (song) => {
         const fileName = `${song.name} - ${song.artists[0].name}.mp3`
         const saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
 
         const localUrl = 'http://192.168.86.211:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
-
         const songFile = encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`)
-
         if (!this.props.songs.includes(saveFileName)) {
             //download locally
             await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
         }
-
         try {
-            const soundObject = new Audio.Sound();
-            const source = { uri: await `${FileSystem.documentDirectory}songs/${saveFileName}` }
-            const status = { shouldPlay: true, volume: 1.0 }
-            await soundObject.loadAsync(source, status, false)
-            await soundObject.playAsync();
-        } catch (err) {
-            console.log(err)
+            //save info locally
+            await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+        } catch (error) {
+            console.log(error.message);
         }
+        this.props.getSongs()
     }
 
-    async youtubePlay(song) {
+    youtubeDl = async (song) => {
         const fileName = song.snippet.title
+        const saveFileName = fileName.split('-').map(el => el.trim()).join(' ').split(' ').join('-') + '.mp3'
+
         const localUrl = 'http://192.168.86.211:7000/'
         const url = `www.youtube.com/${song.id.videoId}?name=${fileName}`
-        try {
-            const soundObject = new Audio.Sound();
-            const source = { uri: encodeURI(localUrl + url) }
-            const status = { shouldPlay: true, volume: 1.0 }
-            await soundObject.loadAsync(source, status, false)
-            await soundObject.playAsync();
-        } catch (err) {
-            console.log(err)
+        const songFile = encodeURI(localUrl + url)
+        if (!this.props.songs.includes(saveFileName)) {
+            //download locally
+            await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
         }
+        try {
+            //save info locally
+            await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+        } catch (error) {
+            console.log(error.message);
+        }
+        this.props.getSongs()
     }
 
     render() {
+
         return (
             <View style={styles.searchResults}>
                 <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
-                {/* Youtube List */}
                 <ScrollView>
+                    {/* Youtube List */}
                     <Text style={{ color: 'red' }}>Youtube</Text>
-                    <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubePlay={this.youtubePlay}></SongList>
+                    <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
                     {/* Spotify List */}
                     <Text style={{ color: 'green' }}>Spotify</Text>
-                    <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyPlay={this.spotifyPlay}></SongList>
+                    <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
                 </ScrollView>
             </View>
         )
@@ -119,11 +101,9 @@ const mapDispatchToProps = dispatch => {
             dispatch(getYTSongs(input)),
         getSpotSongs: (input) =>
             dispatch(getSpotSongs(input)),
+        getSongs: () =>
+            dispatch(getSongs()),
     }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)
-
-// const url = 'https://omnis-music.herokuapp.com/spotify/'
-//sqllite3
-//firebase

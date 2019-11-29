@@ -10,7 +10,14 @@ import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
-import { getSongs } from '../store/songs'
+import { getSongs } from '../store'
+
+(async () => {
+    const { exists } = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
+    if (!exists) {
+        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
+    }
+})()
 
 const TabNavigator = createBottomTabNavigator({
     Downloads: { screen: Downloads },
@@ -29,15 +36,7 @@ const TabNavigator = createBottomTabNavigator({
 
 const AppContainter = createAppContainer(TabNavigator);
 
-const mkdir = async () => {
-    const { exists } = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
-    if (!exists) {
-        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
-    }
-}
-
 const Index = props => {
-    mkdir()
     props.getSongs()
     return (
         <View contentContainerStyle={styles.container}>
@@ -50,7 +49,7 @@ const Index = props => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getSongs: () => dispatch(getSongs())
+        getSongs: () => dispatch(getSongs()),
     }
 }
 

@@ -45,6 +45,21 @@ const styles = StyleSheet.create({
     },
     searchResults: {
         flex: 1
+    },
+    downloadContainer: {
+        flex: 1
+    },
+    infoContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        margin: 5
+    },
+    songContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        borderColor: 'white',
+        borderBottomWidth: 1
     }
 });
 
