@@ -6,7 +6,7 @@ import styles from '../../styles'
 import Header from '../components/Header'
 import Song from '../components/Song'
 import SongBar from '../components/SongBar'
-import { getCurrentSong } from '../store'
+import { getCurrentSong, play, pause } from '../store'
 
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
@@ -87,16 +87,17 @@ class Downloads extends React.Component {
             if (this.state.isPlaying) {
                 this.playbackInstance.pauseAsync();
                 this.setState({ ...this.state, isPlaying: false })
+                this.props.pause()
             } else {
                 this.playbackInstance.playAsync();
                 this.setState({ ...this.state, isPlaying: true })
+                this.props.play()
             }
         }
     }
 
     playback(song) {
-        if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
-            console.log('in here')
+        if (this.props.currentSong.name !== song.songName || !this.props.currentSong.name) {
             this.loadPlayback(song)
         } else {
             this.onPlayPause()
@@ -107,9 +108,9 @@ class Downloads extends React.Component {
     render() {
         const { navigate } = this.props.navigation
         return (
-
             <View style={styles.downloadContainer}>
-                <LinearGradient colors={['#3f6b6b', '#121212']} style={styles.header} >
+
+                <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
                     <Header title={'Downloads'}></Header>
                     <ScrollView>
                         {this.props.songs.map((song, idx) => {
@@ -138,7 +139,10 @@ class Downloads extends React.Component {
                         })}
                     </ScrollView>
                     {this.props.currentSong.name ?
-                        <TouchableOpacity onPress={() => navigate("CurrentSong")}>
+                        <TouchableOpacity onPress={() => navigate("CurrentSong", {
+                            isPlaying: this.state.isPlaying,
+                            onPlayPause: this.onPlayPause
+                        })}>
                             <SongBar isPlaying={this.state.isPlaying} onPlayPause={this.onPlayPause}></SongBar>
                         </TouchableOpacity> : <View></View>
                     }
@@ -152,12 +156,15 @@ const mapStateToProps = state => {
     return {
         songs: state.songs,
         currentSong: state.currentSong,
+        isPlaying: state.playing
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        getCurrentSong: (song) => dispatch(getCurrentSong(song))
+        getCurrentSong: (song) => dispatch(getCurrentSong(song)),
+        play: () => dispatch(play()),
+        pause: () => dispatch(pause())
     }
 }
 

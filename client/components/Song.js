@@ -8,13 +8,14 @@ const Song = props => {
             <View style={styles.infoContainer}>
                 <Text style={{ color: 'white' }}>{props.name}</Text>
                 <Text style={{ color: '#d4d2d2', fontSize: 12 }}>{props.creator}</Text>
-                <Text style={{ color: props.type === 'Youtube' ? 'red' : 'green' }}>{props.type}</Text>
+                <Text style={{ color: props.type === 'Youtube' ? '#ff0011' : '#3bbf19', fontWeight: '300' }}>{props.type}</Text>
             </View>
         </TouchableOpacity>
     )
 }
 
 export default Song;
+
 const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     songContainer: {
         flex: 1,
         flexDirection: 'row',
-        borderColor: 'white',
+        borderColor: '#8a8a8a',
         borderBottomWidth: 1
     }
 })

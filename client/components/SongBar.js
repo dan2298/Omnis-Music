@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { connect } from 'react-redux'
+import { toggle } from '../store'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const SongBar = props => {
@@ -23,17 +24,23 @@ const SongBar = props => {
                 }
             </View>
         </View>
-
     )
 }
 
 const mapStateToProps = state => {
     return {
-        currentSong: state.currentSong
+        currentSong: state.currentSong,
+        isPlaying: state.playing
     }
 }
 
-export default connect(mapStateToProps)(SongBar)
+const mapDispatchToProps = dispatch => {
+    return {
+        toggle: () => dispatch(toggle)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SongBar)
 
 const styles = StyleSheet.create({
     container: {
