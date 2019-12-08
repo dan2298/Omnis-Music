@@ -2,19 +2,11 @@ import * as FileSystem from 'expo-file-system';
 import { AsyncStorage } from 'react-native'
 
 const GOT_SONGS = 'GOT_SONGS'
-const PLAYING_SONG = 'PLAYING_SONG'
 
 function gotSongs(songs) {
     return {
         type: GOT_SONGS,
         songs
-    }
-}
-
-function playingSong(song) {
-    return {
-        type: PLAYING_SONG,
-        song
     }
 }
 
@@ -46,6 +38,3 @@ const songReducer = (state = songs, action) => {
 
 export default songReducer;
 
-//privacy badger 
-//ublock
-//enhancer for youtube

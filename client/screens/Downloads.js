@@ -117,6 +117,7 @@ class Downloads extends React.Component {
                             let ytName; let ytPic; let ytChannel;
                             let sptName; let sptArtist; let sptPic;
                             if (song.info.snippet) {
+                                // console.log('songs,', song)
                                 ytName = song.info.snippet.title
                                 ytChannel = song.info.snippet.channelTitle
                                 ytPic = song.info.snippet.thumbnails.high.url

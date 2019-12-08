@@ -28,6 +28,8 @@ class Search extends React.Component {
     }
 
     apiWorking = async () => {
+        // await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs`)
+        // console.log(await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`))
         if (this.state.input) {
             this.props.getYTSongs(this.state.input)
             this.props.getSpotSongs(this.state.input)
@@ -37,8 +39,8 @@ class Search extends React.Component {
     spotifyDl = async (song) => {
         const fileName = `${song.name} - ${song.artists[0].name}.mp3`
         const saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
-
-        const localUrl = 'http://192.168.86.211:7000/spotify/'
+        // console.log(fileName)
+        const localUrl = 'http://192.168.86.230:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
         const songFile = encodeURI(`${localUrl}${spotifyUrl}?name=${fileName}`)
         const listSongs = this.props.songs.map(song => song.name)
@@ -56,10 +58,13 @@ class Search extends React.Component {
     }
 
     youtubeDl = async (song) => {
+        //&amp;
+
+        // console.log(Object.keys(this.props.youtubeSongs))
         const fileName = song.snippet.title
         const saveFileName = fileName.split('-').map(el => el.trim()).join(' ').split(' ').join('-') + '.mp3'
-
-        const localUrl = 'http://192.168.86.211:7000/'
+        // console.log(fileName)
+        const localUrl = 'http://192.168.86.230:7000/'
         const url = `www.youtube.com/${song.id.videoId}?name=${fileName}`
         const songFile = encodeURI(localUrl + url)
         const listSongs = this.props.songs.map(song => song.name)
