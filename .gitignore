@@ -10,6 +10,6 @@ npm-debug.*
 web-build/
 web-report/
 spotify-token.js
-youtubeToken.js
+youtube-token.js
 # macOS
 .DS_Store

@@ -78,7 +78,7 @@ class Search extends React.Component {
     render() {
         return (
             <View style={styles.searchResults}>
-                <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
+                <LinearGradient colors={['#1d80b5', '#555555']} style={styles.header} >
                     <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
                     <ScrollView>
                         {/* Youtube List */}
