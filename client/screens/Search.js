@@ -11,6 +11,7 @@ import styles from '../../styles'
 import * as FileSystem from 'expo-file-system';
 
 const defaultPath = `${FileSystem.documentDirectory}songs/`
+const localUrl = 'https://omnis-server-py.herokuapp.com/'
 
 class Search extends React.Component {
     static navigationOptions = {
@@ -40,55 +41,36 @@ class Search extends React.Component {
 
     spotifyDl = async (song) => {
         const isrc = song.external_ids.isrc
-        const fileName = `${song.name} - ${song.artists[0].name}.mp3`
         let saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
-        saveFileName = saveFileName.split(' ').join('_')
-        // console.log(fileName)
-        // const localUrl = 'https://omnis-server.herokuapp.com/spotify/'
-        const localUrl = 'https://omnis-server-py.herokuapp.com/spotify/'
-        // const localUrl = 'http://192.168.86.242:7000/spotify/'
         const spotifyUrl = song.external_urls.spotify.slice(8)
-        const encodedFileName = encodeURIComponent(fileName)
-        const songFile = `${localUrl}${spotifyUrl}?isrc=${isrc}`
+        const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
         const listSongs = this.props.songs.map(song => song.name)
-        if (!listSongs.includes(saveFileName)) {
-            //download locally
-            await FileSystem.downloadAsync(songFile, `${defaultPath}${saveFileName}`)
-        }
         try {
-            //save info locally
-            await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            if (!listSongs.includes(saveFileName)) {
+                //download and save locally
+                await FileSystem.downloadAsync(songUrl, `${defaultPath}${saveFileName}`)
+                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            }
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
         }
         this.props.getSongs()
     }
 
     youtubeDl = async (song) => {
-        const regexTest = /[''""]/
-        const fileName = song.snippet.title
-        // console.log(fileName)
-        const saveFileName = fileName.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
-        // console.log(saveFileName)
-        // const localUrl = 'https://omnis-server.herokuapp.com/'
-        const localUrl = 'https://omnis-server-py.herokuapp.com/'
-        // const localUrl = 'http://192.168.86.242:7000/'
+        const saveFileName = song.snippet.title.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
         const encodedFileName = encodeURIComponent(fileName)
         const url = `www.youtube.com/${song.id.videoId}?name=${encodedFileName}`
         const songFile = localUrl + url
-        console.log(songFile)
         const listSongs = this.props.songs.map(song => song.name)
-        // console.log(listSongs)
-        // console.log('save file name', saveFileName)
-        if (!listSongs.includes(saveFileName)) {
-            //download locally
-            await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
-        }
         try {
-            //save info locally
-            await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            if (!listSongs.includes(saveFileName)) {
+                //download and save locally
+                await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
+                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            }
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
         }
         this.props.getSongs()
     }
