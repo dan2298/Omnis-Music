@@ -1,5 +1,6 @@
 import youtubeToken from '../../youtube-token'
 import YTSearch from 'youtube-api-search'
+import he from 'he'
 
 const GOT_YT_SONGS = 'GOT_YT_SONGS';
 
@@ -15,6 +16,10 @@ export function getYTSongs(input) {
     return async dispatch => {
         try {
             YTSearch({ key: youtubeApiKey, term: input }, (videos) => {
+                videos = videos.map(video => {
+                    video.snippet.title = he.decode(video.snippet.title)
+                    return video;
+                })
                 dispatch(gotYTSongs(videos))
             })
         } catch (err) {
