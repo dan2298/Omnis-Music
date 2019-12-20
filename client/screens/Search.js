@@ -41,12 +41,10 @@ class Search extends React.Component {
     }
 
     spotifyDl = async (song) => {
-        // console.log(song)
         const isrc = song.isrc
         let saveFileName = `${song.name}-${song.artist}.mp3`.split(' ').join('-')
         const spotifyUrl = song.url.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
-        // console.log(songUrl)
         const listSongs = this.props.songs.map(song => song.name)
         try {
             if (!listSongs.includes(saveFileName)) {
@@ -77,6 +75,10 @@ class Search extends React.Component {
         this.props.getSongs()
     }
 
+    soundcloudDl = async (song) => {
+
+    }
+
     render() {
         return (
             <View style={styles.searchResults}>
@@ -91,7 +93,7 @@ class Search extends React.Component {
                         <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
                         {/* SoundCloud List */}
                         <Text style={{ color: 'orange', fontWeight: 'bold' }}>SoundCloud</Text>
-                        {/* <SongList songs={this.props.soundcloudSongs}></SongList> */}
+                        <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
                     </ScrollView>
                 </LinearGradient>
             </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import styles from '../../styles'
@@ -24,19 +24,7 @@ class Downloads extends React.Component {
                     <Header title={'Downloads'}></Header>
                     <ScrollView>
                         {this.props.songs.map((item, idx) => {
-                            console.log('songs', song)
                             const song = item.info
-                            // let ytName; let ytPic; let ytChannel;
-                            // let sptName; let sptArtist; let sptPic;
-                            // if (song.info.snippet) {
-                            //     ytName = song.info.snippet.title
-                            //     ytChannel = song.info.snippet.channelTitle
-                            //     ytPic = song.info.snippet.thumbnails.high.url
-                            // } else {
-                            //     sptArtist = song.info.artists[0].name
-                            //     sptName = song.info.name
-                            //     sptPic = song.info.album.images[0].url
-                            // }
                             return (
                                 <Song key={idx}
                                     name={song.name}
