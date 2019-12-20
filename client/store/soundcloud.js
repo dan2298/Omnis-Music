@@ -17,24 +17,27 @@ export function getScSongs(input) {
     return async dispatch => {
         try {
             const { data } = await axios.get(url)
+            const type = 'soundcloud'
             const songs = []
             const { content } = data
             const { pics } = data
             for (let i = 0; i < data.pics.length; i++) {
                 const idx = pics[i].indexOf(`url("https://`)
-                const lastIdx = pics[i].lastIndexOf(`;'></span>`)
-                const image = pics[i].slice(idx, lastIdx)
+                const lastIdx = pics[i].lastIndexOf(`.jpg")`)
+                let image = pics[i].substring(idx, lastIdx)
+                image = image.substring(5) + '.jpg'
 
                 const $ = cheerio.load(content[i])
-                const song = $(`span[class='']`).text()
+                const name = $(`span`, `a`).get(1).children[0].data
                 const artist = $(`span[class='soundTitle__usernameText']`).text()
-                const link = $(`a[class='soundTitle__title sc-link-dark']`).attr('href')
+                const link = $(`a`).get(1).attribs.href
                 const url = `${sc}${link}`
                 songs.push({
-                    song,
+                    name,
                     artist,
                     image,
-                    url
+                    url,
+                    type
                 })
             }
             dispatch(gotScSongs(songs))

@@ -20,7 +20,21 @@ export function getYTSongs(input) {
                     video.snippet.title = he.decode(video.snippet.title)
                     return video;
                 })
-                dispatch(gotYTSongs(videos))
+                const type = 'youtube'
+                const songs = videos.map(item => {
+                    const image = item.snippet.thumbnails.high.url
+                    const name = item.snippet.title
+                    const artist = item.snippet.channelTitle
+                    const id = item.id.videoId
+                    return ({
+                        image,
+                        name,
+                        artist,
+                        id,
+                        type
+                    })
+                })
+                dispatch(gotYTSongs(songs))
             })
         } catch (err) {
             console.log(err)

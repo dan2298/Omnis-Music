@@ -45,7 +45,7 @@ class Search extends React.Component {
         let saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
         const spotifyUrl = song.external_urls.spotify.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
-        console.log(songUrl)
+        // console.log(songUrl)
         const listSongs = this.props.songs.map(song => song.name)
         try {
             if (!listSongs.includes(saveFileName)) {
@@ -77,7 +77,7 @@ class Search extends React.Component {
     }
 
     render() {
-        // console.log(this.props.soundcloudSongs)
+        // console.log(this.props)
         return (
             <View style={styles.searchResults}>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
@@ -85,12 +85,12 @@ class Search extends React.Component {
                     <ScrollView>
                         {/* Youtube List */}
                         <Text style={{ color: 'red', fontWeight: 'bold' }}>Youtube</Text>
-                        <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
+                        <SongList songs={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
                         {/* Spotify List */}
                         <Text style={{ color: 'green', fontWeight: 'bold' }}>Spotify</Text>
-                        <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
+                        <SongList songs={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
                         <Text style={{ color: 'orange', fontWeight: 'bold' }}>SoundCloud</Text>
-                        {/* <SongList type='soundcloud'  */}
+                        <SongList songs={this.props.soundcloudSongs}></SongList>
                     </ScrollView>
                 </LinearGradient>
             </View>
