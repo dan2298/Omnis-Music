@@ -41,9 +41,10 @@ class Search extends React.Component {
     }
 
     spotifyDl = async (song) => {
-        const isrc = song.external_ids.isrc
-        let saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
-        const spotifyUrl = song.external_urls.spotify.slice(8)
+        // console.log(song)
+        const isrc = song.isrc
+        let saveFileName = `${song.name}-${song.artist}.mp3`.split(' ').join('-')
+        const spotifyUrl = song.url.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
         // console.log(songUrl)
         const listSongs = this.props.songs.map(song => song.name)
@@ -60,8 +61,8 @@ class Search extends React.Component {
     }
 
     youtubeDl = async (song) => {
-        const saveFileName = song.snippet.title.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
-        const url = `www.youtube.com/${song.id.videoId}`
+        const saveFileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
+        const url = `www.youtube.com/${song.id}`
         const songFile = localUrl + url
         const listSongs = this.props.songs.map(song => song.name)
         try {
@@ -77,7 +78,6 @@ class Search extends React.Component {
     }
 
     render() {
-        // console.log(this.props)
         return (
             <View style={styles.searchResults}>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
@@ -85,12 +85,13 @@ class Search extends React.Component {
                     <ScrollView>
                         {/* Youtube List */}
                         <Text style={{ color: 'red', fontWeight: 'bold' }}>Youtube</Text>
-                        <SongList songs={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
+                        <SongList songs={this.props.youtubeSongs} download={this.youtubeDl}></SongList>
                         {/* Spotify List */}
                         <Text style={{ color: 'green', fontWeight: 'bold' }}>Spotify</Text>
-                        <SongList songs={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
+                        <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
+                        {/* SoundCloud List */}
                         <Text style={{ color: 'orange', fontWeight: 'bold' }}>SoundCloud</Text>
-                        <SongList songs={this.props.soundcloudSongs}></SongList>
+                        {/* <SongList songs={this.props.soundcloudSongs}></SongList> */}
                     </ScrollView>
                 </LinearGradient>
             </View>

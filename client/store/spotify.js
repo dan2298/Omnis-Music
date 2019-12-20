@@ -66,18 +66,20 @@ export function getSpotSongs(input) {
           Authorization: `Bearer ${token}`
         }
       })
-      const type = 'spotify'
+      const type = 'Spotify'
       const songs = data.tracks.items.map(item => {
         const artist = item.album.artists[0].name
         const image = item.album.images[0].url
         const name = item.name
         const isrc = item.external_ids.isrc
+        const url = item.external_urls.spotify
 
         return ({
           artist,
           image,
           name,
           isrc,
+          url,
           type
         })
       })

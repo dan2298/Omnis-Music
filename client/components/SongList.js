@@ -8,8 +8,7 @@ const SongList = props => {
             data={props.songs}
             renderItem={result => {
                 return (
-                    // <TouchableOpacity onPress={props.youtubeDl.bind(this, result.item)}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={props.download.bind(this, result.item)}>
                         <View style={{ borderColor: 'white', borderBottomWidth: 1 }}>
                             <Text style={{ color: 'white' }}>{result.item.name}</Text>
                             <Image style={{ width: 50, height: 50 }} source={{ uri: result.item.image }}></Image>

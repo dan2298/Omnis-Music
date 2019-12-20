@@ -20,7 +20,7 @@ export function getYTSongs(input) {
                     video.snippet.title = he.decode(video.snippet.title)
                     return video;
                 })
-                const type = 'youtube'
+                const type = 'Youtube'
                 const songs = videos.map(item => {
                     const image = item.snippet.thumbnails.high.url
                     const name = item.snippet.title

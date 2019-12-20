@@ -2,13 +2,20 @@ import React from 'React'
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 const Song = props => {
+    if (props.type === 'youtube') {
+        color = '#ff0011'
+    } else if (props.type === 'spotify') {
+        color = '#3bbf19'
+    } else if (props.type === 'soundcloud') {
+        color = '#FF7700'
+    }
     return (
         <TouchableOpacity style={styles.songContainer} onPress={props.playback.bind(this, props)}>
-            <Image style={{ width: 50, height: 50, margin: 5 }} source={{ uri: props.img }}></Image>
+            <Image style={{ width: 50, height: 50, margin: 5 }} source={{ uri: props.image }}></Image>
             <View style={styles.infoContainer}>
                 <Text style={{ color: 'white' }}>{props.name}</Text>
-                <Text style={{ color: '#d4d2d2', fontSize: 12 }}>{props.creator}</Text>
-                <Text style={{ color: props.type === 'Youtube' ? '#ff0011' : '#3bbf19', fontWeight: '300' }}>{props.type}</Text>
+                <Text style={{ color: '#d4d2d2', fontSize: 12 }}>{props.artist}</Text>
+                <Text style={{ color: color, fontWeight: '300' }}>{props.type}</Text>
             </View>
         </TouchableOpacity>
     )

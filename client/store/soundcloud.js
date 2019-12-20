@@ -17,7 +17,7 @@ export function getScSongs(input) {
     return async dispatch => {
         try {
             const { data } = await axios.get(url)
-            const type = 'soundcloud'
+            const type = 'Soundcloud'
             const songs = []
             const { content } = data
             const { pics } = data
