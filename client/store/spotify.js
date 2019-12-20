@@ -22,6 +22,10 @@ export function getSpotSongs(input) {
                     Authorization: `Bearer ${token}`
                 }
             })
+            const songs = data.tracks.items.map(item => {
+                console.log(item)
+            })
+            // console.log(data.tracks.items)
             dispatch(gotSpotSongs(data.tracks.items))
         } catch (err) {
             console.log(err)

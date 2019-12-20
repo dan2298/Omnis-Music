@@ -3,7 +3,7 @@ import { Text, View, ScrollView, AsyncStorage } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
-import { getYTSongs, getSpotSongs, getSongs } from '../store'
+import { getYTSongs, getSpotSongs, getScSongs, getSongs } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -34,6 +34,7 @@ class Search extends React.Component {
         // await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs`)
         // console.log(await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`))
         if (this.state.input) {
+            this.props.getScSongs(this.state.input)
             this.props.getYTSongs(this.state.input)
             this.props.getSpotSongs(this.state.input)
         }
@@ -44,6 +45,7 @@ class Search extends React.Component {
         let saveFileName = `${song.name}-${song.artists[0].name}.mp3`.split(' ').join('-')
         const spotifyUrl = song.external_urls.spotify.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
+        console.log(songUrl)
         const listSongs = this.props.songs.map(song => song.name)
         try {
             if (!listSongs.includes(saveFileName)) {
@@ -59,8 +61,7 @@ class Search extends React.Component {
 
     youtubeDl = async (song) => {
         const saveFileName = song.snippet.title.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
-        const encodedFileName = encodeURIComponent(fileName)
-        const url = `www.youtube.com/${song.id.videoId}?name=${encodedFileName}`
+        const url = `www.youtube.com/${song.id.videoId}`
         const songFile = localUrl + url
         const listSongs = this.props.songs.map(song => song.name)
         try {
@@ -76,17 +77,20 @@ class Search extends React.Component {
     }
 
     render() {
+        // console.log(this.props.soundcloudSongs)
         return (
             <View style={styles.searchResults}>
-                <LinearGradient colors={['#1d80b5', '#555555']} style={styles.header} >
+                <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
                     <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
                     <ScrollView>
                         {/* Youtube List */}
-                        <Text style={{ color: 'red' }}>Youtube</Text>
+                        <Text style={{ color: 'red', fontWeight: 'bold' }}>Youtube</Text>
                         <SongList type='youtube' youtubeSearchResults={this.props.youtubeSongs} youtubeDl={this.youtubeDl}></SongList>
                         {/* Spotify List */}
-                        <Text style={{ color: 'green' }}>Spotify</Text>
+                        <Text style={{ color: 'green', fontWeight: 'bold' }}>Spotify</Text>
                         <SongList type='spotify' spotifySearchResults={this.props.spotifySongs} spotifyDl={this.spotifyDl}></SongList>
+                        <Text style={{ color: 'orange', fontWeight: 'bold' }}>SoundCloud</Text>
+                        {/* <SongList type='soundcloud'  */}
                     </ScrollView>
                 </LinearGradient>
             </View>
@@ -98,7 +102,8 @@ const mapStateToProps = state => {
     return {
         songs: state.songs,
         spotifySongs: state.spotifySongs,
-        youtubeSongs: state.youtubeSongs
+        youtubeSongs: state.youtubeSongs,
+        soundcloudSongs: state.soundcloudSongs
     }
 }
 
@@ -108,8 +113,10 @@ const mapDispatchToProps = dispatch => {
             dispatch(getYTSongs(input)),
         getSpotSongs: (input) =>
             dispatch(getSpotSongs(input)),
+        getScSongs: (input) =>
+            dispatch(getScSongs(input)),
         getSongs: () =>
-            dispatch(getSongs()),
+            dispatch(getSongs())
     }
 }
 

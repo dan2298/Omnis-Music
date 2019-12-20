@@ -5,15 +5,17 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import songs from './songs';
 import spotify from './spotify';
 import youtube from './youtube';
-import currentSong from './currentSong'
-import playing from './playing'
+import soundcloud from './soundcloud';
+import currentSong from './currentSong';
+import playing from './playing';
 
 const reducer = combineReducers({
     songs,
     currentSong,
     playing,
     spotifySongs: spotify,
-    youtubeSongs: youtube
+    youtubeSongs: youtube,
+    soundcloudSongs: soundcloud
 })
 
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware))
@@ -24,5 +26,6 @@ export default store
 export * from './songs'
 export * from './spotify'
 export * from './youtube'
+export * from './soundcloud'
 export * from './currentSong'
 export * from './playing'
