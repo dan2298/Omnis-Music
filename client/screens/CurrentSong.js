@@ -1,5 +1,5 @@
 import React from 'React';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Slider } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../components/Header'
@@ -20,6 +20,15 @@ const CurrentSong = props => {
                     {/* <Ionicons name="md-checkmark-circle" size={32} color="green" /> */}
                     <Text style={styles.title}>{props.currentSong.name}</Text>
                     <Text style={styles.artist}>{props.currentSong.artist}</Text>
+                    <Slider
+                        style={{ alignSelf: "stretch" }}
+                        // trackImage={ICON_TRACK_1.module}
+                        // thumbImage={ICON_THUMB_1.module}
+                        value={props.navigation.state.params.getSliderPosition()}
+                        onValueChange={props.navigation.state.params.onSliderValueChange}
+                        onSlidingComplete={props.navigation.state.params.onSlidingComplete}
+                    />
+                    <Text style={{ color: 'white' }}>{props.navigation.state.params.timeStamp()}</Text>
                     <View style={styles.buttonsContainer}>
                         {<MaterialCommunityIcons name="rewind" size={96} color="white"></MaterialCommunityIcons>}
                         <TouchableOpacity onPress={() => {

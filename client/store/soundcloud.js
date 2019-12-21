@@ -44,7 +44,6 @@ export function getScSongs(input) {
                     type
                 })
             }
-            console.log('songs', songs)
             dispatch(gotScSongs(songs))
         } catch (err) {
             console.log(err)

@@ -38,6 +38,10 @@ class Index extends Component {
         this.loadPlayback = this.loadPlayback.bind(this)
         this.playback = this.playback.bind(this)
         this.onPlayPause = this.onPlayPause.bind(this)
+        this.getTimestamp = this.getTimestamp.bind(this)
+        this.onSeekSliderValueChange = this.onSeekSliderValueChange.bind(this)
+        this.getSeekSliderPosition = this.getSeekSliderPosition.bind(this)
+        this.onSeekSliderSlidingComplete = this.onSeekSliderSlidingComplete.bind(this)
     }
 
     async componentDidMount() {
@@ -75,7 +79,7 @@ class Index extends Component {
         const { sound, status } = await Audio.Sound.createAsync(
             source,
             initialStatus,
-            this._onPlaybackStatusUpdate
+            this.onPlaybackStatusUpdate
         );
         this.playbackInstance = sound;
         this.onPlayPause()
@@ -92,6 +96,22 @@ class Index extends Component {
                 this.setState({ ...this.state, isPlaying: true })
                 this.props.play()
             }
+        }
+    }
+
+    onPlaybackStatusUpdate = status => {
+        if (status.isLoaded) {
+            this.setState({
+                playbackInstancePosition: status.positionMillis,
+                playbackInstanceDuration: status.durationMillis,
+                shouldPlay: status.shouldPlay,
+                isPlaying: status.isPlaying,
+                isBuffering: status.isBuffering,
+                rate: status.rate,
+                muted: status.isMuted,
+                volume: status.volume,
+                shouldCorrectPitch: status.shouldCorrectPitch
+            });
         }
     }
 
@@ -138,26 +158,33 @@ class Index extends Component {
         return 0;
     }
 
-    _getTimestamp() {
+    getMMSSFromMillis(millis) {
+        const totalSeconds = millis / 1000;
+        const seconds = Math.floor(totalSeconds % 60);
+        const minutes = Math.floor(totalSeconds / 60);
+
+        const padWithZero = number => {
+            const string = number.toString();
+            if (number < 10) {
+                return "0" + string;
+            }
+            return string;
+        };
+        return padWithZero(minutes) + ":" + padWithZero(seconds);
+    }
+
+    getTimestamp() {
         if (
             this.playbackInstance != null &&
             this.state.playbackInstancePosition != null &&
             this.state.playbackInstanceDuration != null
         ) {
-            return `${this._getMMSSFromMillis(
+            return `${this.getMMSSFromMillis(
                 this.state.playbackInstancePosition
-            )} / ${this._getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
+            )} / ${this.getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
         }
         return "";
     }
-
-    _onPosterPressed = () => {
-        this.setState({ poster: !this.state.poster });
-    };
-
-    _onUseNativeControlsPressed = () => {
-        this.setState({ useNativeControls: !this.state.useNativeControls });
-    };
 
     render() {
         return (
@@ -166,7 +193,11 @@ class Index extends Component {
                     <AppContainter screenProps={{
                         playback: this.playback,
                         onPlayPause: this.onPlayPause,
-                        isPlaying: this.state.isPlaying
+                        isPlaying: this.state.isPlaying,
+                        timeStamp: this.getTimestamp,
+                        getSliderPosition: this.getSeekSliderPosition,
+                        onSliderValueChange: this.onSeekSliderValueChange,
+                        onSlidingComplete: this.onSeekSliderSlidingComplete
                     }}>
                     </AppContainter>
                 </LinearGradient>
