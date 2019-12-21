@@ -1,6 +1,5 @@
 import axios from 'axios'
 import cheerio from 'react-native-cheerio'
-const sc = 'https://soundcloud.com'
 
 const GOT_SC_SONGS = 'GOT_SC_SONGS';
 
@@ -17,11 +16,17 @@ export function getScSongs(input) {
     return async dispatch => {
         try {
             const { data } = await axios.get(url)
+            let length;
             const type = 'Soundcloud'
             const songs = []
             const { content } = data
             const { pics } = data
-            for (let i = 0; i < data.pics.length; i++) {
+            if (content.length > 3) {
+                length = 3
+            } else {
+                length = content.length
+            }
+            for (let i = 0; i < length; i++) {
                 const idx = pics[i].indexOf(`url("https://`)
                 const lastIdx = pics[i].lastIndexOf(`.jpg")`)
                 let image = pics[i].substring(idx, lastIdx)
@@ -30,8 +35,7 @@ export function getScSongs(input) {
                 const $ = cheerio.load(content[i])
                 const name = $(`span`, `a`).get(1).children[0].data
                 const artist = $(`span[class='soundTitle__usernameText']`).text()
-                const link = $(`a`).get(1).attribs.href
-                const url = `${sc}${link}`
+                const url = $(`a`).get(1).attribs.href
                 songs.push({
                     name,
                     artist,
@@ -40,6 +44,7 @@ export function getScSongs(input) {
                     type
                 })
             }
+            console.log('songs', songs)
             dispatch(gotScSongs(songs))
         } catch (err) {
             console.log(err)

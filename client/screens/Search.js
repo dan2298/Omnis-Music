@@ -42,7 +42,7 @@ class Search extends React.Component {
 
     spotifyDl = async (song) => {
         const isrc = song.isrc
-        let saveFileName = `${song.name}-${song.artist}.mp3`.split(' ').join('-')
+        let saveFileName = `${song.name}spt.mp3`.split(' ').join('-')
         const spotifyUrl = song.url.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
         const listSongs = this.props.songs.map(song => song.name)
@@ -59,7 +59,7 @@ class Search extends React.Component {
     }
 
     youtubeDl = async (song) => {
-        const saveFileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '.mp3'
+        const saveFileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + 'yt.mp3'
         const url = `www.youtube.com/${song.id}`
         const songFile = localUrl + url
         const listSongs = this.props.songs.map(song => song.name)
@@ -76,7 +76,21 @@ class Search extends React.Component {
     }
 
     soundcloudDl = async (song) => {
-
+        const saveFileName = song.name.split(' ').join('-') + 'sc.mp3'
+        const encodedName = encodeURIComponent(song.name)
+        const url = `soundcloud${song.url}?name=${encodedName}`
+        const songFile = localUrl + url
+        const listSongs = this.props.songs.map(song => song.name)
+        try {
+            if (!listSongs.includes(saveFileName)) {
+                //download and save locally
+                await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
+                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        this.props.getSongs()
     }
 
     render() {
