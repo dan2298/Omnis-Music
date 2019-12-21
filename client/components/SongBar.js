@@ -11,7 +11,7 @@ const SongBar = props => {
         <View style={styles.container}>
             <View style={styles.text}>
                 <Text style={styles.singleText}>{props.currentSong.name}</Text>
-                <Text style={styles.singleText}>{props.currentSong.creator}</Text>
+                <Text style={styles.singleText}>{props.currentSong.artist}</Text>
             </View>
             <View style={styles.buttonContainer}>
                 {props.isPlaying ?

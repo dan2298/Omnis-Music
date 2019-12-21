@@ -86,13 +86,13 @@ class Search extends React.Component {
                     <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
                     <ScrollView>
                         {/* Youtube List */}
-                        <Text style={{ color: 'red', fontWeight: 'bold' }}>Youtube</Text>
+                        <Text style={{ color: '#ff0011', fontWeight: 'bold' }}>Youtube</Text>
                         <SongList songs={this.props.youtubeSongs} download={this.youtubeDl}></SongList>
                         {/* Spotify List */}
-                        <Text style={{ color: 'green', fontWeight: 'bold' }}>Spotify</Text>
+                        <Text style={{ color: '#26c751', fontWeight: 'bold' }}>Spotify</Text>
                         <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
                         {/* SoundCloud List */}
-                        <Text style={{ color: 'orange', fontWeight: 'bold' }}>SoundCloud</Text>
+                        <Text style={{ color: '#FF7700', fontWeight: 'bold' }}>SoundCloud</Text>
                         <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
                     </ScrollView>
                 </LinearGradient>

@@ -15,11 +15,11 @@ const CurrentSong = props => {
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
                 <Header title={'Songs'} back={true} goBack={goBack}></Header>
                 <View style={styles.container}>
-                    <Image style={styles.mainImg} source={{ uri: props.currentSong.img }}></Image>
+                    <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
                     {/* <Text style={styles.circle}>View</Text> */}
                     {/* <Ionicons name="md-checkmark-circle" size={32} color="green" /> */}
                     <Text style={styles.title}>{props.currentSong.name}</Text>
-                    <Text style={styles.artist}>{props.currentSong.creator}</Text>
+                    <Text style={styles.artist}>{props.currentSong.artist}</Text>
                     <View style={styles.buttonsContainer}>
                         {<MaterialCommunityIcons name="rewind" size={96} color="white"></MaterialCommunityIcons>}
                         <TouchableOpacity onPress={() => {

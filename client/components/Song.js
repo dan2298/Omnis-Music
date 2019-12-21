@@ -4,11 +4,11 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 const Song = props => {
     let color;
-    if (props.type === 'youtube') {
+    if (props.type === 'Youtube') {
         color = '#ff0011'
-    } else if (props.type === 'spotify') {
-        color = '#3bbf19'
-    } else if (props.type === 'soundcloud') {
+    } else if (props.type === 'Spotify') {
+        color = '#26c751'
+    } else if (props.type === 'Soundcloud') {
         color = '#FF7700'
     }
     return (
