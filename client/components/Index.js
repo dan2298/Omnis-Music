@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
 import { getSongs, getCurrentSong, play, pause } from '../store'
+import { setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, seekSliderPosition, MMSSFromMillis, timestamp } from './musicFunctions'
 import { Audio } from 'expo-av'
 import AppContainter from '../SwitchNavigator'
 
@@ -46,18 +47,22 @@ class Index extends Component {
 
     async componentDidMount() {
         this.props.getSongs()
-        try {
-            await Audio.setAudioModeAsync({
-                allowsRecordingIOS: false,
-                interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-                playsInSilentModeIOS: true,
-                interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-                shouldDuckAndroid: true,
-                staysActiveInBackground: true,
-                playThroughEarpieceAndroid: true
-            })
-        } catch (err) {
-            console.log(err)
+        setAudioMode()
+    }
+
+    onPlaybackStatusUpdate = status => {
+        if (status.isLoaded) {
+            this.setState({
+                playbackInstancePosition: status.positionMillis,
+                playbackInstanceDuration: status.durationMillis,
+                shouldPlay: status.shouldPlay,
+                isPlaying: status.isPlaying,
+                isBuffering: status.isBuffering,
+                rate: status.rate,
+                muted: status.isMuted,
+                volume: status.volume,
+                shouldCorrectPitch: status.shouldCorrectPitch
+            });
         }
     }
 
@@ -81,39 +86,17 @@ class Index extends Component {
             initialStatus,
             this.onPlaybackStatusUpdate
         );
+        sound.setProgressUpdateIntervalAsync(250)
         this.playbackInstance = sound;
         this.onPlayPause()
     }
 
-    async onPlayPause() {
-        if (this.playbackInstance != null) {
-            if (this.state.isPlaying) {
-                this.playbackInstance.pauseAsync();
-                this.setState({ ...this.state, isPlaying: false })
-                this.props.pause()
-            } else {
-                this.playbackInstance.playAsync();
-                this.setState({ ...this.state, isPlaying: true })
-                this.props.play()
-            }
-        }
-    }
-
-    onPlaybackStatusUpdate = status => {
-        if (status.isLoaded) {
-            this.setState({
-                playbackInstancePosition: status.positionMillis,
-                playbackInstanceDuration: status.durationMillis,
-                shouldPlay: status.shouldPlay,
-                isPlaying: status.isPlaying,
-                isBuffering: status.isBuffering,
-                rate: status.rate,
-                muted: status.isMuted,
-                volume: status.volume,
-                shouldCorrectPitch: status.shouldCorrectPitch
-            });
-        }
-    }
+    onPlayPause = playOrPause
+    onSeekSliderValueChange = sliderValueChange
+    onSeekSliderSlidingComplete = sliderSlidingComplete
+    getSeekSliderPosition = seekSliderPosition
+    getMMSSFromMillis = MMSSFromMillis
+    getTimestamp = timestamp
 
     playback(song) {
         if (this.props.currentSong.name !== song.songName || !this.props.currentSong.name) {
@@ -122,68 +105,6 @@ class Index extends Component {
             this.onPlayPause()
         }
         this.props.getCurrentSong(song)
-    }
-
-    onSeekSliderValueChange = value => {
-        if (this.playbackInstance != null && !this.isSeeking) {
-            this.isSeeking = true;
-            this.shouldPlayAtEndOfSeek = this.state.shouldPlay;
-            this.playbackInstance.pauseAsync();
-        }
-    };
-
-    onSeekSliderSlidingComplete = async value => {
-        if (this.playbackInstance != null) {
-            this.isSeeking = false;
-            const seekPosition = value * this.state.playbackInstanceDuration;
-            if (this.shouldPlayAtEndOfSeek) {
-                this.playbackInstance.playFromPositionAsync(seekPosition);
-            } else {
-                this.playbackInstance.setPositionAsync(seekPosition);
-            }
-        }
-    };
-
-    getSeekSliderPosition() {
-        if (
-            this.playbackInstance != null &&
-            this.state.playbackInstancePosition != null &&
-            this.state.playbackInstanceDuration != null
-        ) {
-            return (
-                this.state.playbackInstancePosition /
-                this.state.playbackInstanceDuration
-            );
-        }
-        return 0;
-    }
-
-    getMMSSFromMillis(millis) {
-        const totalSeconds = millis / 1000;
-        const seconds = Math.floor(totalSeconds % 60);
-        const minutes = Math.floor(totalSeconds / 60);
-
-        const padWithZero = number => {
-            const string = number.toString();
-            if (number < 10) {
-                return "0" + string;
-            }
-            return string;
-        };
-        return padWithZero(minutes) + ":" + padWithZero(seconds);
-    }
-
-    getTimestamp() {
-        if (
-            this.playbackInstance != null &&
-            this.state.playbackInstancePosition != null &&
-            this.state.playbackInstanceDuration != null
-        ) {
-            return `${this.getMMSSFromMillis(
-                this.state.playbackInstancePosition
-            )} / ${this.getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
-        }
-        return "";
     }
 
     render() {
