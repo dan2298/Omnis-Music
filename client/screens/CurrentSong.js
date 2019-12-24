@@ -6,24 +6,21 @@ import Header from '../components/Header'
 import ty from '../../styles';
 import { connect } from 'react-redux'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-let height = 700
-const RATE_SCALE = 1.5;
+
 const CurrentSong = props => {
     let { onPlayPause } = props.navigation.state.params
     const { goBack } = props.navigation
-    // console.log(props)
     return (
         <View>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
                 <Header title={'Songs'} back={true} goBack={goBack}></Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
-                    {/* <Text style={styles.circle}>View</Text> */}
                     {/* <Ionicons name="md-checkmark-circle" size={32} color="green" /> */}
                     <Text style={styles.title}>{props.currentSong.name}</Text>
                     <Text style={styles.artist}>{props.currentSong.artist}</Text>
                     <Slider
-                        style={{ alignSelf: "stretch" }}
+                        style={{ width: "90%" }}
                         // trackImage={ICON_TRACK_1.module}
                         // thumbImage={ICON_THUMB_1.module}
                         value={props.navigation.state.params.getSliderPosition()}
@@ -32,7 +29,9 @@ const CurrentSong = props => {
                     />
                     <Text style={{ color: 'white' }}>{props.navigation.state.params.timeStamp()}</Text>
                     <View style={styles.buttonsContainer}>
-                        {<MaterialCommunityIcons name="rewind" size={96} color="white"></MaterialCommunityIcons>}
+                        <TouchableOpacity onPress={props.navigation.state.params.onBackward}>
+                            <MaterialCommunityIcons name="rewind" size={96} color="white"></MaterialCommunityIcons>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             onPlayPause()
                         }}>
@@ -41,7 +40,9 @@ const CurrentSong = props => {
                                 <MaterialCommunityIcons name="play-circle" size={96} color="white"></MaterialCommunityIcons>
                             }
                         </TouchableOpacity>
-                        {<MaterialCommunityIcons name="fast-forward" size={96} color="white"></MaterialCommunityIcons>}
+                        <TouchableOpacity onPress={props.navigation.state.params.onFoward}>
+                            <MaterialCommunityIcons name="fast-forward" size={96} color="white"></MaterialCommunityIcons>
+                        </TouchableOpacity>
                     </View>
                     <Slider
                         style={ty.rateSlider}
@@ -117,26 +118,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         padding: 2
     },
-    slider: {
-        position: 'absolute',
-        marginTop: height * 0.57,
-        width: height * 0.3,
-        transform: [{ rotateZ: '-90deg' }],
-        marginLeft: 125,
-    }
+    // slider: {
+    //     position: 'absolute',
+    //     marginTop: height * 0.57,
+    //     width: height * 0.3,
+    //     transform: [{ rotateZ: '-90deg' }],
+    //     marginLeft: 125,
+    // }
 })
-
-
-// render() {
-//     return (
-//       <View>
-//         <Text>{Test}</Text>
-//         
-//       </View>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   
-// });

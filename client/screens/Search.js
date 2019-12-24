@@ -95,7 +95,7 @@ class Search extends React.Component {
 
     render() {
         return (
-            <View style={styles.searchResults}>
+            <View >
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
                     <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
                     <ScrollView>

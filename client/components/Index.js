@@ -20,12 +20,13 @@ import AppContainter from '../SwitchNavigator'
     }
 })()
 
-const RATE_SCALE = 1.5;
-
 class Index extends Component {
     constructor() {
         super()
+        this.index = 0;
         this.playbackInstance = null;
+        this.isSeeking = false;
+        this.shouldPlayAtEndOfSeek = false;
         this.state = {
             muted: false,
             playbackInstancePosition: null,
@@ -50,6 +51,8 @@ class Index extends Component {
         this.onSeekSliderSlidingComplete = this.onSeekSliderSlidingComplete.bind(this)
         this.onRateSliderSlidingComplete = this.onRateSliderSlidingComplete.bind(this)
         this.trySetRate = this.trySetRate.bind(this)
+        this.onFoward = this.onFoward.bind(this)
+        this.onBackward = this.onBackward.bind(this)
     }
 
     async componentDidMount() {
@@ -70,24 +73,31 @@ class Index extends Component {
                 volume: status.volume,
                 shouldCorrectPitch: status.shouldCorrectPitch
             });
+            if (status.didJustFinish && !status.isLooping) {
+                this.onFoward();
+            }
+        } else {
+            if (status.error) {
+                console.log(`FATAL PLAYER ERROR: ${status.error}`);
+            }
         }
     }
 
-    async loadPlayback(song) {
-        this.setState({ ...this.state, isPlaying: false })
+    async loadPlayback() {
+        const name = this.props.songs[this.index].name
         if (this.playbackInstance != null) {
             await this.playbackInstance.unloadAsync();
             this.playbackInstance.setOnPlaybackStatusUpdate(null);
             this.playbackInstance = null;
         }
-        const source = { uri: await `${FileSystem.documentDirectory}songs/${song.songName}` }
+        const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
         const initialStatus = {
             shouldPlay: this.state.isPlaying,
             rate: 1.0,
             shouldCorrectPitch: this.state.shouldCorrectPitch,
             volume: this.state.volume,
             isMuted: this.state.muted,
-            progressUpdateIntervalMillis: 300
+            // progressUpdateIntervalMillis: 300
         };
         const { sound, status } = await Audio.Sound.createAsync(
             source,
@@ -96,6 +106,18 @@ class Index extends Component {
         );
         this.playbackInstance = sound;
         this.onPlayPause()
+    }
+
+    onFoward() {
+        this.index++
+        this.props.getCurrentSong(this.props.songs[this.index].info)
+        this.loadPlayback()
+    }
+
+    onBackward() {
+        this.index--
+        this.props.getCurrentSong(this.props.songs[this.index].info)
+        this.loadPlayback()
     }
 
     onPlayPause = playOrPause
@@ -108,8 +130,15 @@ class Index extends Component {
     trySetRate = setRate
 
     playback(song) {
-        if (this.props.currentSong.name !== song.songName || !this.props.currentSong.name) {
-            this.loadPlayback(song)
+        for (let i = 0; i < this.props.songs.length; i++) {
+            if (song.name === this.props.songs[i].info.name) {
+                this.index = i
+                break;
+            }
+        }
+        if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
+            this.setState({ ...this.state, isPlaying: false })
+            this.loadPlayback()
         } else {
             this.onPlayPause()
         }
@@ -129,6 +158,8 @@ class Index extends Component {
                         onSliderValueChange: this.onSeekSliderValueChange,
                         onSlidingComplete: this.onSeekSliderSlidingComplete,
                         onRateSliderSlidingComplete: this.onRateSliderSlidingComplete,
+                        onFoward: this.onFoward,
+                        onBackward: this.onBackward,
                         rate: this.state.rate
                     }}>
                     </AppContainter>
@@ -141,6 +172,7 @@ class Index extends Component {
 
 const mapStateToProps = state => {
     return {
+        songs: state.songs,
         currentSong: state.currentSong,
         isPlaying: state.playing
     }
