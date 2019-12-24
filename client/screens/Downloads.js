@@ -45,7 +45,9 @@ class Downloads extends React.Component {
                             timeStamp: methods.timeStamp,
                             getSliderPosition: methods.getSliderPosition,
                             onSliderValueChange: methods.onSliderValueChange,
-                            onSlidingComplete: methods.onSlidingComplete
+                            onSlidingComplete: methods.onSlidingComplete,
+                            onRateSliderSlidingComplete: methods.onRateSliderSlidingComplete,
+                            rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
                         </TouchableOpacity> : <View></View>

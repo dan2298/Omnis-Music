@@ -3,13 +3,15 @@ import { View, Text, StyleSheet, Image, Slider } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../components/Header'
-
+import ty from '../../styles';
 import { connect } from 'react-redux'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+let height = 700
+const RATE_SCALE = 1.5;
 const CurrentSong = props => {
     let { onPlayPause } = props.navigation.state.params
     const { goBack } = props.navigation
+    // console.log(props)
     return (
         <View>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
@@ -41,6 +43,28 @@ const CurrentSong = props => {
                         </TouchableOpacity>
                         {<MaterialCommunityIcons name="fast-forward" size={96} color="white"></MaterialCommunityIcons>}
                     </View>
+                    <Slider
+                        style={ty.rateSlider}
+                        //   trackImage={ICON_TRACK_1.module}
+                        //   thumbImage={ICON_THUMB_1.module}
+                        minimumValue={0.5}
+                        maximumValue={1.5}
+                        step={0.05}
+                        value={props.navigation.state.params.rate}
+                        onSlidingComplete={props.navigation.state.params.onRateSliderSlidingComplete}
+                    />
+                    {/* <Slider
+                        minimumValue={0}
+                        maximumValue={7}
+                        minimumTrackTintColor="#1EB1FC"
+                        maximumTractTintColor="#1EB1FC"
+                        step={1}
+                        value={props.navigation.state.params.rate}
+                        onValueChange={value => console.log(value)}
+                        style={styles.slider}
+                        thumbTintColor="#1EB1FC"
+                    /> */}
+                    {/* <Text style={{ color: 'white' }}>{props.navigation.state.params.rate}</Text> */}
                 </View>
             </LinearGradient>
         </View >
@@ -92,5 +116,27 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 14,
         padding: 2
+    },
+    slider: {
+        position: 'absolute',
+        marginTop: height * 0.57,
+        width: height * 0.3,
+        transform: [{ rotateZ: '-90deg' }],
+        marginLeft: 125,
     }
 })
+
+
+// render() {
+//     return (
+//       <View>
+//         <Text>{Test}</Text>
+//         
+//       </View>
+//     );
+//   }
+// }
+
+// const styles = StyleSheet.create({
+//   
+// });

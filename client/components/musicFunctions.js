@@ -1,4 +1,5 @@
 import { Audio } from 'expo-av'
+const RATE_SCALE = 1.5;
 
 export async function setAudioMode() {
     try {
@@ -88,4 +89,20 @@ export function timestamp() {
         )} / ${this.getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
     }
     return "";
+}
+
+export async function rateSliderSlidingComplete(value) {
+    this.trySetRate(value, this.state.shouldCorrectPitch);
+}
+
+export async function setRate(rate, shouldCorrectPitch) {
+    console.log('rate', rate)
+    console.log(shouldCorrectPitch)
+    if (this.playbackInstance != null) {
+        try {
+            await this.playbackInstance.setRateAsync(rate, shouldCorrectPitch);
+        } catch (error) {
+            // Rate changing could not be performed, possibly because the client's Android API is too old.
+        }
+    }
 }

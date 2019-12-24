@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
     container: {
@@ -35,6 +37,9 @@ const styles = StyleSheet.create({
     },
     downloadContainer: {
         flex: 1
+    },
+    rateSlider: {
+        width: DEVICE_WIDTH / 2.0
     },
 });
 

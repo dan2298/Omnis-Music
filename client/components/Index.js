@@ -6,7 +6,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
 import { getSongs, getCurrentSong, play, pause } from '../store'
-import { setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, seekSliderPosition, MMSSFromMillis, timestamp } from './musicFunctions'
+import {
+    setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate,
+    seekSliderPosition, MMSSFromMillis, timestamp
+} from './musicFunctions'
 import { Audio } from 'expo-av'
 import AppContainter from '../SwitchNavigator'
 
@@ -16,6 +19,8 @@ import AppContainter from '../SwitchNavigator'
         await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
     }
 })()
+
+const RATE_SCALE = 1.5;
 
 class Index extends Component {
     constructor() {
@@ -43,6 +48,8 @@ class Index extends Component {
         this.onSeekSliderValueChange = this.onSeekSliderValueChange.bind(this)
         this.getSeekSliderPosition = this.getSeekSliderPosition.bind(this)
         this.onSeekSliderSlidingComplete = this.onSeekSliderSlidingComplete.bind(this)
+        this.onRateSliderSlidingComplete = this.onRateSliderSlidingComplete.bind(this)
+        this.trySetRate = this.trySetRate.bind(this)
     }
 
     async componentDidMount() {
@@ -76,17 +83,17 @@ class Index extends Component {
         const source = { uri: await `${FileSystem.documentDirectory}songs/${song.songName}` }
         const initialStatus = {
             shouldPlay: this.state.isPlaying,
-            rate: this.state.rate,
+            rate: 1.0,
             shouldCorrectPitch: this.state.shouldCorrectPitch,
             volume: this.state.volume,
             isMuted: this.state.muted,
+            progressUpdateIntervalMillis: 300
         };
         const { sound, status } = await Audio.Sound.createAsync(
             source,
             initialStatus,
             this.onPlaybackStatusUpdate
         );
-        sound.setProgressUpdateIntervalAsync(250)
         this.playbackInstance = sound;
         this.onPlayPause()
     }
@@ -97,6 +104,8 @@ class Index extends Component {
     getSeekSliderPosition = seekSliderPosition
     getMMSSFromMillis = MMSSFromMillis
     getTimestamp = timestamp
+    onRateSliderSlidingComplete = rateSliderSlidingComplete
+    trySetRate = setRate
 
     playback(song) {
         if (this.props.currentSong.name !== song.songName || !this.props.currentSong.name) {
@@ -118,7 +127,9 @@ class Index extends Component {
                         timeStamp: this.getTimestamp,
                         getSliderPosition: this.getSeekSliderPosition,
                         onSliderValueChange: this.onSeekSliderValueChange,
-                        onSlidingComplete: this.onSeekSliderSlidingComplete
+                        onSlidingComplete: this.onSeekSliderSlidingComplete,
+                        onRateSliderSlidingComplete: this.onRateSliderSlidingComplete,
+                        rate: this.state.rate
                     }}>
                     </AppContainter>
                 </LinearGradient>
