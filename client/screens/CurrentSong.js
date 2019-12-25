@@ -17,12 +17,23 @@ class Icon {
     }
 }
 const thumb = new Icon(require("../../assets/thumb.png"), 10, 10)
+let space;
+let gap;
+
+if (DEVICE_HEIGHT < 812) {
+    space = 15;
+    gap = 0;
+} else if (DEVICE_HEIGHT >= 812 && DEVICE_HEIGHT < 896) {
+    space = 25;
+    gap = 5;
+} else {
+    space = 60;
+    gap = 30;
+}
 
 const CurrentSong = props => {
-    // let { onPlayPause } = props.navigation.state.params
     const { goBack } = props.navigation
     const methods = props.navigation.state.params
-
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
@@ -32,8 +43,9 @@ const CurrentSong = props => {
                     <Text style={styles.title}>{props.currentSong.name}</Text>
                     <Text style={styles.artist}>{props.currentSong.artist}</Text>
 
+
                     <Slider
-                        style={{ width: "90%", height: 2 }}
+                        style={{ width: "90%", marginTop: '8%', marginBottom: 0 }}
                         thumbImage={thumb.module}
                         minimumTrackTintColor='rgb(255,255,255)'
                         value={methods.getSliderPosition()}
@@ -42,17 +54,17 @@ const CurrentSong = props => {
                     />
 
                     <View style={{ flexDirection: "row" }}>
-                        <Text style={{ color: 'white', marginRight: '35%', margin: 5 }}>{methods.timeStamp().position}</Text>
-                        <Text style={{ color: 'white', marginLeft: '35%', margin: 5 }}>{methods.timeStamp().duration}</Text>
+                        <Text style={{ color: 'white', marginRight: '35%', margin: 2 }}>{methods.timeStamp().position}</Text>
+                        <Text style={{ color: 'white', marginLeft: '35%', margin: 2 }}>{methods.timeStamp().duration}</Text>
                     </View>
 
-                    <View style={styles.buttonsContainer}>
-                        <TouchableOpacity>
+                    <View style={styles.rowContainer}>
+                        <TouchableOpacity style={{ marginRight: "5%" }}>
                             <Ionicons name="ios-shuffle" size={24} color="white"></Ionicons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onBackward}>
-                            <MaterialCommunityIcons name="rewind" size={72} color="white"></MaterialCommunityIcons>
+                            <MaterialCommunityIcons name="rewind" size={84} color="white"></MaterialCommunityIcons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onPlayPause}>
@@ -66,23 +78,27 @@ const CurrentSong = props => {
                             <MaterialCommunityIcons name="fast-forward" size={84} color="white"></MaterialCommunityIcons>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={props.navigation.state.params.onLoopPressed}>
-                            <MaterialIcons name="loop" size={24} color="white"></MaterialIcons>
+                        <TouchableOpacity onPress={methods.onLoopPressed}>
+                            <MaterialIcons name="loop" size={24} style={{ marginLeft: "5%", color: "white" }}></MaterialIcons>
                         </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.rowContainer}>
+                        <Text style={{ color: 'white', marginRight: 10, fontSize: 16 }}>Rate:</Text>
+                        <Slider
+                            style={styles.slider}
+                            thumbImage={thumb.module}
+                            minimumValue={0.5}
+                            maximumValue={1.5}
+                            step={0.05}
+                            value={props.navigation.state.params.rate}
+                            onSlidingComplete={methods.onRateSliderSlidingComplete}
+                        />
                     </View>
                 </View>
 
                 {/* <View style={styles.buttonsContainer}> */}
-                {/* <Slider
-                        style={ty.rateSlider}
-                        //   trackImage={ICON_TRACK_1.module}
-                        //   thumbImage={ICON_THUMB_1.module}
-                        minimumValue={0.5}
-                        maximumValue={1.5}
-                        step={0.05}
-                        value={props.navigation.state.params.rate}
-                        onSlidingComplete={props.navigation.state.params.onRateSliderSlidingComplete}
-                    /> */}
+
                 {/* <TouchableOpacity
                             // underlayColor={BACKGROUND_COLOR}
                             // style={styles.wrapper}
@@ -122,16 +138,16 @@ const styles = StyleSheet.create({
     },
 
     mainImg: {
-        marginTop: DEVICE_HEIGHT * 0.05,
+        marginTop: space + space * 0.02,
+        marginBottom: '2%',
         width: 300,
         height: 300,
         borderRadius: 6,
     },
-    buttonsContainer: {
+    rowContainer: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        // marginTop: 20,
     },
     background: {
         height: '100%',
@@ -149,15 +165,15 @@ const styles = StyleSheet.create({
     artist: {
         color: "white",
         fontSize: 15,
-        marginBottom: '5%'
+        marginBottom: gap
     },
-    // slider: {
-    //     position: 'absolute',
-    //     marginTop: height * 0.57,
-    //     width: height * 0.3,
-    //     transform: [{ rotateZ: '-90deg' }],
-    //     marginLeft: 125,
-    // }
+    slider: {
+        //     position: 'absolute',
+        // marginTop: height * 0.57,
+        width: DEVICE_WIDTH / 2.0,
+        //     transform: [{ rotateZ: '-90deg' }],
+        // marginLeft: 125,
+    }
 })
 
 
