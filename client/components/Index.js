@@ -20,13 +20,14 @@ import AppContainter from '../SwitchNavigator'
     }
 })()
 
+const LOOPING_TYPE_ALL = 0;
+const LOOPING_TYPE_ONE = 1;
+
 class Index extends Component {
     constructor() {
         super()
         this.index = 0;
         this.playbackInstance = null;
-        this.isSeeking = false;
-        this.shouldPlayAtEndOfSeek = false;
         this.state = {
             muted: false,
             playbackInstancePosition: null,
@@ -40,7 +41,8 @@ class Index extends Component {
             rate: 1.0,
             poster: false,
             useNativeControls: false,
-            throughEarpiece: false
+            throughEarpiece: false,
+            loopingType: LOOPING_TYPE_ALL
         }
         this.loadPlayback = this.loadPlayback.bind(this)
         this.playback = this.playback.bind(this)
@@ -51,8 +53,9 @@ class Index extends Component {
         this.onSeekSliderSlidingComplete = this.onSeekSliderSlidingComplete.bind(this)
         this.onRateSliderSlidingComplete = this.onRateSliderSlidingComplete.bind(this)
         this.trySetRate = this.trySetRate.bind(this)
-        this.onFoward = this.onFoward.bind(this)
+        this.onForward = this.onForward.bind(this)
         this.onBackward = this.onBackward.bind(this)
+        this.onLoopPressed = this.onLoopPressed.bind(this)
     }
 
     async componentDidMount() {
@@ -71,10 +74,11 @@ class Index extends Component {
                 rate: status.rate,
                 muted: status.isMuted,
                 volume: status.volume,
+                loopingType: status.isLooping ? LOOPING_TYPE_ONE : LOOPING_TYPE_ALL,
                 shouldCorrectPitch: status.shouldCorrectPitch
             });
             if (status.didJustFinish && !status.isLooping) {
-                this.onFoward();
+                this.onForward();
             }
         } else {
             if (status.error) {
@@ -92,12 +96,13 @@ class Index extends Component {
         }
         const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
         const initialStatus = {
-            shouldPlay: this.state.isPlaying,
+            shouldPlay: true,
             rate: 1.0,
             shouldCorrectPitch: this.state.shouldCorrectPitch,
             volume: this.state.volume,
             isMuted: this.state.muted,
-            // progressUpdateIntervalMillis: 300
+            isLooping: this.state.loopingType === LOOPING_TYPE_ONE,
+            progressUpdateIntervalMillis: 300
         };
         const { sound, status } = await Audio.Sound.createAsync(
             source,
@@ -108,14 +113,28 @@ class Index extends Component {
         this.onPlayPause()
     }
 
-    onFoward() {
-        this.index++
-        this.props.getCurrentSong(this.props.songs[this.index].info)
-        this.loadPlayback()
-    }
+    onForward = () => {
+        if (this.playbackInstance != null) {
+            this.advanceIndex(1);
+        }
+    };
 
-    onBackward() {
-        this.index--
+    onBackward = () => {
+        if (this.playbackInstance != null) {
+            this.advanceIndex(-1);
+        }
+    };
+
+    onLoopPressed = () => {
+        if (this.playbackInstance != null) {
+            this.playbackInstance.setIsLoopingAsync(
+                this.state.loopingType !== LOOPING_TYPE_ONE
+            );
+        }
+    };
+
+    advanceIndex(forward) {
+        this.index += forward
         this.props.getCurrentSong(this.props.songs[this.index].info)
         this.loadPlayback()
     }
@@ -158,8 +177,9 @@ class Index extends Component {
                         onSliderValueChange: this.onSeekSliderValueChange,
                         onSlidingComplete: this.onSeekSliderSlidingComplete,
                         onRateSliderSlidingComplete: this.onRateSliderSlidingComplete,
-                        onFoward: this.onFoward,
+                        onForward: this.onForward,
                         onBackward: this.onBackward,
+                        onLoopPressed: this.onLoopPressed,
                         rate: this.state.rate
                     }}>
                     </AppContainter>

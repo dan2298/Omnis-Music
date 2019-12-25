@@ -1,7 +1,7 @@
 import React from 'react';
-import Index from './components/Index'
+import Index from './client/components/Index'
 import { Provider } from 'react-redux'
-import store from './store'
+import store from './client/store'
 
 export default function App() {
   return (

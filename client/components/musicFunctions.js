@@ -1,19 +1,15 @@
 import { Audio } from 'expo-av'
 
 export async function setAudioMode() {
-    try {
-        await Audio.setAudioModeAsync({
-            allowsRecordingIOS: false,
-            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-            playsInSilentModeIOS: true,
-            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-            shouldDuckAndroid: true,
-            staysActiveInBackground: true,
-            playThroughEarpieceAndroid: true
-        })
-    } catch (err) {
-        console.log(err)
-    }
+    await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+        playsInSilentModeIOS: true,
+        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+        shouldDuckAndroid: true,
+        staysActiveInBackground: true,
+        playThroughEarpieceAndroid: true
+    })
 }
 
 export async function playOrPause() {
@@ -83,9 +79,10 @@ export function timestamp() {
         this.state.playbackInstancePosition != null &&
         this.state.playbackInstanceDuration != null
     ) {
-        return `${this.getMMSSFromMillis(
-            this.state.playbackInstancePosition
-        )} / ${this.getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
+        return {
+            position: this.getMMSSFromMillis(this.state.playbackInstancePosition),
+            duration: this.getMMSSFromMillis(this.state.playbackInstanceDuration)
+        }
     }
     return "";
 }

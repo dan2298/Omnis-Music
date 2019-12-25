@@ -89,8 +89,9 @@ class Downloads extends React.Component {
                             onSliderValueChange: methods.onSliderValueChange,
                             onSlidingComplete: methods.onSlidingComplete,
                             onRateSliderSlidingComplete: methods.onRateSliderSlidingComplete,
-                            onFoward: methods.onFoward,
+                            onForward: methods.onForward,
                             onBackward: methods.onBackward,
+                            onLoopPressed: methods.onLoopPressed,
                             rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
