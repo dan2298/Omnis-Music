@@ -58,13 +58,13 @@ const CurrentSong = props => {
                         <Text style={{ color: 'white', marginLeft: '35%', margin: 2 }}>{methods.timeStamp().duration}</Text>
                     </View>
 
-                    <View style={styles.rowContainer}>
-                        <TouchableOpacity style={{ marginRight: "5%" }}>
-                            <Ionicons name="ios-shuffle" size={24} color="white"></Ionicons>
+                    <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
+                        <TouchableOpacity >
+                            <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: "white" }} ></Ionicons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onBackward}>
-                            <MaterialCommunityIcons name="rewind" size={84} color="white"></MaterialCommunityIcons>
+                            <MaterialCommunityIcons name="rewind" size={72} color="white"></MaterialCommunityIcons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onPlayPause}>
@@ -75,11 +75,11 @@ const CurrentSong = props => {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onForward}>
-                            <MaterialCommunityIcons name="fast-forward" size={84} color="white"></MaterialCommunityIcons>
+                            <MaterialCommunityIcons name="fast-forward" size={72} color="white"></MaterialCommunityIcons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onLoopPressed}>
-                            <MaterialIcons name="loop" size={24} style={{ marginLeft: "5%", color: "white" }}></MaterialIcons>
+                            <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: "white" }}></MaterialIcons>
                         </TouchableOpacity>
                     </View>
 
@@ -134,6 +134,7 @@ export default connect(mapStateToProps)(CurrentSong)
 
 const styles = StyleSheet.create({
     container: {
+        justifyContent: "center",
         alignItems: "center",
     },
 
