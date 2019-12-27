@@ -4,19 +4,9 @@ import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-ic
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../components/Header'
 import { connect } from 'react-redux'
-import { Asset } from "expo-asset";
 import { TouchableOpacity } from 'react-native-gesture-handler';
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 
-class Icon {
-    constructor(module, width, height) {
-        this.module = module;
-        this.width = width;
-        this.height = height;
-        Asset.fromModule(this.module).downloadAsync();
-    }
-}
-const thumb = new Icon(require("../../assets/thumb.png"), 10, 10)
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 let space;
 let gap;
 
@@ -24,7 +14,7 @@ if (DEVICE_HEIGHT < 812) {
     space = 15;
     gap = 0;
 } else if (DEVICE_HEIGHT >= 812 && DEVICE_HEIGHT < 896) {
-    space = 25;
+    space = 30;
     gap = 5;
 } else {
     space = 60;
@@ -40,13 +30,13 @@ const CurrentSong = props => {
                 <Header title={'Songs'} back={true} goBack={goBack}></Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
-                    <Text style={styles.title}>{props.currentSong.name}</Text>
+                    <Text numberOfLines={1} style={styles.title}>{props.currentSong.name}</Text>
                     <Text style={styles.artist}>{props.currentSong.artist}</Text>
 
 
                     <Slider
-                        style={{ width: "90%", marginTop: '8%', marginBottom: 0 }}
-                        thumbImage={thumb.module}
+                        style={{ width: "90%", marginTop: '9%', marginBottom: 0 }}
+                        thumbImage={require("../../assets/thumb.png")}
                         minimumTrackTintColor='rgb(255,255,255)'
                         value={methods.getSliderPosition()}
                         onValueChange={methods.onSliderValueChange}
@@ -54,8 +44,8 @@ const CurrentSong = props => {
                     />
 
                     <View style={{ flexDirection: "row" }}>
-                        <Text style={{ color: 'white', marginRight: '35%', margin: 2 }}>{methods.timeStamp().position}</Text>
-                        <Text style={{ color: 'white', marginLeft: '35%', margin: 2 }}>{methods.timeStamp().duration}</Text>
+                        <Text style={{ color: 'white', marginRight: '35%' }}>{methods.timeStamp().position}</Text>
+                        <Text style={{ color: 'white', marginLeft: '35%' }}>{methods.timeStamp().duration}</Text>
                     </View>
 
                     <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
@@ -87,32 +77,16 @@ const CurrentSong = props => {
                         <Text style={{ color: 'white', marginRight: 10, fontSize: 16 }}>Rate:</Text>
                         <Slider
                             style={styles.slider}
-                            thumbImage={thumb.module}
+                            thumbImage={require("../../assets/thumb.png")}
                             minimumValue={0.5}
                             maximumValue={1.5}
                             step={0.05}
                             value={props.navigation.state.params.rate}
                             onSlidingComplete={methods.onRateSliderSlidingComplete}
                         />
+                        <Text style={{ color: 'white', marginLeft: 10, fontWeight: 'bold' }}>{props.navigation.state.params.rate}</Text>
                     </View>
                 </View>
-
-                {/* <View style={styles.buttonsContainer}> */}
-
-                {/* <TouchableOpacity
-                            // underlayColor={BACKGROUND_COLOR}
-                            // style={styles.wrapper}
-                            onPress={props.navigation.state.params.onLoopPressed}
-                        > */}
-                {/* <Text style={{ color: 'white' }}>here</Text> */}
-                {/* <Image
-                            style={{ backgroundColor: 'white', height: 50, width: 50 }}
-                            source={{ uri: 'https://www.google.com/url?sa=i&source=imgres&cd=&cad=rja&uact=8&ved=2ahUKEwjFj6TwtM_mAhVEmuAKHYbOCyEQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F134221%2Farrow_refresh_reload_repeat_sync_update_icon&psig=AOvVaw3ScQfntDCh6tBMdFbe-M4g&ust=1577315659730168' }}
-                        /> */}
-                {/* </TouchableOpacity> */}
-
-                {/* </View> */}
-                {/* </View> */}
             </LinearGradient>
         </View >
 
@@ -137,7 +111,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-
     mainImg: {
         marginTop: space + space * 0.02,
         marginBottom: '2%',
@@ -158,8 +131,8 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 20,
         fontWeight: '700',
-        margin: 5,
-        marginTop: 3,
+        margin: 8,
+        marginTop: 2,
         marginBottom: 0,
         textAlign: "center"
     },
@@ -169,50 +142,33 @@ const styles = StyleSheet.create({
         marginBottom: gap
     },
     slider: {
-        //     position: 'absolute',
-        // marginTop: height * 0.57,
-        width: DEVICE_WIDTH / 2.0,
-        //     transform: [{ rotateZ: '-90deg' }],
-        // marginLeft: 125,
+        width: DEVICE_WIDTH / 1.5
     }
 })
 
 
-{/* <Slider
-                        minimumValue={0}
-                        maximumValue={7}
-                        minimumTrackTintColor="#1EB1FC"
-                        maximumTractTintColor="#1EB1FC"
-                        step={1}
-                        value={props.navigation.state.params.rate}
-                        onValueChange={value => console.log(value)}
-                        style={styles.slider}
-                        thumbTintColor="#1EB1FC"
-                    /> */}
-{/* <Text style={{ color: 'white' }}>{props.navigation.state.params.rate}</Text> */ }
-
-{/* <Ionicons name="md-checkmark-circle" size={32} color="green" /> */ }
+// ** CURRENT SONG ** //
+//change back button to better ios button ^^^
+//immediate play and pause cause delay
+//rate text/ rate slider back to default on new song
+//text/ timestamp appear before loading
+//random buttom on playlist
+//show random button clicked
+//show queue of next songs
 
 
-// const Content = styled.View`
-//   display:flex;
-//   padding-left: 20px;
-//   flex-direction: row;
-//   align-items: center;
-//   height: 80px;
-// `;
+// ** SONGLIST ** //
+//delete on close in songlist
+//single line on text on songbar
+//song on click restart instead of play/pause
+//swipe to songlist/currentsong preferred up/down 
 
-// const Caption = styled.Text`
-//   color: #3c4560;
-//   font-size: 20px;
-//   font-weight: 600;
-// `;
 
-// const Container = styled.View`
-//   background: white;
-//   width: 315px;
-//   height: 280px;
-//   border-radius: 14px;
-//   margin: 10px 10px;
-//   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-// `;
+// ** SEARCH ** //
+//songbar on different screens
+//search screen remove platform names until search
+//search bar use button and/or enter on keyboard
+//add screen on how to use app*
+
+// ** DEPLOYMENT ** //
+//eject to react native
