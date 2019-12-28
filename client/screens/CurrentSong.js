@@ -166,8 +166,6 @@ const styles = StyleSheet.create({
 
 // ** SEARCH ** //
 //songbar on different screens
-//search screen remove platform names until search
-//search bar use button and/or enter on keyboard
 //add screen on how to use app*
 
 // ** DEPLOYMENT ** //

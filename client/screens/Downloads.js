@@ -95,7 +95,8 @@ class Downloads extends React.Component {
                             rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
-                        </TouchableOpacity> : <View></View>
+                        </TouchableOpacity> :
+                        <View></View>
                     }
                 </LinearGradient>
             </View>

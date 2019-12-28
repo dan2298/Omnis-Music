@@ -18,10 +18,16 @@ const DownloadsStack = createStackNavigator(
     }
 )
 
-const SearchStack = createStackNavigator({
-    Search,
-    CurrentSong
-})
+const SearchStack = createStackNavigator(
+    {
+        Search,
+        CurrentSong,
+        Queue
+    },
+    {
+        mode: "modal"
+    }
+)
 
 const TabNavigator = createBottomTabNavigator({
     Search: SearchStack,

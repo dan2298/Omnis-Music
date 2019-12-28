@@ -7,7 +7,9 @@ import { getYTSongs, getSpotSongs, getScSongs, getSongs } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
+import SongBar from '../components/SongBar';
 import * as FileSystem from 'expo-file-system';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const defaultPath = `${FileSystem.documentDirectory}songs/`
 const localUrl = 'https://omnis-server-py.herokuapp.com/'
@@ -93,6 +95,8 @@ class Search extends React.Component {
     }
 
     render() {
+        const { navigate } = this.props.navigation
+        const methods = this.props.screenProps
         return (
             <View>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background} >
@@ -131,6 +135,24 @@ class Search extends React.Component {
                             <Text style={{ color: '#b8bece', fontSize: 14, fontWeight: '600' }}>SoundCloud may take a while to show up</Text>
                         </View>
                     }
+                    {this.props.currentSong.name ?
+                        <TouchableOpacity onPress={() => navigate("CurrentSong", {
+                            isPlaying: methods.isPlaying,
+                            onPlayPause: methods.onPlayPause,
+                            timeStamp: methods.timeStamp,
+                            getSliderPosition: methods.getSliderPosition,
+                            onSliderValueChange: methods.onSliderValueChange,
+                            onSlidingComplete: methods.onSlidingComplete,
+                            onRateSliderSlidingComplete: methods.onRateSliderSlidingComplete,
+                            onForward: methods.onForward,
+                            onBackward: methods.onBackward,
+                            onLoopPressed: methods.onLoopPressed,
+                            rate: methods.rate
+                        })}>
+                            <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
+                        </TouchableOpacity> :
+                        <View></View>
+                    }
                 </LinearGradient>
             </View>
         )
@@ -141,7 +163,8 @@ const mapStateToProps = state => {
         songs: state.songs,
         spotifySongs: state.spotifySongs,
         youtubeSongs: state.youtubeSongs,
-        soundcloudSongs: state.soundcloudSongs
+        soundcloudSongs: state.soundcloudSongs,
+        currentSong: state.currentSong
     }
 }
 
