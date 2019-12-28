@@ -6,16 +6,16 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const Header = (props) => {
     return (
         <View style={styles.container}>
-            {props.back ?
+            {props.goBack ?
                 <TouchableOpacity onPress={props.goBack}>
                     <MaterialIcons name='keyboard-arrow-down' size={36} style={styles.back}></MaterialIcons>
                 </TouchableOpacity> :
                 <View style={styles.space}></View>
             }
             <Text style={styles.title}>{props.title}</Text>
-            {props.queue ?
-                <TouchableOpacity onPress={props.queue}>
-                    <MaterialIcons name='list' size={36} style={styles.list}></MaterialIcons>
+            {props.navigate ?
+                <TouchableOpacity onPress={() => props.navigate("Queue")}>
+                    <MaterialIcons name='list' size={32} style={styles.list}></MaterialIcons>
                 </TouchableOpacity> :
                 <View></View>}
         </View>

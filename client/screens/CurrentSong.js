@@ -22,12 +22,12 @@ if (DEVICE_HEIGHT < 812) {
 }
 
 const CurrentSong = props => {
-    const { goBack } = props.navigation
+    const { goBack, navigate } = props.navigation
     const methods = props.navigation.state.params
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
-                <Header title={'Songs'} back={true} goBack={goBack} queue={'list'}></Header>
+                <Header title={'Songs'} goBack={goBack} navigate={navigate}></Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
                     <Text numberOfLines={1} style={styles.title}>{props.currentSong.name}</Text>
@@ -151,14 +151,11 @@ const styles = StyleSheet.create({
 // ** CURRENT SONG ** //
 
 //immediate play and pause cause delay
-
 //rate text/ rate slider back to default on new song
 
 //random buttom on playlist
-
-//show random button clicked
-
-//show queue of next songs
+//show random/loop button clicked
+//show queue of next songs 
 
 
 // ** SONGLIST ** //

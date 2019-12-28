@@ -1,6 +1,7 @@
 import Search from './screens/Search';
 import Downloads from './screens/Downloads';
 import CurrentSong from './screens/CurrentSong';
+import Queue from './screens/Queue'
 
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, } from 'react-navigation-tabs';
@@ -10,7 +11,7 @@ const DownloadsStack = createStackNavigator(
     {
         Downloads,
         CurrentSong,
-        // SongQueue
+        Queue
     },
     {
         mode: "modal"
