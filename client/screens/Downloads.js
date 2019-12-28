@@ -1,14 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Header from '../components/Header'
-import Song from '../components/Song'
 import SongBar from '../components/SongBar'
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { getSongs } from '../store'
+import SwipeableRow from '../components/SwipeableRow'
 
-import * as FileSystem from 'expo-file-system';
 import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 
@@ -16,37 +13,6 @@ class Downloads extends React.Component {
     static navigationOptions = {
         header: null
     }
-
-    rightAction = (progress, dragX, item) => {
-        const scale = dragX.interpolate({
-            inputRange: [-100, 0],
-            outputRange: [1, 0],
-            extrapolate: 'clamp'
-        })
-        return (
-            <TouchableOpacity style={styles.leftAction} onPress={() => {
-                this.delete(item)
-            }}>
-                <View >
-                    <Text style={{ fontSize: 20, color: 'white', padding: 10 }}>Delete</Text>
-                </View>
-            </TouchableOpacity>
-        )
-    }
-
-    delete = async (song) => {
-        await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs/${song.name}`)
-        this.props.getSongs()
-    }
-
-    // updateRef = ref => {
-    //     this._swipeableRow = ref;
-    // };
-
-    // close = () => {
-    //     this._swipeableRow.close();
-    // };
-
 
     render() {
         const { navigate } = this.props.navigation
@@ -59,23 +25,12 @@ class Downloads extends React.Component {
                         keyExtractor={(item, idx) => String(idx)}
                         data={this.props.songs}
                         renderItem={result => {
-                            const song = result.item.info
                             return (
-                                <Swipeable
-                                    // ref={this.updateRef}
-                                    // renderLeftActions={(prog, drag) => this.leftAction(prog, drag, item)}
-                                    renderRightActions={(prop, drag) => this.rightAction(prop, drag, result.item)}
-                                // onSwipeableLeftOpen={() => this.delete(item)}
+                                <SwipeableRow key={result.index}
+                                    item={result.item}
+                                    playback={methods.playback}
                                 >
-                                    <Song key={result.index}
-                                        playback={methods.playback}
-                                        artist={song.artist}
-                                        image={song.image}
-                                        type={song.type}
-                                        name={song.name}
-                                    >
-                                    </Song>
-                                </Swipeable>
+                                </SwipeableRow>
                             )
                         }}
                     >
@@ -112,21 +67,9 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        getSongs: () =>
-            dispatch(getSongs())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Downloads)
+export default connect(mapStateToProps)(Downloads)
 
 const styles = StyleSheet.create({
-    leftAction: {
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        flex: 1
-    },
     downloadContainer: {
         flex: 1
     },

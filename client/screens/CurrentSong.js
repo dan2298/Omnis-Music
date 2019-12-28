@@ -149,18 +149,12 @@ const styles = StyleSheet.create({
 
 
 // ** CURRENT SONG ** //
-
-//immediate play and pause cause delay
 //rate text/ rate slider back to default on new song
-
 //random buttom on playlist
 //show random/loop button clicked
 //show queue of next songs 
 
-
 // ** SONGLIST ** //
-//delete on close in songlist
-//single line on text on songbar
 //song on click restart instead of play/pause
 
 // ** DEPLOYMENT ** //
