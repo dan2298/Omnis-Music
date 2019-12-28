@@ -18,7 +18,7 @@ if (DEVICE_HEIGHT < 812) {
     gap = 5;
 } else {
     space = 60;
-    gap = 30;
+    gap = 60;
 }
 
 const CurrentSong = props => {
@@ -162,11 +162,6 @@ const styles = StyleSheet.create({
 //delete on close in songlist
 //single line on text on songbar
 //song on click restart instead of play/pause
-
-
-// ** SEARCH ** //
-//songbar on different screens
-//add screen on how to use app*
 
 // ** DEPLOYMENT ** //
 //eject to react native

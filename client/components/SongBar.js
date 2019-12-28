@@ -10,7 +10,7 @@ const SongBar = props => {
     return (
         <View style={styles.container}>
             <View style={styles.text}>
-                <Text style={styles.singleText}>{props.currentSong.name}</Text>
+                <Text numberOfLines={1} style={styles.singleText}>{props.currentSong.name}</Text>
                 <Text style={styles.singleText}>{props.currentSong.artist}</Text>
             </View>
             <View style={styles.buttonContainer}>
