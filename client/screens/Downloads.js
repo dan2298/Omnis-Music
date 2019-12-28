@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Header from '../components/Header'
@@ -21,20 +21,25 @@ class Downloads extends React.Component {
             <View style={styles.downloadContainer}>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
                     <Header title={'Downloads'}></Header>
-                    <FlatList
-                        keyExtractor={(item, idx) => String(idx)}
-                        data={this.props.songs}
-                        renderItem={result => {
-                            return (
-                                <SwipeableRow key={result.index}
-                                    item={result.item}
-                                    playback={methods.playback}
-                                >
-                                </SwipeableRow>
-                            )
-                        }}
-                    >
-                    </FlatList>
+                    {this.props.songs.length ?
+                        <FlatList
+                            keyExtractor={(item, idx) => String(idx)}
+                            data={this.props.songs}
+                            renderItem={result => {
+                                return (
+                                    <SwipeableRow key={result.index}
+                                        item={result.item}
+                                        playback={methods.playback}
+                                    >
+                                    </SwipeableRow>
+                                )
+                            }}
+                        >
+                        </FlatList> :
+                        <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
+                            <Text style={{ color: '#b8bece', fontSize: 16, fontWeight: '600' }}>Your downloaded songs will appear here</Text>
+                        </View>
+                    }
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
                             isPlaying: methods.isPlaying,
@@ -47,12 +52,16 @@ class Downloads extends React.Component {
                             onForward: methods.onForward,
                             onBackward: methods.onBackward,
                             onLoopPressed: methods.onLoopPressed,
+                            onShufflePressed: methods.onShufflePressed,
                             rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
                         </TouchableOpacity> :
                         <View></View>
                     }
+
+
+
                 </LinearGradient>
             </View>
         )

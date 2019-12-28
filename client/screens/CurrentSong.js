@@ -21,6 +21,8 @@ if (DEVICE_HEIGHT < 812) {
     gap = 60;
 }
 
+let loopPressed = false;
+let shufflePressed = false;
 const CurrentSong = props => {
     const { goBack, navigate } = props.navigation
     const methods = props.navigation.state.params
@@ -49,8 +51,11 @@ const CurrentSong = props => {
                     </View>
 
                     <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
-                        <TouchableOpacity >
-                            <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: "white" }} ></Ionicons>
+                        <TouchableOpacity onPress={() => {
+                            shufflePressed = !shufflePressed
+                            methods.onShufflePressed()
+                        }} >
+                            <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: shufflePressed ? "blue" : "white" }} ></Ionicons>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={methods.onBackward}>
@@ -68,8 +73,11 @@ const CurrentSong = props => {
                             <MaterialCommunityIcons name="fast-forward" size={72} color="white"></MaterialCommunityIcons>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={methods.onLoopPressed}>
-                            <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: "white" }}></MaterialIcons>
+                        <TouchableOpacity onPress={() => {
+                            loopPressed = !loopPressed
+                            methods.onLoopPressed()
+                        }}>
+                            <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: loopPressed ? "blue" : "white" }}></MaterialIcons>
                         </TouchableOpacity>
                     </View>
 
@@ -84,12 +92,10 @@ const CurrentSong = props => {
                             value={props.navigation.state.params.rate}
                             onSlidingComplete={methods.onRateSliderSlidingComplete}
                         />
-                        <Text style={{ color: 'white', marginLeft: 10, fontWeight: 'bold' }}>{props.navigation.state.params.rate}</Text>
                     </View>
                 </View>
             </LinearGradient>
         </View >
-
     )
 }
 
@@ -149,13 +155,15 @@ const styles = StyleSheet.create({
 
 
 // ** CURRENT SONG ** //
-//rate text/ rate slider back to default on new song
-//random buttom on playlist
-//show random/loop button clicked
+//rate text/ rate slider back to default on new song** (Add to store)
 //show queue of next songs 
+//shuffle button functionality
 
 // ** SONGLIST ** //
 //song on click restart instead of play/pause
+
+// ** SEARCH ** //
+//add notification and status of download(modal)
 
 // ** DEPLOYMENT ** //
 //eject to react native

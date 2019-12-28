@@ -89,28 +89,30 @@ class Index extends Component {
 
     async loadPlayback() {
         const name = this.props.songs[this.index].name
-        if (this.playbackInstance != null) {
-            await this.playbackInstance.unloadAsync();
-            this.playbackInstance.setOnPlaybackStatusUpdate(null);
-            this.playbackInstance = null;
+        if (name) {
+            if (this.playbackInstance != null) {
+                await this.playbackInstance.unloadAsync();
+                this.playbackInstance.setOnPlaybackStatusUpdate(null);
+                this.playbackInstance = null;
+            }
+            const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
+            const initialStatus = {
+                shouldPlay: true,
+                rate: 1.0,
+                shouldCorrectPitch: this.state.shouldCorrectPitch,
+                volume: this.state.volume,
+                isMuted: this.state.muted,
+                isLooping: this.state.loopingType === LOOPING_TYPE_ONE,
+                progressUpdateIntervalMillis: 300
+            };
+            const { sound, status } = await Audio.Sound.createAsync(
+                source,
+                initialStatus,
+                this.onPlaybackStatusUpdate
+            );
+            this.playbackInstance = sound;
+            this.onPlayPause()
         }
-        const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
-        const initialStatus = {
-            shouldPlay: true,
-            rate: 1.0,
-            shouldCorrectPitch: this.state.shouldCorrectPitch,
-            volume: this.state.volume,
-            isMuted: this.state.muted,
-            isLooping: this.state.loopingType === LOOPING_TYPE_ONE,
-            progressUpdateIntervalMillis: 300
-        };
-        const { sound, status } = await Audio.Sound.createAsync(
-            source,
-            initialStatus,
-            this.onPlaybackStatusUpdate
-        );
-        this.playbackInstance = sound;
-        this.onPlayPause()
     }
 
     onForward = () => {
@@ -135,8 +137,14 @@ class Index extends Component {
 
     advanceIndex(forward) {
         this.index += forward
-        this.props.getCurrentSong(this.props.songs[this.index].info)
-        this.loadPlayback()
+        if (this.props.songs[this.index]) {
+            this.props.getCurrentSong(this.props.songs[this.index].info)
+            this.loadPlayback()
+        }
+    }
+
+    onShufflePressed() {
+        console.log('hi here in shuffle')
     }
 
     onPlayPause = playOrPause
@@ -180,6 +188,7 @@ class Index extends Component {
                         onForward: this.onForward,
                         onBackward: this.onBackward,
                         onLoopPressed: this.onLoopPressed,
+                        onShufflePressed: this.onShufflePressed,
                         rate: this.state.rate
                     }}>
                     </AppContainter>
