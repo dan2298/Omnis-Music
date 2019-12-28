@@ -8,11 +8,13 @@ import youtube from './youtube';
 import soundcloud from './soundcloud';
 import currentSong from './currentSong';
 import playing from './playing';
+import queue from './queue'
 
 const reducer = combineReducers({
     songs,
     currentSong,
     playing,
+    queue,
     spotifySongs: spotify,
     youtubeSongs: youtube,
     soundcloudSongs: soundcloud
@@ -29,3 +31,4 @@ export * from './youtube'
 export * from './soundcloud'
 export * from './currentSong'
 export * from './playing'
+export * from './queue'

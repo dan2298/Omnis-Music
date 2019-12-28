@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
-import { getSongs, getCurrentSong, play, pause } from '../store'
+import { getSongs, getQueue, getCurrentSong, play, pause } from '../store'
 import {
     setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate,
     seekSliderPosition, MMSSFromMillis, timestamp
@@ -139,6 +139,7 @@ class Index extends Component {
         if (this.props.songs[this.index]) {
             this.props.getCurrentSong(this.props.songs[this.index].info)
             this.loadPlayback()
+            this.props.getQueue()
         }
     }
 
@@ -169,6 +170,7 @@ class Index extends Component {
             this.onPlayPause()
         }
         this.props.getCurrentSong(song)
+        this.props.getQueue(this.props.songs)
     }
 
     render() {
@@ -202,7 +204,7 @@ const mapStateToProps = state => {
     return {
         songs: state.songs,
         currentSong: state.currentSong,
-        isPlaying: state.playing
+        isPlaying: state.playing,
     }
 }
 
@@ -212,6 +214,7 @@ const mapDispatchToProps = dispatch => {
         play: () => dispatch(play()),
         pause: () => dispatch(pause()),
         getSongs: () => dispatch(getSongs()),
+        getQueue: () => dispatch(getQueue())
     }
 }
 

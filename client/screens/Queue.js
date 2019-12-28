@@ -12,7 +12,7 @@ const Queue = props => {
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
                 <Header title={'Queue'} goBack={goBack}></Header>
                 {/* <Text style={{ color: 'white', fontSize: 20 }}>HELLOOOO</Text> */}
-                {props.songs.map((song, idx) => {
+                {props.queue.map((song, idx) => {
                     return (<Text numberOfLines={1} key={idx} style={{ color: 'white' }}>{song.info.name}</Text>)
                 })}
             </LinearGradient>
@@ -25,7 +25,7 @@ Queue.navigationOptions = {
 }
 
 mapStateToProps = state => ({
-    songs: state.songs
+    queue: state.queue
 })
 
 export default connect(mapStateToProps)(Queue)
