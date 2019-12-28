@@ -75,6 +75,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(null, mapDispatchToProps)(SwipeableRow);
+
 const styles = StyleSheet.create({
     leftAction: {
         backgroundColor: 'red',

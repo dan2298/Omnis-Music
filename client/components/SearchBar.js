@@ -1,22 +1,32 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const SearchBar = props => {
     return (
         <View style={styles.searchBarContainer}>
+            <TouchableOpacity onPress={props.search}>
+                <Ionicons name='ios-search' size={24} color='#b8bece' style={{ padding: 4 }}></Ionicons>
+            </TouchableOpacity>
             <TextInput
                 placeholder="Search"
                 placeholderTextColor='#b8bece'
                 style={styles.searchBar}
                 onSubmitEditing={props.search}
                 onChangeText={props.searchInputHandler}
+                ref={input => { this.textInput = input }}
             >
             </TextInput>
-            <TouchableOpacity onPress={props.search}>
-                <Ionicons name='ios-search' size={24} color='#b8bece' style={{ padding: 4 }}></Ionicons>
-            </TouchableOpacity>
+            {props.input ?
+                <TouchableOpacity style={{ padding: 2 }} onPress={() => {
+                    this.textInput.clear()
+                    props.clear()
+                }}>
+                    <Ionicons name='ios-close' size={28} color='#b8bece' style={{ padding: 2, paddingBottom: 0 }}></Ionicons>
+                </TouchableOpacity> :
+                <View style={{ paddingLeft: 16, padding: 2, paddingBottom: 3 }}></View>
+            }
         </View>
     )
 }
@@ -24,6 +34,11 @@ const SearchBar = props => {
 export default SearchBar;
 
 const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center"
+    },
     searchBarContainer: {
         justifyContent: "center",
         alignItems: "center",
@@ -31,7 +46,7 @@ const styles = StyleSheet.create({
         marginLeft: 12,
         marginBottom: 6,
         padding: 3,
-        width: '92%',
+        width: '93%',
         backgroundColor: '#444',
         flexDirection: 'row',
         borderRadius: 12,
@@ -41,7 +56,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: 36,
-        width: '87%',
+        width: '80%',
+        fontSize: 16,
         color: 'white',
     }
 })

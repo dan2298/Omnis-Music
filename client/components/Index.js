@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import styles from '../../styles';
+import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import * as FileSystem from 'expo-file-system';
@@ -217,3 +216,14 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    header: {
+        width: '100%',
+        height: '100%'
+    },
+})

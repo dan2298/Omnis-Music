@@ -32,6 +32,10 @@ class Search extends React.Component {
         this.setState({ input })
     }
 
+    clearSearch = () => {
+        this.setState({ input: '', searched: false })
+    }
+
     search = async () => {
         if (this.state.input) {
             this.props.getScSongs(this.state.input)
@@ -100,7 +104,7 @@ class Search extends React.Component {
         return (
             <View>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background} >
-                    <SearchBar searchInputHandler={this.searchInputHandler} search={this.search}></SearchBar>
+                    <SearchBar searchInputHandler={this.searchInputHandler} search={this.search} clear={this.clearSearch} input={this.state.input}></SearchBar>
                     {this.state.searched ? <ScrollView>
                         {/* Youtube List */}
                         {this.props.youtubeSongs.length ?

@@ -15,7 +15,7 @@ if (DEVICE_HEIGHT < 812) {
     gap = 0;
 } else if (DEVICE_HEIGHT >= 812 && DEVICE_HEIGHT < 896) {
     space = 30;
-    gap = 5;
+    gap = 30;
 } else {
     space = 60;
     gap = 60;
