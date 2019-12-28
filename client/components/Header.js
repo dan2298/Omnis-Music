@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     },
     list: {
         color: "white",
-        marginRight: 5,
-        marginTop: 6
+        //     marginRight: 5,
+        //     marginTop: 6
     },
     space: {
         width: 36

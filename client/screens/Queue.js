@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../components/Header';
 
 const Queue = props => {
-    console.log(props)
+    // console.log(props)
     const { goBack } = props.navigation
     return (
         <View style={styles.container}>

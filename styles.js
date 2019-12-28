@@ -16,22 +16,6 @@ const styles = StyleSheet.create({
         height: 800,
         backgroundColor: '#121212'
     },
-    searchBarContainer: {
-        marginTop: 40,
-        marginLeft: 12,
-        padding: 2,
-        width: '90%',
-        backgroundColor: '#444',
-        flexDirection: 'row',
-        borderRadius: 12,
-        borderColor: 'rgba(255,255,255,0.1)',
-        borderWidth: 1,
-        justifyContent: "space-around"
-    },
-    searchBar: {
-        width: '70%',
-        color: 'white',
-    },
     searchResults: {
         flex: 1
     },

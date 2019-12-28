@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, AsyncStorage } from 'react-native';
+import { Text, View, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
@@ -7,7 +7,6 @@ import { getYTSongs, getSpotSongs, getScSongs, getSongs } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
-import styles from '../../styles'
 import * as FileSystem from 'expo-file-system';
 
 const defaultPath = `${FileSystem.documentDirectory}songs/`
@@ -22,6 +21,7 @@ class Search extends React.Component {
         super()
         this.state = {
             input: '',
+            searched: false
         }
         this.searchInputHandler = this.searchInputHandler.bind(this)
     }
@@ -30,13 +30,12 @@ class Search extends React.Component {
         this.setState({ input })
     }
 
-    apiWorking = async () => {
-        // await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs`)
-        // console.log(await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`))
+    search = async () => {
         if (this.state.input) {
             this.props.getScSongs(this.state.input)
             this.props.getYTSongs(this.state.input)
             this.props.getSpotSongs(this.state.input)
+            this.setState({ searched: true })
         }
     }
 
@@ -95,26 +94,48 @@ class Search extends React.Component {
 
     render() {
         return (
-            <View >
-                <LinearGradient colors={['#1d80b5', '#121212']} style={styles.header} >
-                    <SearchBar searchInputHandler={this.searchInputHandler} apiWorking={this.apiWorking}></SearchBar>
-                    <ScrollView>
+            <View>
+                <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background} >
+                    <SearchBar searchInputHandler={this.searchInputHandler} search={this.search}></SearchBar>
+                    {this.state.searched ? <ScrollView>
                         {/* Youtube List */}
-                        <Text style={{ color: '#ff0011', fontWeight: 'bold' }}>Youtube</Text>
+                        {this.props.youtubeSongs.length ?
+                            <View style={styles.platforms}>
+                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.youtubeSongs.length} results were found`}</Text>
+                                <Text style={{ ...styles.platformTitles, color: '#ff0011' }}>Youtube</Text>
+                            </View> :
+                            <Text></Text>
+                        }
                         <SongList songs={this.props.youtubeSongs} download={this.youtubeDl}></SongList>
                         {/* Spotify List */}
-                        <Text style={{ color: '#26c751', fontWeight: 'bold' }}>Spotify</Text>
+                        {this.props.spotifySongs.length ?
+                            <View style={styles.platforms}>
+                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.spotifySongs.length} results were found`}</Text>
+                                <Text style={{ ...styles.platformTitles, color: '#26c751' }}>Spotify</Text>
+                            </View> :
+                            <Text></Text>
+                        }
                         <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
                         {/* SoundCloud List */}
-                        <Text style={{ color: '#FF7700', fontWeight: 'bold' }}>SoundCloud</Text>
+                        {this.props.soundcloudSongs.length ?
+                            <View style={styles.platforms}>
+                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.soundcloudSongs.length} results were found`}</Text>
+                                <Text style={{ ...styles.platformTitles, color: '#FF7700' }}>SoundCloud</Text>
+                            </View> :
+                            <Text></Text>
+                        }
                         <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
-                    </ScrollView>
+                    </ScrollView> :
+                        <View style={styles.beforeSearch}>
+                            <Text style={{ color: '#b8bece', fontSize: 16, fontWeight: '600' }}>Search for songs to download</Text>
+                            <Text style={{ color: '#b8bece', fontSize: 14, fontWeight: '600' }}>SoundCloud may take a while to show up</Text>
+                        </View>
+                    }
                 </LinearGradient>
             </View>
         )
     }
 }
-
 const mapStateToProps = state => {
     return {
         songs: state.songs,
@@ -138,3 +159,32 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)
+
+const styles = StyleSheet.create({
+    background: {
+        width: '100%',
+        height: '100%'
+    },
+    platforms: {
+        width: '100%',
+        opacity: 0.9,
+        backgroundColor: '#444',
+        borderRadius: 2,
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row"
+    },
+    platformTitles: {
+        fontWeight: 'bold',
+        padding: '1%',
+        fontSize: 16,
+        textDecorationLine: "underline"
+    },
+    beforeSearch: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+})
