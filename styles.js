@@ -38,9 +38,6 @@ const styles = StyleSheet.create({
     downloadContainer: {
         flex: 1
     },
-    rateSlider: {
-        width: DEVICE_WIDTH / 2.0
-    },
 });
 
 export default styles;

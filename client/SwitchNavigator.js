@@ -6,10 +6,16 @@ import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 
-const DownloadsStack = createStackNavigator({
-    Downloads,
-    CurrentSong,
-})
+const DownloadsStack = createStackNavigator(
+    {
+        Downloads,
+        CurrentSong,
+        // SongQueue
+    },
+    {
+        mode: "modal"
+    }
+)
 
 const SearchStack = createStackNavigator({
     Search,

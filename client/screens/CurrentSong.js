@@ -27,7 +27,7 @@ const CurrentSong = props => {
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
-                <Header title={'Songs'} back={true} goBack={goBack}></Header>
+                <Header title={'Songs'} back={true} goBack={goBack} queue={'list'}></Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
                     <Text numberOfLines={1} style={styles.title}>{props.currentSong.name}</Text>
@@ -35,7 +35,7 @@ const CurrentSong = props => {
 
 
                     <Slider
-                        style={{ width: "90%", marginTop: '9%', marginBottom: 0 }}
+                        style={{ width: "90%", marginTop: '9%', marginBottom: 7, height: 5 }}
                         thumbImage={require("../../assets/thumb.png")}
                         minimumTrackTintColor='rgb(255,255,255)'
                         value={methods.getSliderPosition()}
@@ -93,6 +93,7 @@ const CurrentSong = props => {
     )
 }
 
+
 const mapStateToProps = state => {
     return {
         currentSong: state.currentSong,
@@ -148,12 +149,15 @@ const styles = StyleSheet.create({
 
 
 // ** CURRENT SONG ** //
-//change back button to better ios button ^^^
+
 //immediate play and pause cause delay
+
 //rate text/ rate slider back to default on new song
-//text/ timestamp appear before loading
+
 //random buttom on playlist
+
 //show random button clicked
+
 //show queue of next songs
 
 
@@ -161,7 +165,6 @@ const styles = StyleSheet.create({
 //delete on close in songlist
 //single line on text on songbar
 //song on click restart instead of play/pause
-//swipe to songlist/currentsong preferred up/down 
 
 
 // ** SEARCH ** //

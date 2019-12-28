@@ -1,18 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Header = (props) => {
     return (
         <View style={styles.container}>
             {props.back ?
-                <TouchableOpacity onPress={() => props.goBack()}>
-                    <MaterialCommunityIcons name='keyboard-backspace' size={32} style={styles.back}></MaterialCommunityIcons>
+                <TouchableOpacity onPress={props.goBack}>
+                    <MaterialIcons name='keyboard-arrow-down' size={36} style={styles.back}></MaterialIcons>
                 </TouchableOpacity> :
                 <View style={styles.space}></View>
             }
             <Text style={styles.title}>{props.title}</Text>
+            {props.queue ?
+                <TouchableOpacity onPress={props.queue}>
+                    <MaterialIcons name='list' size={36} style={styles.list}></MaterialIcons>
+                </TouchableOpacity> :
+                <View></View>}
         </View>
     );
 }
@@ -48,6 +53,11 @@ const styles = StyleSheet.create({
     back: {
         color: "white",
         marginLeft: 5,
+        marginTop: 6
+    },
+    list: {
+        color: "white",
+        marginRight: 5,
         marginTop: 6
     },
     space: {
