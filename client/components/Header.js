@@ -16,7 +16,9 @@ const Header = (props) => {
             }
             <Text style={styles.title}>{props.title}</Text>
             {props.navigate ?
-                <TouchableOpacity onPress={() => props.navigate("Queue")}>
+                <TouchableOpacity onPress={() => props.navigate("Queue", {
+                    playback: props.playback
+                })}>
                     <MaterialIcons name='list' size={32} style={styles.list}></MaterialIcons>
                 </TouchableOpacity> :
                 <View style={{ width: 32 }}></View>}

@@ -53,15 +53,13 @@ class Downloads extends React.Component {
                             onBackward: methods.onBackward,
                             onLoopPressed: methods.onLoopPressed,
                             onShufflePressed: methods.onShufflePressed,
+                            playback: methods.playback,
                             rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
                         </TouchableOpacity> :
                         <View></View>
                     }
-
-
-
                 </LinearGradient>
             </View>
         )

@@ -1,4 +1,3 @@
-//forward /backward /onclick
 const GOT_QUEUE = 'GOT_QUEUE';
 
 function gotQueue(songs) {

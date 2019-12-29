@@ -29,7 +29,7 @@ const CurrentSong = props => {
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
-                <Header title={'Songs'} goBack={goBack} navigate={navigate}></Header>
+                <Header title={'Songs'} goBack={goBack} navigate={navigate} playback={methods.playback}></Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
                     <Text numberOfLines={1} style={styles.title}>{props.currentSong.name}</Text>
