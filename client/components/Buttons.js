@@ -15,46 +15,48 @@ if (DEVICE_HEIGHT < 812) {
     space = 60;
 }
 
-let loopPressed = false;
-let shufflePressed = false;
-const Buttons = props => {
-    // console.log(props)
-    return (
-        <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
-            <TouchableOpacity onPress={() => {
-                shufflePressed = !shufflePressed
-                props.onShufflePressed()
-            }} >
-                {shufflePressed ?
-                    <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: "blue" }} ></Ionicons> :
-                    <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: "white" }} ></Ionicons>
-                }
-            </TouchableOpacity>
+class Buttons extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            loopPressed: false,
+            shufflePressed: false
+        }
+    }
+    render() {
+        return (
+            <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
+                <TouchableOpacity onPress={() => {
+                    this.setState({ shufflePressed: !this.state.shufflePressed })
+                    this.props.onShufflePressed()
+                }} >
+                    <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: this.state.shufflePressed ? "blue" : "white" }} ></Ionicons>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={props.onBackward}>
-                <MaterialCommunityIcons name="rewind" size={72} color="white"></MaterialCommunityIcons>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={this.props.onBackward}>
+                    <MaterialCommunityIcons name="rewind" size={72} color="white"></MaterialCommunityIcons>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={props.onPlayPause}>
-                {props.isPlaying ?
-                    <MaterialCommunityIcons name="pause-circle" size={84} color='white'></MaterialCommunityIcons> :
-                    <MaterialCommunityIcons name="play-circle" size={84} color="white"></MaterialCommunityIcons>
-                }
-            </TouchableOpacity>
+                <TouchableOpacity onPress={this.props.onPlayPause}>
+                    {this.props.isPlaying ?
+                        <MaterialCommunityIcons name="pause-circle" size={84} color='white'></MaterialCommunityIcons> :
+                        <MaterialCommunityIcons name="play-circle" size={84} color="white"></MaterialCommunityIcons>
+                    }
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={props.onForward}>
-                <MaterialCommunityIcons name="fast-forward" size={72} color="white"></MaterialCommunityIcons>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={this.props.onForward}>
+                    <MaterialCommunityIcons name="fast-forward" size={72} color="white"></MaterialCommunityIcons>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => {
-                loopPressed = !loopPressed
-                console.log(loopPressed)
-                props.onLoopPressed()
-            }}>
-                <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: loopPressed ? "blue" : "white" }}></MaterialIcons>
-            </TouchableOpacity>
-        </View>
-    )
+                <TouchableOpacity onPress={() => {
+                    this.setState({ loopPressed: !this.state.loopPressed })
+                    this.props.onLoopPressed()
+                }}>
+                    <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: this.state.loopPressed ? "blue" : "white" }}></MaterialIcons>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 }
 
 const mapStateToProps = state => {

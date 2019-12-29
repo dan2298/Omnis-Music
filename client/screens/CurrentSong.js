@@ -1,10 +1,22 @@
 import React from 'React';
 import { View, Text, StyleSheet, Image, Slider, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Asset } from "expo-asset";
 import { connect } from 'react-redux'
 
 import Header from '../components/Header'
 import Buttons from '../components/Buttons'
+
+class Icon {
+    constructor(module, width, height) {
+        this.module = module;
+        this.width = width;
+        this.height = height;
+        Asset.fromModule(this.module).downloadAsync();
+    }
+}
+
+const thumb = new Icon(require("../../assets/thumb.png"), 12, 12);
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 let space;
@@ -48,7 +60,7 @@ const CurrentSong = props => {
 
                     <Slider
                         style={{ width: "90%", marginTop: '9%', marginBottom: 7, height: 5 }}
-                        thumbImage={require("../../assets/thumb.png")}
+                        thumbImage={thumb.module}
                         minimumTrackTintColor='rgb(255,255,255)'
                         value={methods.getSliderPosition()}
                         onValueChange={methods.onSliderValueChange}
@@ -71,7 +83,7 @@ const CurrentSong = props => {
                         <Text style={{ color: 'white', marginRight: 10, fontSize: 16 }}>Rate:</Text>
                         <Slider
                             style={styles.slider}
-                            thumbImage={require("../../assets/thumb.png")}
+                            thumbImage={thumb.module}
                             minimumValue={0.5}
                             maximumValue={1.5}
                             step={0.05}
@@ -142,7 +154,6 @@ const styles = StyleSheet.create({
 
 // ** CURRENT SONG ** //
 //rate text/ rate slider back to default on new song** (Add to store)
-//show queue of next songs 
 //shuffle button functionality
 
 // ** SONGLIST ** //

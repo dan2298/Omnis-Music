@@ -47,7 +47,13 @@ class Search extends React.Component {
 
     spotifyDl = async (song) => {
         const isrc = song.isrc
-        let saveFileName = `${song.name}spt.mp3`.split(' ').join('-')
+        const fileName = `${song.name}-spt.mp3`.split(' ').join('-')
+        let saveFileName = ''
+        for (let i = 0; i < fileName.length; i++) {
+            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                saveFileName += fileName[i]
+            }
+        }
         const spotifyUrl = song.url.slice(8)
         const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
         const listSongs = this.props.songs.map(song => song.name)
@@ -64,7 +70,13 @@ class Search extends React.Component {
     }
 
     youtubeDl = async (song) => {
-        const saveFileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + 'yt.mp3'
+        const fileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '-yt.mp3'
+        let saveFileName = ''
+        for (let i = 0; i < fileName.length; i++) {
+            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                saveFileName += fileName[i]
+            }
+        }
         const url = `www.youtube.com/${song.id}`
         const songFile = localUrl + url
         const listSongs = this.props.songs.map(song => song.name)
@@ -81,7 +93,13 @@ class Search extends React.Component {
     }
 
     soundcloudDl = async (song) => {
-        const saveFileName = song.name.split(' ').join('-') + 'sc.mp3'
+        const fileName = song.name.split(' ').join('-') + '-sc.mp3'
+        let saveFileName = ''
+        for (let i = 0; i < fileName.length; i++) {
+            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                saveFileName += fileName[i]
+            }
+        }
         const encodedName = encodeURIComponent(song.name)
         const url = `soundcloud${song.url}?name=${encodedName}`
         const songFile = localUrl + url
@@ -141,7 +159,6 @@ class Search extends React.Component {
                     }
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
-                            isPlaying: methods.isPlaying,
                             onPlayPause: methods.onPlayPause,
                             timeStamp: methods.timeStamp,
                             getSliderPosition: methods.getSliderPosition,
@@ -151,6 +168,8 @@ class Search extends React.Component {
                             onForward: methods.onForward,
                             onBackward: methods.onBackward,
                             onLoopPressed: methods.onLoopPressed,
+                            onShufflePressed: methods.onShufflePressed,
+                            playback: methods.playback,
                             rate: methods.rate
                         })}>
                             <SongBar isPlaying={methods.isPlaying} onPlayPause={methods.onPlayPause}></SongBar>
