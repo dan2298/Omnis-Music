@@ -42,7 +42,6 @@ class Downloads extends React.Component {
                     }
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
-                            isPlaying: methods.isPlaying,
                             onPlayPause: methods.onPlayPause,
                             timeStamp: methods.timeStamp,
                             getSliderPosition: methods.getSliderPosition,

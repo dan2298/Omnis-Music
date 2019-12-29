@@ -7,7 +7,6 @@ const Header = (props) => {
     return (
         <View style={styles.container}>
             {props.goBack ?
-
                 <TouchableOpacity onPress={props.goBack}>
                     <MaterialIcons name='keyboard-arrow-down' size={36} style={styles.back}></MaterialIcons>
                 </TouchableOpacity>
@@ -17,7 +16,12 @@ const Header = (props) => {
             <Text style={styles.title}>{props.title}</Text>
             {props.navigate ?
                 <TouchableOpacity onPress={() => props.navigate("Queue", {
-                    playback: props.playback
+                    playback: props.playback,
+                    onShufflePressed: props.onShufflePressed,
+                    onBackward: props.onBackward,
+                    onPlayPause: props.onPlayPause,
+                    onForward: props.onForward,
+                    onLoopPressed: props.onLoopPressed,
                 })}>
                     <MaterialIcons name='list' size={32} style={styles.list}></MaterialIcons>
                 </TouchableOpacity> :

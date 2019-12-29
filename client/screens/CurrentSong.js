@@ -1,35 +1,45 @@
 import React from 'React';
 import { View, Text, StyleSheet, Image, Slider, Dimensions } from 'react-native';
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import Header from '../components/Header'
 import { connect } from 'react-redux'
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import Header from '../components/Header'
+import Buttons from '../components/Buttons'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 let space;
 let gap;
 
 if (DEVICE_HEIGHT < 812) {
-    space = 15;
+    space = 25;
     gap = 0;
 } else if (DEVICE_HEIGHT >= 812 && DEVICE_HEIGHT < 896) {
-    space = 30;
+    space = 35;
     gap = 30;
 } else {
     space = 60;
     gap = 60;
 }
 
-let loopPressed = false;
-let shufflePressed = false;
 const CurrentSong = props => {
     const { goBack, navigate } = props.navigation
     const methods = props.navigation.state.params
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background}>
-                <Header title={'Songs'} goBack={goBack} navigate={navigate} playback={methods.playback}></Header>
+                <Header
+                    title={'Songs'}
+                    goBack={goBack}
+                    navigate={navigate}
+                    playback={methods.playback}
+                    onShufflePressed={methods.onShufflePressed}
+                    onBackward={methods.onBackward}
+                    onPlayPause={methods.onPlayPause}
+                    onForward={methods.onForward}
+                    onLoopPressed={methods.onLoopPressed}
+                    isPlaying={props.isPlaying}
+                >
+                </Header>
                 <View style={styles.container}>
                     <Image style={styles.mainImg} source={{ uri: props.currentSong.image }}></Image>
                     <Text numberOfLines={1} style={styles.title}>{props.currentSong.name}</Text>
@@ -49,38 +59,14 @@ const CurrentSong = props => {
                         <Text style={{ color: 'white', marginRight: '35%' }}>{methods.timeStamp().position}</Text>
                         <Text style={{ color: 'white', marginLeft: '35%' }}>{methods.timeStamp().duration}</Text>
                     </View>
-
-                    <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
-                        <TouchableOpacity onPress={() => {
-                            shufflePressed = !shufflePressed
-                            methods.onShufflePressed()
-                        }} >
-                            <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: shufflePressed ? "blue" : "white" }} ></Ionicons>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={methods.onBackward}>
-                            <MaterialCommunityIcons name="rewind" size={72} color="white"></MaterialCommunityIcons>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={methods.onPlayPause}>
-                            {props.isPlaying ?
-                                <MaterialCommunityIcons name="pause-circle" size={84} color='white'></MaterialCommunityIcons> :
-                                <MaterialCommunityIcons name="play-circle" size={84} color="white"></MaterialCommunityIcons>
-                            }
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={methods.onForward}>
-                            <MaterialCommunityIcons name="fast-forward" size={72} color="white"></MaterialCommunityIcons>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => {
-                            loopPressed = !loopPressed
-                            methods.onLoopPressed()
-                        }}>
-                            <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: loopPressed ? "blue" : "white" }}></MaterialIcons>
-                        </TouchableOpacity>
-                    </View>
-
+                    <Buttons
+                        onShufflePressed={methods.onShufflePressed}
+                        onBackward={methods.onBackward}
+                        onPlayPause={methods.onPlayPause}
+                        onForward={methods.onForward}
+                        onLoopPressed={methods.onLoopPressed}
+                    >
+                    </Buttons>
                     <View style={styles.rowContainer}>
                         <Text style={{ color: 'white', marginRight: 10, fontSize: 16 }}>Rate:</Text>
                         <Slider
