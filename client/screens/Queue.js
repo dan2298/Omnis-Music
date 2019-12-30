@@ -41,14 +41,16 @@ const Queue = props => {
                     keyExtractor={(item, idx) => String(idx)}
                     data={props.queue}
                     renderItem={result => {
-                        const song = result.item.info
+                        const song = result.item
                         return (
                             <Song
                                 playback={playback}
                                 artist={song.artist}
                                 image={song.image}
                                 type={song.type}
-                                name={song.name}>
+                                name={song.name}
+                                fileName={song.fileName}
+                            >
                             </Song>
                         )
                     }}

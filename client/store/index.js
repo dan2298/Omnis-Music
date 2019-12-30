@@ -11,7 +11,7 @@ import playing from './playing';
 import queue from './queue'
 
 const reducer = combineReducers({
-    songs,
+    songFiles: songs,
     currentSong,
     playing,
     queue,

@@ -10,7 +10,7 @@ function gotQueue(songs) {
 export function getQueue() {
     return async (dispatch, getState) => {
         try {
-            const songs = getState().songs
+            const songs = getState().songFiles.songs
             const currSong = getState().currentSong
             let el;
             for (let i = 0; i < songs.length; i++) {

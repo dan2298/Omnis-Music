@@ -26,7 +26,6 @@ class Downloads extends React.Component {
                             keyExtractor={(item, idx) => String(idx)}
                             data={this.props.songs}
                             renderItem={result => {
-                                // console.log(result)
                                 return (
                                     <SwipeableRow key={result.index}
                                         item={result.item}
@@ -68,7 +67,7 @@ class Downloads extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        songs: state.songs,
+        songs: state.songFiles.songs,
         currentSong: state.currentSong,
         isPlaying: state.playing
     }

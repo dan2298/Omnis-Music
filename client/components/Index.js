@@ -48,6 +48,7 @@ class Index extends Component {
         this.onForward = this.onForward.bind(this)
         this.onBackward = this.onBackward.bind(this)
         this.onLoopPressed = this.onLoopPressed.bind(this)
+        this.onShufflePressed = this.onShufflePressed.bind(this)
     }
 
     async componentDidMount() {
@@ -85,32 +86,35 @@ class Index extends Component {
         }
     }
 
-    async loadPlayback() {
-        const name = this.props.songs[this.index].fileName
-        if (name) {
-            if (this.playbackInstance != null) {
-                await this.playbackInstance.unloadAsync();
-                this.playbackInstance.setOnPlaybackStatusUpdate(null);
-                this.playbackInstance = null;
-            }
-            const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
-            const initialStatus = {
-                shouldPlay: true,
-                rate: 1.0,
-                shouldCorrectPitch: this.state.shouldCorrectPitch,
-                volume: this.state.volume,
-                isMuted: this.state.muted,
-                isLooping: this.state.loopingType === LOOPING_TYPE_ONE,
-                progressUpdateIntervalMillis: 300
-            };
-            const { sound, status } = await Audio.Sound.createAsync(
-                source,
-                initialStatus,
-                this.onPlaybackStatusUpdate
-            );
-            this.playbackInstance = sound;
-            this.onPlayPause()
+    async loadPlayback(song) {
+        let name;
+        if (!song && this.props.list.length) {
+            name = this.props.list[this.index].fileName
+        } else {
+            name = song.fileName
         }
+        if (this.playbackInstance != null) {
+            await this.playbackInstance.unloadAsync();
+            this.playbackInstance.setOnPlaybackStatusUpdate(null);
+            this.playbackInstance = null;
+        }
+        const source = { uri: await `${FileSystem.documentDirectory}songs/${name}` }
+        const initialStatus = {
+            shouldPlay: true,
+            rate: 1.0,
+            shouldCorrectPitch: this.state.shouldCorrectPitch,
+            volume: this.state.volume,
+            isMuted: this.state.muted,
+            isLooping: this.state.loopingType === LOOPING_TYPE_ONE,
+            progressUpdateIntervalMillis: 300
+        };
+        const { sound, status } = await Audio.Sound.createAsync(
+            source,
+            initialStatus,
+            this.onPlaybackStatusUpdate
+        );
+        this.playbackInstance = sound;
+        this.onPlayPause()
     }
 
     onForward = () => {
@@ -134,16 +138,24 @@ class Index extends Component {
     };
 
     advanceIndex(forward) {
-        if (this.props.songs[this.index + forward]) {
+        if (this.props.list[this.index + forward]) {
             this.index += forward
-            this.props.getCurrentSong(this.props.songs[this.index].info)
+            this.props.getCurrentSong(this.props.list[this.index])
             this.loadPlayback()
             this.props.getQueue()
         }
     }
 
     onShufflePressed() {
-        console.log('hi here in shuffle')
+        // console.log(this.props.list.length)
+
+        // const map = {}
+
+        //loop until all songs found
+        // Math.random(this.props.list.length)
+
+
+        //need a reset on store to go back to original list when false/true
     }
 
     onPlayPause = playOrPause
@@ -156,21 +168,20 @@ class Index extends Component {
     trySetRate = setRate
 
     playback(song) {
-        for (let i = 0; i < this.props.songs.length; i++) {
-            if (song.fileName === this.props.songs[i].fileName) {
+        for (let i = 0; i < this.props.list.length; i++) {
+            if (song.fileName === this.props.list[i].fileName) {
                 this.index = i
                 break;
             }
         }
-
         if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
             this.setState({ ...this.state, isPlaying: false })
-            this.loadPlayback()
+            this.loadPlayback(song)
         } else {
             this.onPlayPause()
         }
         this.props.getCurrentSong(song)
-        this.props.getQueue(this.props.songs)
+        this.props.getQueue(this.props.list)
     }
 
     render() {
@@ -202,7 +213,8 @@ class Index extends Component {
 
 const mapStateToProps = state => {
     return {
-        songs: state.songs,
+        songs: state.songFiles.songs,
+        list: state.songFiles.list,
         currentSong: state.currentSong,
         isPlaying: state.playing,
         queue: state.queue
