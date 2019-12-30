@@ -36,7 +36,7 @@ class SwipeableRow extends React.Component {
     }
 
     delete = async (song) => {
-        await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs/${song.name}`)
+        await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs/${song.fileName}`)
         this.props.getSongs()
     }
 
@@ -50,7 +50,7 @@ class SwipeableRow extends React.Component {
 
     render() {
         let song;
-        this.props.item.info ? song = this.props.item.info : song = notFound
+        this.props.item ? song = this.props.item : song = notFound
         return (
             <Swipeable
                 ref={this.updateRef}
@@ -62,6 +62,7 @@ class SwipeableRow extends React.Component {
                     image={song.image}
                     type={song.type}
                     name={song.name}
+                    fileName={song.fileName}
                 >
                 </Song>
             </Swipeable >

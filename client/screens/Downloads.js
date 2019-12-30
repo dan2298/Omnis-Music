@@ -26,6 +26,7 @@ class Downloads extends React.Component {
                             keyExtractor={(item, idx) => String(idx)}
                             data={this.props.songs}
                             renderItem={result => {
+                                // console.log(result)
                                 return (
                                     <SwipeableRow key={result.index}
                                         item={result.item}

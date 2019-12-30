@@ -28,7 +28,7 @@ const Queue = props => {
                 <Text style={styles.subTitles}>Now Playing</Text>
 
                 <TouchableOpacity style={styles.row} onPress={goBack}>
-                    <Image style={{ width: 50, height: 50, margin: 5 }} source={{ uri: props.currentSong.image }}></Image>
+                    <Image style={{ width: 65, height: 65, margin: 5 }} source={{ uri: props.currentSong.image }}></Image>
                     <View style={styles.infoContainer}>
                         <Text style={{ color: 'white' }}>{props.currentSong.name}</Text>
                         <Text style={{ color: '#d4d2d2', fontSize: 12 }}>{props.currentSong.artist}</Text>
@@ -92,10 +92,9 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline"
     },
     row: {
-        // flex: 1,
         flexDirection: "row",
-        // justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        borderColor: "#d4d2d2"
     },
     infoContainer: {
         flex: 1,

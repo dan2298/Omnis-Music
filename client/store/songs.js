@@ -15,7 +15,8 @@ export function getSongs() {
         try {
             const songs = await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}songs`)
             const newSongs = songs.map(async (song, idx) => {
-                return { name: song, info: JSON.parse(await AsyncStorage.getItem(song)) }
+                const info = JSON.parse(await AsyncStorage.getItem(song))
+                return { ...info, fileName: song }
             })
 
             Promise.all(newSongs).then(values => dispatch(gotSongs(values)))

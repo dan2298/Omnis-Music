@@ -14,7 +14,7 @@ export function getQueue() {
             const currSong = getState().currentSong
             let el;
             for (let i = 0; i < songs.length; i++) {
-                if (currSong.name === songs[i].info.name && currSong.artist === songs[i].info.artist) {
+                if (currSong.fileName === songs[i].fileName) {
                     el = i + 1
                 }
             }

@@ -13,9 +13,9 @@ const Song = props => {
     }
     return (
         <TouchableOpacity style={styles.songContainer} onPress={props.playback.bind(this, props)}>
-            <Image style={{ width: 50, height: 50, margin: 5 }} source={{ uri: props.image }}></Image>
+            <Image style={{ width: 60, height: 60, margin: 5 }} source={{ uri: props.image }}></Image>
             <View style={styles.infoContainer}>
-                <Text style={{ color: 'white' }}>{props.name}</Text>
+                <Text numberOfLines={2} style={{ color: 'white' }}>{props.name}</Text>
                 <Text style={{ color: '#d4d2d2', fontSize: 12 }}>{props.artist}</Text>
                 <Text style={{ color: color, fontWeight: '300' }}>{props.type}</Text>
             </View>

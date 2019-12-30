@@ -12,13 +12,6 @@ import {
 import { Audio } from 'expo-av'
 import AppContainter from '../SwitchNavigator'
 
-(async () => {
-    const { exists } = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
-    if (!exists) {
-        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
-    }
-})()
-
 const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
@@ -58,6 +51,12 @@ class Index extends Component {
     }
 
     async componentDidMount() {
+        (async () => {
+            const { exists } = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
+            if (!exists) {
+                await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
+            }
+        })()
         this.props.getSongs()
         setAudioMode()
     }
@@ -87,7 +86,7 @@ class Index extends Component {
     }
 
     async loadPlayback() {
-        const name = this.props.songs[this.index].name
+        const name = this.props.songs[this.index].fileName
         if (name) {
             if (this.playbackInstance != null) {
                 await this.playbackInstance.unloadAsync();
@@ -135,8 +134,8 @@ class Index extends Component {
     };
 
     advanceIndex(forward) {
-        this.index += forward
-        if (this.props.songs[this.index]) {
+        if (this.props.songs[this.index + forward]) {
+            this.index += forward
             this.props.getCurrentSong(this.props.songs[this.index].info)
             this.loadPlayback()
             this.props.getQueue()
@@ -158,11 +157,12 @@ class Index extends Component {
 
     playback(song) {
         for (let i = 0; i < this.props.songs.length; i++) {
-            if (song.name === this.props.songs[i].info.name) {
+            if (song.fileName === this.props.songs[i].fileName) {
                 this.index = i
                 break;
             }
         }
+
         if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
             this.setState({ ...this.state, isPlaying: false })
             this.loadPlayback()
@@ -205,6 +205,7 @@ const mapStateToProps = state => {
         songs: state.songs,
         currentSong: state.currentSong,
         isPlaying: state.playing,
+        queue: state.queue
     }
 }
 
