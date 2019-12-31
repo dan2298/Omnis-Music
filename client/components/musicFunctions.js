@@ -1,4 +1,6 @@
 import { Audio } from 'expo-av'
+const LOOPING_TYPE_ALL = 0;
+const LOOPING_TYPE_ONE = 1;
 
 export async function setAudioMode() {
     await Audio.setAudioModeAsync({
@@ -22,6 +24,70 @@ export async function playOrPause() {
             this.props.play()
         }
     }
+}
+
+export function onForwardPress() {
+    if (this.playbackInstance != null) {
+        this.advanceIndex(1);
+    }
+}
+
+export function onBackwardPress() {
+    if (this.playbackInstance != null) {
+        if (this.state.playbackInstancePosition > 3000) {
+            this.setState({ isPlaying: false })
+            this.loadPlayback()
+        } else {
+            this.advanceIndex(-1);
+        }
+    }
+}
+
+export function advancedIndex(forward) {
+    if (this.props.list[this.index + forward]) {
+        this.index += forward
+        this.props.getCurrentSong(this.props.list[this.index])
+        this.loadPlayback()
+        this.props.getQueue()
+    }
+}
+
+export function onLoopPress() {
+    if (this.playbackInstance != null) {
+        this.playbackInstance.setIsLoopingAsync(
+            this.state.loopingType !== LOOPING_TYPE_ONE
+        );
+    }
+};
+
+export function onShufflePress() {
+    if (!this.props.buttons.shufflePressed) {
+        this.props.shuffleList()
+        this.props.getQueue()
+        this.index = 0
+    } else {
+        this.props.getOriginalList()
+        this.props.getQueue(true)
+        for (let i = 0; i < this.props.songs.length; i++) {
+            if (this.props.currentSong.fileName === this.props.songs[i].fileName) {
+                this.index = i
+                break;
+            }
+        }
+    }
+}
+
+export function playbackPressed(song) {
+    for (let i = 0; i < this.props.list.length; i++) {
+        if (song.fileName === this.props.list[i].fileName) {
+            this.index = i
+            break;
+        }
+    }
+    this.setState({ isPlaying: false })
+    this.loadPlayback(song)
+    this.props.getCurrentSong(song)
+    this.props.getQueue()
 }
 
 export function sliderValueChange(value) {

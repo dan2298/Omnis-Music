@@ -6,8 +6,8 @@ import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
 import { getSongs, getQueue, getCurrentSong, getOriginalList, shuffleList, play, pause } from '../store'
 import {
-    setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate,
-    seekSliderPosition, MMSSFromMillis, timestamp
+    setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate, playbackPressed,
+    seekSliderPosition, MMSSFromMillis, timestamp, onForwardPress, onBackwardPress, advancedIndex, onShufflePress, onLoopPress
 } from './musicFunctions'
 import { Audio } from 'expo-av'
 import AppContainter from '../SwitchNavigator'
@@ -118,58 +118,14 @@ class Index extends Component {
         this.onPlayPause()
     }
 
-    onForward = () => {
-        if (this.playbackInstance != null) {
-            this.advanceIndex(1);
-        }
-    };
-
-    onBackward = () => {
-        if (this.playbackInstance != null) {
-            if (this.state.playbackInstancePosition > 3000) {
-                this.setState({ isPlaying: false })
-                this.loadPlayback()
-            } else {
-                this.advanceIndex(-1);
-            }
-        }
-    };
-
-    onLoopPressed = () => {
-        if (this.playbackInstance != null) {
-            this.playbackInstance.setIsLoopingAsync(
-                this.state.loopingType !== LOOPING_TYPE_ONE
-            );
-        }
-    };
-
-    advanceIndex(forward) {
-        if (this.props.list[this.index + forward]) {
-            this.index += forward
-            this.props.getCurrentSong(this.props.list[this.index])
-            this.loadPlayback()
-            this.props.getQueue()
-        }
-    }
-
-    onShufflePressed() {
-        if (!this.props.buttons.shufflePressed) {
-            this.props.shuffleList()
-            this.props.getQueue()
-            this.index = 0
-        } else {
-            this.props.getOriginalList()
-            this.props.getQueue(true)
-            for (let i = 0; i < this.props.songs.length; i++) {
-                if (this.props.currentSong.fileName === this.props.songs[i].fileName) {
-                    this.index = i
-                    break;
-                }
-            }
-        }
-    }
-
+    onForward = onForwardPress
+    onBackward = onBackwardPress
+    advanceIndex = advancedIndex
     onPlayPause = playOrPause
+    advanceIndex = advancedIndex
+    onShufflePressed = onShufflePress
+    onLoopPressed = onLoopPress
+    playback = playbackPressed
     onSeekSliderValueChange = sliderValueChange
     onSeekSliderSlidingComplete = sliderSlidingComplete
     getSeekSliderPosition = seekSliderPosition
@@ -177,23 +133,6 @@ class Index extends Component {
     getTimestamp = timestamp
     onRateSliderSlidingComplete = rateSliderSlidingComplete
     trySetRate = setRate
-
-    playback(song) {
-        for (let i = 0; i < this.props.list.length; i++) {
-            if (song.fileName === this.props.list[i].fileName) {
-                this.index = i
-                break;
-            }
-        }
-        // if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
-        this.setState({ isPlaying: false })
-        this.loadPlayback(song)
-        // } else {
-        //     this.onPlayPause()
-        // }
-        this.props.getCurrentSong(song)
-        this.props.getQueue()
-    }
 
     render() {
         return (

@@ -9,7 +9,7 @@ import { getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../stor
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
 import SongBar from '../components/SongBar';
-import FadeAnimation from '../components/FadeAnimation';
+import DownloadAnim from '../components/DownloadAnim';
 
 import * as FileSystem from 'expo-file-system';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -88,10 +88,15 @@ class Search extends React.Component {
         try {
             if (!listSongs.includes(saveFileName)) {
                 //download and save locally
+                // console.log('downloading')
                 await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
                 await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                // console.log('downloaded')
+                // return <DownloadAnim></DownloadAnim>
+                // console.log('done')
             }
         } catch (error) {
+            console.log('error')
             console.log(error);
         }
         this.props.getSongs()
@@ -138,12 +143,12 @@ class Search extends React.Component {
                         </View>
                     </Modal> */}
                     {/* <View style={{ justifyContent: "center", alignContent: "center", position: "absolute" }}> */}
-                    <FadeAnimation>
+                    {/* <FadeAnimation>
                         <View style={styles.animation}>
                             <Text>Hello!</Text>
                             <Button title="Hide modal" onPress={this.toggleModal} />
                         </View>
-                    </FadeAnimation>
+                    </FadeAnimation> */}
                     {/* </View> */}
 
                     {this.state.searched ? <ScrollView>
@@ -258,13 +263,4 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    animation: {
-        alignSelf: "center",
-        // justifyContent: "center"
-        backgroundColor: "white",
-        height: 200,
-        width: 200,
-        position: "absolute",
-        marginTop: 200
-    }
 })
