@@ -4,10 +4,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import Song from './Song'
-import * as FileSystem from 'expo-file-system';
 
 import { connect } from 'react-redux'
-import { getSongs } from '../store'
+import { deleteSong, deleteQueue } from '../store'
 
 const notFound = {
     name: 'Error',
@@ -36,8 +35,8 @@ class SwipeableRow extends React.Component {
     }
 
     delete = async (song) => {
-        await FileSystem.deleteAsync(`${FileSystem.documentDirectory}songs/${song.fileName}`)
-        this.props.getSongs()
+        this.props.deleteSong(song.fileName)
+        this.props.deleteQueue(song.fileName)
     }
 
     updateRef = ref => {
@@ -71,8 +70,8 @@ class SwipeableRow extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    getSongs: () =>
-        dispatch(getSongs())
+    deleteSong: (name) => dispatch(deleteSong(name)),
+    deleteQueue: (name) => dispatch(deleteQueue(name))
 })
 
 export default connect(null, mapDispatchToProps)(SwipeableRow);

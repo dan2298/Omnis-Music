@@ -1,4 +1,5 @@
 const GOT_QUEUE = 'GOT_QUEUE';
+const DELETED_QUEUE = 'DELETE_QUEUE'
 
 function gotQueue(songs) {
     return {
@@ -7,10 +8,39 @@ function gotQueue(songs) {
     }
 }
 
-export function getQueue() {
+function deletedQueue(songs) {
+    return {
+        type: DELETED_QUEUE,
+        songs
+    }
+}
+
+export function deleteQueue(songName) {
     return async (dispatch, getState) => {
         try {
-            const songs = getState().songFiles.songs
+            const queue = getState().queue
+            const newQueue = []
+            for (let i = 0; i < queue.length; i++) {
+                if (queue[i].fileName !== songName) {
+                    newQueue.push(queue[i])
+                }
+            }
+            dispatch(deletedQueue(newQueue))
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}
+
+export function getQueue(original) {
+    return async (dispatch, getState) => {
+        try {
+            let songs;
+            if (original) {
+                songs = getState().songFiles.songs
+            } else {
+                songs = getState().songFiles.list
+            }
             const currSong = getState().currentSong
             let el;
             for (let i = 0; i < songs.length; i++) {
@@ -31,6 +61,8 @@ const queue = []
 const queueReducer = (state = queue, action) => {
     switch (action.type) {
         case GOT_QUEUE:
+            return action.songs
+        case DELETED_QUEUE:
             return action.songs
         default:
             return state

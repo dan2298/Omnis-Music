@@ -4,6 +4,8 @@ import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-ic
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux'
+import { loopPress, shufflePress } from '../store'
+
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 let space;
 
@@ -23,14 +25,20 @@ class Buttons extends React.Component {
             shufflePressed: false
         }
     }
+
+    componentDidMount() {
+        this.setState({ ...this.props.buttons })
+    }
+
     render() {
         return (
             <View style={{ ...styles.rowContainer, marginLeft: 10 }}>
                 <TouchableOpacity onPress={() => {
+                    this.props.shufflePress()
                     this.setState({ shufflePressed: !this.state.shufflePressed })
                     this.props.onShufflePressed()
                 }} >
-                    <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: this.state.shufflePressed ? "blue" : "white" }} ></Ionicons>
+                    <Ionicons name="ios-shuffle" size={24} style={{ marginRight: space, color: this.props.buttons.shufflePressed ? "blue" : "white" }} ></Ionicons>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.props.onBackward}>
@@ -49,10 +57,11 @@ class Buttons extends React.Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => {
+                    this.props.loopPress()
                     this.setState({ loopPressed: !this.state.loopPressed })
                     this.props.onLoopPressed()
                 }}>
-                    <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: this.state.loopPressed ? "blue" : "white" }}></MaterialIcons>
+                    <MaterialIcons name="loop" size={24} style={{ marginLeft: space, color: this.props.buttons.loopPressed ? "blue" : "white" }}></MaterialIcons>
                 </TouchableOpacity>
             </View>
         )
@@ -61,11 +70,19 @@ class Buttons extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        buttons: state.buttons,
         isPlaying: state.playing
     }
 }
 
-export default connect(mapStateToProps)(Buttons);
+const mapDispatchToProps = dispatch => {
+    return {
+        shufflePress: () => dispatch(shufflePress()),
+        loopPress: () => dispatch(loopPress())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Buttons);
 
 const styles = StyleSheet.create({
     rowContainer: {

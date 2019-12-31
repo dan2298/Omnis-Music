@@ -9,15 +9,17 @@ import soundcloud from './soundcloud';
 import currentSong from './currentSong';
 import playing from './playing';
 import queue from './queue'
+import buttons from './buttons'
 
 const reducer = combineReducers({
     songFiles: songs,
     currentSong,
     playing,
     queue,
+    buttons,
     spotifySongs: spotify,
     youtubeSongs: youtube,
-    soundcloudSongs: soundcloud
+    soundcloudSongs: soundcloud,
 })
 
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware))
@@ -32,3 +34,4 @@ export * from './soundcloud'
 export * from './currentSong'
 export * from './playing'
 export * from './queue'
+export * from './buttons'

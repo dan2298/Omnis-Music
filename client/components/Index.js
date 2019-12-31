@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
-import { getSongs, getQueue, getCurrentSong, play, pause } from '../store'
+import { getSongs, getQueue, getCurrentSong, getOriginalList, shuffleList, play, pause } from '../store'
 import {
     setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate,
     seekSliderPosition, MMSSFromMillis, timestamp
@@ -59,6 +59,7 @@ class Index extends Component {
             }
         })()
         this.props.getSongs()
+        this.props.getOriginalList()
         setAudioMode()
     }
 
@@ -125,7 +126,12 @@ class Index extends Component {
 
     onBackward = () => {
         if (this.playbackInstance != null) {
-            this.advanceIndex(-1);
+            if (this.state.playbackInstancePosition > 3000) {
+                this.setState({ isPlaying: false })
+                this.loadPlayback()
+            } else {
+                this.advanceIndex(-1);
+            }
         }
     };
 
@@ -147,15 +153,20 @@ class Index extends Component {
     }
 
     onShufflePressed() {
-        // console.log(this.props.list.length)
-
-        // const map = {}
-
-        //loop until all songs found
-        // Math.random(this.props.list.length)
-
-
-        //need a reset on store to go back to original list when false/true
+        if (!this.props.buttons.shufflePressed) {
+            this.props.shuffleList()
+            this.props.getQueue()
+            this.index = 0
+        } else {
+            this.props.getOriginalList()
+            this.props.getQueue(true)
+            for (let i = 0; i < this.props.songs.length; i++) {
+                if (this.props.currentSong.fileName === this.props.songs[i].fileName) {
+                    this.index = i
+                    break;
+                }
+            }
+        }
     }
 
     onPlayPause = playOrPause
@@ -174,14 +185,14 @@ class Index extends Component {
                 break;
             }
         }
-        if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
-            this.setState({ ...this.state, isPlaying: false })
-            this.loadPlayback(song)
-        } else {
-            this.onPlayPause()
-        }
+        // if (this.props.currentSong.name !== song.name || !this.props.currentSong.name) {
+        this.setState({ isPlaying: false })
+        this.loadPlayback(song)
+        // } else {
+        //     this.onPlayPause()
+        // }
         this.props.getCurrentSong(song)
-        this.props.getQueue(this.props.list)
+        this.props.getQueue()
     }
 
     render() {
@@ -217,17 +228,20 @@ const mapStateToProps = state => {
         list: state.songFiles.list,
         currentSong: state.currentSong,
         isPlaying: state.playing,
-        queue: state.queue
+        queue: state.queue,
+        buttons: state.buttons
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         getCurrentSong: (song) => dispatch(getCurrentSong(song)),
+        getOriginalList: () => dispatch(getOriginalList()),
+        shuffleList: () => dispatch(shuffleList()),
         play: () => dispatch(play()),
         pause: () => dispatch(pause()),
         getSongs: () => dispatch(getSongs()),
-        getQueue: () => dispatch(getQueue())
+        getQueue: (flag) => dispatch(getQueue(flag))
     }
 }
 

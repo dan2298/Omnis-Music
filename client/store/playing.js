@@ -1,4 +1,3 @@
-
 const PLAYING = 'PLAYING';
 const PAUSE = 'PAUSE'
 

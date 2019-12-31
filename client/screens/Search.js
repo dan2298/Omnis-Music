@@ -3,7 +3,7 @@ import { Text, View, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
-import { getYTSongs, getSpotSongs, getScSongs, getSongs } from '../store'
+import { getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -67,6 +67,7 @@ class Search extends React.Component {
             console.log(error);
         }
         this.props.getSongs()
+        this.props.addSong(saveFileName)
     }
 
     youtubeDl = async (song) => {
@@ -90,6 +91,7 @@ class Search extends React.Component {
             console.log(error);
         }
         this.props.getSongs()
+        this.props.addSong(saveFileName)
     }
 
     soundcloudDl = async (song) => {
@@ -114,6 +116,7 @@ class Search extends React.Component {
             console.log(error);
         }
         this.props.getSongs()
+        this.props.addSong(saveFileName)
     }
 
     render() {
@@ -183,7 +186,7 @@ class Search extends React.Component {
 }
 const mapStateToProps = state => {
     return {
-        songs: state.songs,
+        songs: state.songFiles.songs,
         spotifySongs: state.spotifySongs,
         youtubeSongs: state.youtubeSongs,
         soundcloudSongs: state.soundcloudSongs,
@@ -200,7 +203,9 @@ const mapDispatchToProps = dispatch => {
         getScSongs: (input) =>
             dispatch(getScSongs(input)),
         getSongs: () =>
-            dispatch(getSongs())
+            dispatch(getSongs()),
+        addSong: (fileName) =>
+            dispatch(addSong(fileName)),
     }
 }
 
