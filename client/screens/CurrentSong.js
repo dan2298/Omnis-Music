@@ -151,11 +151,6 @@ const styles = StyleSheet.create({
     }
 })
 
-
-// ** CURRENT SONG ** //
-//rate text/ rate slider back to default on new song** (Add to store)
-//shuffle button functionality
-
 // ** SEARCH ** //
 //add notification and status of download(modal)
 

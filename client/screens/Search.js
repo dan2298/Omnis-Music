@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
+import { Text, View, Button, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
+import Modal from "react-native-modal";
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
@@ -8,6 +9,8 @@ import { getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../stor
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
 import SongBar from '../components/SongBar';
+import FadeAnimation from '../components/FadeAnimation';
+
 import * as FileSystem from 'expo-file-system';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -23,7 +26,8 @@ class Search extends React.Component {
         super()
         this.state = {
             input: '',
-            searched: false
+            searched: false,
+            modalVisible: false
         }
         this.searchInputHandler = this.searchInputHandler.bind(this)
     }
@@ -126,6 +130,22 @@ class Search extends React.Component {
             <View>
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background} >
                     <SearchBar searchInputHandler={this.searchInputHandler} search={this.search} clear={this.clearSearch} input={this.state.input}></SearchBar>
+
+                    {/* <Modal isVisible={this.state.modalVisible}>
+                        <View style={{ backgroundColor: "white", height: 200, width: 200 }}>
+                            <Text>Hello!</Text>
+                            <Button title="Hide modal" onPress={this.toggleModal} />
+                        </View>
+                    </Modal> */}
+                    {/* <View style={{ justifyContent: "center", alignContent: "center", position: "absolute" }}> */}
+                    <FadeAnimation>
+                        <View style={styles.animation}>
+                            <Text>Hello!</Text>
+                            <Button title="Hide modal" onPress={this.toggleModal} />
+                        </View>
+                    </FadeAnimation>
+                    {/* </View> */}
+
                     {this.state.searched ? <ScrollView>
                         {/* Youtube List */}
                         {this.props.youtubeSongs.length ?
@@ -237,5 +257,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    animation: {
+        alignSelf: "center",
+        // justifyContent: "center"
+        backgroundColor: "white",
+        height: 200,
+        width: 200,
+        position: "absolute",
+        marginTop: 200
     }
 })
