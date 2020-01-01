@@ -89,7 +89,10 @@ export function onShufflePress() {
 
 export function playbackPressed(song) {
     if (song.onQueue) {
-
+        this.props.onPick(song)
+        this.setState({ isPlaying: false })
+        this.loadPlayback(song)
+        this.props.getCurrentSong(song)
     } else {
         for (let i = 0; i < this.props.list.length; i++) {
             if (song.fileName === this.props.list[i].fileName) {

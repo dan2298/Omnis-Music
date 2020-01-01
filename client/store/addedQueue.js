@@ -57,10 +57,11 @@ export function addQSong(song) {
     }
 }
 
-export function onPick() {
+export function onPick(song) {
     return async (dispatch, getState) => {
         try {
-
+            const current = getState().addedQueue
+            dispatch(onPicked(current.slice(song.index + 1)))
         } catch (err) {
             console.error(err)
         }

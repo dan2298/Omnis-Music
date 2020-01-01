@@ -47,6 +47,7 @@ const Queue = props => {
                                 return (
                                     <Song
                                         playback={playback}
+                                        index={result.index}
                                         artist={song.artist}
                                         image={song.image}
                                         type={song.type}
@@ -67,7 +68,7 @@ const Queue = props => {
                 <FlatList
                     keyExtractor={(item, idx) => String(idx)}
                     data={props.queue}
-                    renderItem={result => {
+                    renderItem={(result, idx) => {
                         const song = result.item
                         return (
                             <Song
