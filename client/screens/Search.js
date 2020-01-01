@@ -1,10 +1,9 @@
 import React from 'react';
 import { Text, View, Button, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
-import Modal from "react-native-modal";
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
-import { getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../store'
+import { downloadAttempted, animationFinished, getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -27,9 +26,15 @@ class Search extends React.Component {
         this.state = {
             input: '',
             searched: false,
-            modalVisible: false
+            download: {
+                downloadAttempted: false,
+                error: false,
+                success: false
+            }
         }
+        this.show = false
         this.searchInputHandler = this.searchInputHandler.bind(this)
+        this.animationFinish = this.animationFinish.bind(this)
     }
 
     searchInputHandler = input => {
@@ -38,6 +43,10 @@ class Search extends React.Component {
 
     clearSearch = () => {
         this.setState({ input: '', searched: false })
+    }
+
+    animationFinish = () => {
+        this.setState({ download: { downloadAttempted: false, error: false, success: false } })
     }
 
     search = async () => {
@@ -50,82 +59,89 @@ class Search extends React.Component {
     }
 
     spotifyDl = async (song) => {
-        const isrc = song.isrc
-        const fileName = `${song.name}-spt.mp3`.split(' ').join('-')
-        let saveFileName = ''
-        for (let i = 0; i < fileName.length; i++) {
-            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
-                saveFileName += fileName[i]
+        if (!this.state.download.downloadAttempted) {
+            const isrc = song.isrc
+            const fileName = `${song.name}-spt.mp3`.split(' ').join('-')
+            let saveFileName = ''
+            for (let i = 0; i < fileName.length; i++) {
+                if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                    saveFileName += fileName[i]
+                }
             }
-        }
-        const spotifyUrl = song.url.slice(8)
-        const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
-        const listSongs = this.props.songs.map(song => song.name)
-        try {
-            if (!listSongs.includes(saveFileName)) {
+            const spotifyUrl = song.url.slice(8)
+            const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
+            const listSongs = this.props.songs.map(song => song.fileName)
+            try {
+                // if (!listSongs.includes(saveFileName)) {
                 //download and save locally
-                await FileSystem.downloadAsync(songUrl, `${defaultPath}${saveFileName}`)
-                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                this.setState({ download: { ...this.state.download, downloadAttempted: true } })
+                this.show = true
+                // await FileSystem.downloadAsync(songUrl, `${defaultPath}${saveFileName}`)
+                // await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                // }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
+            this.props.getSongs()
+            this.props.addSong(saveFileName)
         }
-        this.props.getSongs()
-        this.props.addSong(saveFileName)
     }
 
     youtubeDl = async (song) => {
-        const fileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '-yt.mp3'
-        let saveFileName = ''
-        for (let i = 0; i < fileName.length; i++) {
-            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
-                saveFileName += fileName[i]
+        if (!this.state.download.downloadAttempted) {
+            const fileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '-yt.mp3'
+            let saveFileName = ''
+            for (let i = 0; i < fileName.length; i++) {
+                if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                    saveFileName += fileName[i]
+                }
             }
-        }
-        const url = `www.youtube.com/${song.id}`
-        const songFile = localUrl + url
-        const listSongs = this.props.songs.map(song => song.name)
-        try {
-            if (!listSongs.includes(saveFileName)) {
-                //download and save locally
-                // console.log('downloading')
-                await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
-                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
-                // console.log('downloaded')
-                // return <DownloadAnim></DownloadAnim>
-                // console.log('done')
+            const url = `www.youtube.com/${song.id}`
+            const songFile = localUrl + url
+            const listSongs = this.props.songs.map(song => song.fileName)
+            try {
+                if (!listSongs.includes(saveFileName)) {
+                    //download and save locally
+                    console.log('in hererere')
+                    this.setState({ download: { ...this.state.download, downloadAttempted: true } })
+                    await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
+                    await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                }
+            } catch (error) {
+                console.log('error')
+                console.log(error);
             }
-        } catch (error) {
-            console.log('error')
-            console.log(error);
+            this.props.getSongs()
+            this.props.addSong(saveFileName)
         }
-        this.props.getSongs()
-        this.props.addSong(saveFileName)
     }
 
     soundcloudDl = async (song) => {
-        const fileName = song.name.split(' ').join('-') + '-sc.mp3'
-        let saveFileName = ''
-        for (let i = 0; i < fileName.length; i++) {
-            if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
-                saveFileName += fileName[i]
+        if (!this.state.download.downloadAttempted) {
+            const fileName = song.name.split(' ').join('-') + '-sc.mp3'
+            let saveFileName = ''
+            for (let i = 0; i < fileName.length; i++) {
+                if (fileName[i].match(/[\]\[a-zA-Z0-9\s-(.)]/g)) {
+                    saveFileName += fileName[i]
+                }
             }
-        }
-        const encodedName = encodeURIComponent(song.name)
-        const url = `soundcloud${song.url}?name=${encodedName}`
-        const songFile = localUrl + url
-        const listSongs = this.props.songs.map(song => song.name)
-        try {
-            if (!listSongs.includes(saveFileName)) {
-                //download and save locally
-                await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
-                await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+            const encodedName = encodeURIComponent(song.name)
+            const url = `soundcloud${song.url}?name=${encodedName}`
+            const songFile = localUrl + url
+            const listSongs = this.props.songs.map(song => song.fileName)
+            try {
+                if (!listSongs.includes(saveFileName)) {
+                    //download and save locally
+                    this.setState({ download: { ...this.state.download, downloadAttempted: true } })
+                    await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
+                    await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
+            this.props.getSongs()
+            this.props.addSong(saveFileName)
         }
-        this.props.getSongs()
-        this.props.addSong(saveFileName)
     }
 
     render() {
@@ -136,55 +152,45 @@ class Search extends React.Component {
                 <LinearGradient colors={['#1d80b5', '#121212']} style={styles.background} >
                     <SearchBar searchInputHandler={this.searchInputHandler} search={this.search} clear={this.clearSearch} input={this.state.input}></SearchBar>
 
-                    {/* <Modal isVisible={this.state.modalVisible}>
-                        <View style={{ backgroundColor: "white", height: 200, width: 200 }}>
-                            <Text>Hello!</Text>
-                            <Button title="Hide modal" onPress={this.toggleModal} />
-                        </View>
-                    </Modal> */}
-                    {/* <View style={{ justifyContent: "center", alignContent: "center", position: "absolute" }}> */}
-                    {/* <FadeAnimation>
-                        <View style={styles.animation}>
-                            <Text>Hello!</Text>
-                            <Button title="Hide modal" onPress={this.toggleModal} />
-                        </View>
-                    </FadeAnimation> */}
-                    {/* </View> */}
-
-                    {this.state.searched ? <ScrollView>
-                        {/* Youtube List */}
-                        {this.props.youtubeSongs.length ?
-                            <View style={styles.platforms}>
-                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.youtubeSongs.length} results were found`}</Text>
-                                <Text style={{ ...styles.platformTitles, color: '#ff0011' }}>Youtube</Text>
-                            </View> :
-                            <Text></Text>
-                        }
-                        <SongList songs={this.props.youtubeSongs} download={this.youtubeDl}></SongList>
-                        {/* Spotify List */}
-                        {this.props.spotifySongs.length ?
-                            <View style={styles.platforms}>
-                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.spotifySongs.length} results were found`}</Text>
-                                <Text style={{ ...styles.platformTitles, color: '#26c751' }}>Spotify</Text>
-                            </View> :
-                            <Text></Text>
-                        }
-                        <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
-                        {/* SoundCloud List */}
-                        {this.props.soundcloudSongs.length ?
-                            <View style={styles.platforms}>
-                                <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.soundcloudSongs.length} results were found`}</Text>
-                                <Text style={{ ...styles.platformTitles, color: '#FF7700' }}>SoundCloud</Text>
-                            </View> :
-                            <Text></Text>
-                        }
-                        <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
-                    </ScrollView> :
+                    {this.state.searched ?
+                        <ScrollView >
+                            {/* Youtube List */}
+                            {this.props.youtubeSongs.length ?
+                                <View style={styles.platforms}>
+                                    <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.youtubeSongs.length} results were found`}</Text>
+                                    <Text style={{ ...styles.platformTitles, color: '#ff0011' }}>Youtube</Text>
+                                </View> :
+                                <Text></Text>
+                            }
+                            <SongList songs={this.props.youtubeSongs} download={this.youtubeDl}></SongList>
+                            {/* Spotify List */}
+                            {this.props.spotifySongs.length ?
+                                <View style={styles.platforms}>
+                                    <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.spotifySongs.length} results were found`}</Text>
+                                    <Text style={{ ...styles.platformTitles, color: '#26c751' }}>Spotify</Text>
+                                </View> :
+                                <Text></Text>
+                            }
+                            <SongList songs={this.props.spotifySongs} download={this.spotifyDl}></SongList>
+                            {/* SoundCloud List */}
+                            {this.props.soundcloudSongs.length ?
+                                <View style={styles.platforms}>
+                                    <Text style={{ color: 'white', fontSize: 14 }}>{`${this.props.soundcloudSongs.length} results were found`}</Text>
+                                    <Text style={{ ...styles.platformTitles, color: '#FF7700' }}>SoundCloud</Text>
+                                </View> :
+                                <Text></Text>
+                            }
+                            <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
+                        </ScrollView>
+                        :
                         <View style={styles.beforeSearch}>
                             <Text style={{ color: '#b8bece', fontSize: 16, fontWeight: '600' }}>Search for songs to download</Text>
                             <Text style={{ color: '#b8bece', fontSize: 14, fontWeight: '600' }}>SoundCloud may take a while to show up</Text>
                         </View>
                     }
+
+                    <DownloadAnim state={this.state.download.downloadAttempted} finish={this.animationFinish} downloaded={true} text={'Added to downloads'}></DownloadAnim>
+
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
                             onPlayPause: methods.onPlayPause,
@@ -209,13 +215,15 @@ class Search extends React.Component {
         )
     }
 }
+
 const mapStateToProps = state => {
     return {
         songs: state.songFiles.songs,
         spotifySongs: state.spotifySongs,
         youtubeSongs: state.youtubeSongs,
         soundcloudSongs: state.soundcloudSongs,
-        currentSong: state.currentSong
+        currentSong: state.currentSong,
+        download: state.download
     }
 }
 
@@ -231,6 +239,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(getSongs()),
         addSong: (fileName) =>
             dispatch(addSong(fileName)),
+        downloadAttempted: () => dispatch(downloadAttempted()),
+        animationFinished: () => dispatch(animationFinished())
     }
 }
 
@@ -239,7 +249,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Search)
 const styles = StyleSheet.create({
     background: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        justifyContent: 'center'
     },
     platforms: {
         width: '100%',

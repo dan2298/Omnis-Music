@@ -10,6 +10,7 @@ import currentSong from './currentSong';
 import playing from './playing';
 import queue from './queue'
 import buttons from './buttons'
+import downloaded from './downloaded'
 
 const reducer = combineReducers({
     songFiles: songs,
@@ -17,6 +18,7 @@ const reducer = combineReducers({
     playing,
     queue,
     buttons,
+    download: downloaded,
     spotifySongs: spotify,
     youtubeSongs: youtube,
     soundcloudSongs: soundcloud,
@@ -35,3 +37,4 @@ export * from './currentSong'
 export * from './playing'
 export * from './queue'
 export * from './buttons'
+export * from './downloaded'
