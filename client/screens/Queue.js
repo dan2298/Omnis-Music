@@ -51,6 +51,7 @@ const Queue = props => {
                                         image={song.image}
                                         type={song.type}
                                         name={song.name}
+                                        onQueue={song.onQueue}
                                         fileName={song.fileName}
                                     >
                                     </Song>

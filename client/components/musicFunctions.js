@@ -27,8 +27,14 @@ export async function playOrPause() {
 }
 
 export function onForwardPress() {
-    if (this.playbackInstance != null) {
-        this.advanceIndex(1);
+    if (this.props.addedQueue.length) {
+        this.props.getCurrentSong(this.props.addedQueue[0])
+        this.loadPlayback(this.props.addedQueue[0])
+        this.props.finishSong()
+    } else {
+        if (this.playbackInstance != null) {
+            this.advanceIndex(1);
+        }
     }
 }
 
@@ -36,9 +42,13 @@ export function onBackwardPress() {
     if (this.playbackInstance != null) {
         if (this.state.playbackInstancePosition > 3000) {
             this.setState({ isPlaying: false })
-            this.loadPlayback()
+            this.loadPlayback(this.props.currentSong)
         } else {
-            this.advanceIndex(-1);
+            if (this.props.currentSong.onQueue) {
+                this.advanceIndex(0)
+            } else {
+                this.advanceIndex(-1);
+            }
         }
     }
 }
@@ -78,16 +88,20 @@ export function onShufflePress() {
 }
 
 export function playbackPressed(song) {
-    for (let i = 0; i < this.props.list.length; i++) {
-        if (song.fileName === this.props.list[i].fileName) {
-            this.index = i
-            break;
+    if (song.onQueue) {
+
+    } else {
+        for (let i = 0; i < this.props.list.length; i++) {
+            if (song.fileName === this.props.list[i].fileName) {
+                this.index = i
+                break;
+            }
         }
+        this.setState({ isPlaying: false })
+        this.loadPlayback(song)
+        this.props.getCurrentSong(song)
+        this.props.getQueue()
     }
-    this.setState({ isPlaying: false })
-    this.loadPlayback(song)
-    this.props.getCurrentSong(song)
-    this.props.getQueue()
 }
 
 export function sliderValueChange(value) {

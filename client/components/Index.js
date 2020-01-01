@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import * as FileSystem from 'expo-file-system';
 import { connect } from 'react-redux';
-import { getSongs, getQueue, getCurrentSong, getOriginalList, shuffleList, play, pause } from '../store'
+import { getSongs, getQueue, getCurrentSong, getOriginalList, shuffleList, play, pause, finishSong } from '../store'
 import {
     setAudioMode, playOrPause, sliderValueChange, sliderSlidingComplete, rateSliderSlidingComplete, setRate, playbackPressed,
     seekSliderPosition, MMSSFromMillis, timestamp, onForwardPress, onBackwardPress, advancedIndex, onShufflePress, onLoopPress
@@ -78,6 +78,9 @@ class Index extends Component {
                 shouldCorrectPitch: status.shouldCorrectPitch
             });
             if (status.didJustFinish && !status.isLooping) {
+                if (this.props.currentSong.onQueue && !this.props.addedQueue.length) {
+                    this.index++
+                }
                 this.onForward();
             }
         } else {
@@ -89,14 +92,10 @@ class Index extends Component {
 
     async loadPlayback(song) {
         let name;
-        if (!this.props.addedQueue.length) {
-            if (!song && this.props.list.length) {
-                name = this.props.list[this.index].fileName
-            } else {
-                name = song.fileName
-            }
+        if (!song && this.props.list.length) {
+            name = this.props.list[this.index].fileName
         } else {
-            name = this.props.addedQueue[0].fileName
+            name = song.fileName
         }
         if (this.playbackInstance != null) {
             await this.playbackInstance.unloadAsync();
@@ -182,6 +181,7 @@ const mapDispatchToProps = dispatch => {
         getCurrentSong: (song) => dispatch(getCurrentSong(song)),
         getOriginalList: () => dispatch(getOriginalList()),
         shuffleList: () => dispatch(shuffleList()),
+        finishSong: () => dispatch(finishSong()),
         play: () => dispatch(play()),
         pause: () => dispatch(pause()),
         getSongs: () => dispatch(getSongs()),
