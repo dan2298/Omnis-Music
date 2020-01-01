@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MaterialIcons } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import Song from './Song'
 
 import { connect } from 'react-redux'
-import { deleteSong, deleteQueue } from '../store'
+import { deleteSong, deleteQueue, addQSong } from '../store'
 
 const notFound = {
     name: 'Error',
@@ -16,7 +17,7 @@ const notFound = {
 }
 
 class SwipeableRow extends React.Component {
-    rightAction = (progress, dragX, item) => {
+    rightAction(progress, dragX, item) {
         const scale = dragX.interpolate({
             inputRange: [-100, 0],
             outputRange: [1, 0],
@@ -32,6 +33,25 @@ class SwipeableRow extends React.Component {
                 </View>
             </TouchableOpacity>
         )
+    }
+
+    leftAction(progress, dragX) {
+        const scale = dragX.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [1, 0],
+            extrapolate: 'clamp'
+        })
+        return (
+            <View style={{ width: 200, backgroundColor: 'rgba(14, 181, 34, 0.8)' }}>
+                <MaterialIcons name='playlist-add' size={48} color='white'></MaterialIcons>
+                <Text style={{ color: 'white', fontSize: 18 }}>Add to Queue</Text>
+            </View>
+        )
+    }
+
+    addQueue(song) {
+        this.props.addQSong(song)
+        this.close()
     }
 
     delete = async (song) => {
@@ -53,7 +73,9 @@ class SwipeableRow extends React.Component {
         return (
             <Swipeable
                 ref={this.updateRef}
-                renderRightActions={(prop, drag) => this.rightAction(prop, drag, this.props.item)}
+                renderRightActions={(prop, drag) => this.rightAction(prop, drag, song)}
+                renderLeftActions={(prop, drag) => this.leftAction(prop, drag)}
+                onSwipeableLeftOpen={() => this.addQueue(song)}
             >
                 <Song
                     playback={this.props.playback}
@@ -70,6 +92,7 @@ class SwipeableRow extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
+    addQSong: (song) => dispatch(addQSong(song)),
     deleteSong: (name) => dispatch(deleteSong(name)),
     deleteQueue: (name) => dispatch(deleteQueue(name))
 })

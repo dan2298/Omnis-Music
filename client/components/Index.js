@@ -89,10 +89,14 @@ class Index extends Component {
 
     async loadPlayback(song) {
         let name;
-        if (!song && this.props.list.length) {
-            name = this.props.list[this.index].fileName
+        if (!this.props.addedQueue.length) {
+            if (!song && this.props.list.length) {
+                name = this.props.list[this.index].fileName
+            } else {
+                name = song.fileName
+            }
         } else {
-            name = song.fileName
+            name = this.props.addedQueue[0].fileName
         }
         if (this.playbackInstance != null) {
             await this.playbackInstance.unloadAsync();
@@ -168,7 +172,8 @@ const mapStateToProps = state => {
         currentSong: state.currentSong,
         isPlaying: state.playing,
         queue: state.queue,
-        buttons: state.buttons
+        buttons: state.buttons,
+        addedQueue: state.addedQueue,
     }
 }
 

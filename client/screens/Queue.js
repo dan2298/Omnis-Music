@@ -36,6 +36,32 @@ const Queue = props => {
                     </View>
                 </TouchableOpacity>
 
+                {props.addedQueue.length ?
+                    <View>
+                        <Text style={styles.subTitles}>Next In Queue</Text>
+                        <FlatList
+                            keyExtractor={(item, idx) => String(idx)}
+                            data={props.addedQueue}
+                            renderItem={result => {
+                                const song = result.item
+                                return (
+                                    <Song
+                                        playback={playback}
+                                        artist={song.artist}
+                                        image={song.image}
+                                        type={song.type}
+                                        name={song.name}
+                                        fileName={song.fileName}
+                                    >
+                                    </Song>
+                                )
+                            }}
+                        >
+                        </FlatList>
+                    </View> :
+                    <View></View>
+                }
+
                 <Text style={styles.subTitles}>Next From: Songs</Text>
                 <FlatList
                     keyExtractor={(item, idx) => String(idx)}
@@ -74,6 +100,7 @@ Queue.navigationOptions = {
 
 mapStateToProps = state => ({
     currentSong: state.currentSong,
+    addedQueue: state.addedQueue,
     queue: state.queue
 })
 
