@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, View, Button, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, AsyncStorage, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { connect } from 'react-redux'
-import { downloadAttempted, animationFinished, getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../store'
+import { downloadAttempted, getYTSongs, getSpotSongs, getScSongs, getSongs, addSong } from '../store'
 
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -26,13 +26,8 @@ class Search extends React.Component {
         this.state = {
             input: '',
             searched: false,
-            download: {
-                downloadAttempted: false,
-                error: false,
-                success: false
-            }
+            downloadAttempted: false,
         }
-        this.show = false
         this.searchInputHandler = this.searchInputHandler.bind(this)
         this.animationFinish = this.animationFinish.bind(this)
     }
@@ -46,7 +41,7 @@ class Search extends React.Component {
     }
 
     animationFinish = () => {
-        this.setState({ download: { downloadAttempted: false, error: false, success: false } })
+        this.setState({ downloadAttempted: false })
     }
 
     search = async () => {
@@ -59,7 +54,7 @@ class Search extends React.Component {
     }
 
     spotifyDl = async (song) => {
-        if (!this.state.download.downloadAttempted) {
+        if (!this.state.downloadAttempted) {
             const isrc = song.isrc
             const fileName = `${song.name}-spt.mp3`.split(' ').join('-')
             let saveFileName = ''
@@ -72,13 +67,12 @@ class Search extends React.Component {
             const songUrl = `${localUrl}spotify/${spotifyUrl}?isrc=${isrc}`
             const listSongs = this.props.songs.map(song => song.fileName)
             try {
-                // if (!listSongs.includes(saveFileName)) {
-                //download and save locally
-                this.setState({ download: { ...this.state.download, downloadAttempted: true } })
-                this.show = true
-                // await FileSystem.downloadAsync(songUrl, `${defaultPath}${saveFileName}`)
-                // await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
-                // }
+                if (!listSongs.includes(saveFileName)) {
+                    //download and save locally
+                    this.setState({ downloadAttempted: true })
+                    await FileSystem.downloadAsync(songUrl, `${defaultPath}${saveFileName}`)
+                    await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -88,7 +82,7 @@ class Search extends React.Component {
     }
 
     youtubeDl = async (song) => {
-        if (!this.state.download.downloadAttempted) {
+        if (!this.state.downloadAttempted) {
             const fileName = song.name.split('-').map(el => el.trim()).join('-').split(' ').join('-') + '-yt.mp3'
             let saveFileName = ''
             for (let i = 0; i < fileName.length; i++) {
@@ -102,13 +96,11 @@ class Search extends React.Component {
             try {
                 if (!listSongs.includes(saveFileName)) {
                     //download and save locally
-                    console.log('in hererere')
-                    this.setState({ download: { ...this.state.download, downloadAttempted: true } })
+                    this.setState({ downloadAttempted: true })
                     await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
                     await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
                 }
             } catch (error) {
-                console.log('error')
                 console.log(error);
             }
             this.props.getSongs()
@@ -117,7 +109,7 @@ class Search extends React.Component {
     }
 
     soundcloudDl = async (song) => {
-        if (!this.state.download.downloadAttempted) {
+        if (!this.state.downloadAttempted) {
             const fileName = song.name.split(' ').join('-') + '-sc.mp3'
             let saveFileName = ''
             for (let i = 0; i < fileName.length; i++) {
@@ -132,7 +124,7 @@ class Search extends React.Component {
             try {
                 if (!listSongs.includes(saveFileName)) {
                     //download and save locally
-                    this.setState({ download: { ...this.state.download, downloadAttempted: true } })
+                    this.setState({ downloadAttempted: true })
                     await FileSystem.downloadAsync(songFile, `${FileSystem.documentDirectory}songs/${saveFileName}`)
                     await AsyncStorage.setItem(saveFileName, JSON.stringify(song));
                 }
@@ -181,15 +173,19 @@ class Search extends React.Component {
                                 <Text></Text>
                             }
                             <SongList songs={this.props.soundcloudSongs} download={this.soundcloudDl}></SongList>
-                        </ScrollView>
-                        :
+                        </ScrollView> :
                         <View style={styles.beforeSearch}>
                             <Text style={{ color: '#b8bece', fontSize: 16, fontWeight: '600' }}>Search for songs to download</Text>
                             <Text style={{ color: '#b8bece', fontSize: 14, fontWeight: '600' }}>SoundCloud may take a while to show up</Text>
                         </View>
                     }
 
-                    <DownloadAnim state={this.state.download.downloadAttempted} finish={this.animationFinish} downloaded={true} text={'Added to downloads'}></DownloadAnim>
+                    {/* ON DOWNLOAD ATTEMPT */}
+                    <DownloadAnim state={this.state.downloadAttempted} finish={this.animationFinish} text={'Added to downloads'}></DownloadAnim>
+                    {/* ON ERROR
+                    <DownloadAnim state={this.state.error} finish={this.animationFinish} downloaded={false} text={'Error Downloading'}></DownloadAnim>
+                    ON SUCCESS
+                    <DownloadAnim state={this.state.success} finish={this.animationFinish} downloaded={true} text={'Successfully Downloaded'}></DownloadAnim> */}
 
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
@@ -240,7 +236,6 @@ const mapDispatchToProps = dispatch => {
         addSong: (fileName) =>
             dispatch(addSong(fileName)),
         downloadAttempted: () => dispatch(downloadAttempted()),
-        animationFinished: () => dispatch(animationFinished())
     }
 }
 

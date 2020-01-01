@@ -3,12 +3,10 @@ import { View, Text, StyleSheet } from 'react-native'
 import FadeAnimation from '../components/FadeAnimation';
 import { Octicons, Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux'
-// Successfully Downloaded
-// Error Downloading
 
 class DownloadAnim extends React.Component {
     reset() {
-        setTimeout(() => this.props.finish(), 1500)
+        setTimeout(() => this.props.finish(), 2000)
     }
 
     render() {
@@ -21,10 +19,10 @@ class DownloadAnim extends React.Component {
                 {this.props.state ?
                     <FadeAnimation >
                         <View style={styles.animation}>
-                            {this.props.downloaded ?
-                                <Ionicons name='ios-checkmark-circle-outline' size={96} style={styles.icon}></Ionicons> :
-                                <Octicons name='x' size={96} style={styles.icon}></Octicons>
-                            }
+                            {/* {this.props.downloaded ? */}
+                            <Ionicons name='ios-checkmark-circle-outline' size={96} style={styles.icon}></Ionicons>
+                            {/* <Octicons name='x' size={96} style={styles.icon}></Octicons> */}
+                            {/* } */}
                             <Text style={styles.text}>{this.props.text}</Text>
                         </View>
                     </FadeAnimation> :

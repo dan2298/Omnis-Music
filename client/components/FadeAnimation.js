@@ -8,7 +8,7 @@ const FadeAnimation = props => {
             fadeAnim,
             {
                 toValue: 0,
-                duration: 1500,
+                duration: 2000,
             }
         ).start()
     }, [])
