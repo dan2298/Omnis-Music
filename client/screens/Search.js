@@ -181,7 +181,7 @@ class Search extends React.Component {
                     }
 
                     {/* ON DOWNLOAD ATTEMPT */}
-                    <DownloadAnim state={this.state.downloadAttempted} finish={this.animationFinish} text={'Added to downloads'}></DownloadAnim>
+                    <DownloadAnim time={2000} state={this.state.downloadAttempted} finish={this.animationFinish} text={'Added to downloads'}></DownloadAnim>
                     {/* ON ERROR
                     <DownloadAnim state={this.state.error} finish={this.animationFinish} downloaded={false} text={'Error Downloading'}></DownloadAnim>
                     ON SUCCESS

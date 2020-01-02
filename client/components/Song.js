@@ -11,8 +11,7 @@ const Song = props => {
     } else if (props.type === 'Soundcloud') {
         color = '#FF7700'
     }
-    // console.log(props)
-    // console.log('=================')
+
     return (
         <TouchableOpacity style={styles.songContainer} onPress={props.playback.bind(this, props)}>
             <Image style={{ width: 60, height: 60, margin: 5 }} source={{ uri: props.image }}></Image>
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         borderColor: '#8a8a8a',
-        backgroundColor: "#134e6e",
         borderBottomWidth: 1
     }
 })

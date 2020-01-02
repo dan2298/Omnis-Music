@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Animated, Dimensions, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import Song from './Song'
-
 import { connect } from 'react-redux'
-import { deleteSong, deleteQueue, addQSong } from '../store'
+import { deleteSong, deleteQueue } from '../store'
 
+const { width: DEVICE_WIDTH } = Dimensions.get("window");
 const notFound = {
     name: 'Error',
     image: '',
@@ -24,7 +24,7 @@ class SwipeableRow extends React.Component {
             extrapolate: 'clamp'
         })
         return (
-            <TouchableOpacity style={styles.leftAction} onPress={() => {
+            <TouchableOpacity style={styles.rightAction} onPress={() => {
                 this.close()
                 this.delete(item)
             }}>
@@ -37,20 +37,19 @@ class SwipeableRow extends React.Component {
 
     leftAction(progress, dragX) {
         const scale = dragX.interpolate({
-            inputRange: [-100, 0],
-            outputRange: [1, 0],
+            inputRange: [0, 100],
+            outputRange: [0, 1],
             extrapolate: 'clamp'
         })
         return (
-            <View style={{ width: 200, backgroundColor: 'rgba(14, 181, 34, 0.8)' }}>
-                <MaterialIcons name='playlist-add' size={48} color='white'></MaterialIcons>
-                <Text style={{ color: 'white', fontSize: 18 }}>Add to Queue</Text>
-            </View>
+            <Animated.View style={{ ...styles.leftAction, transform: [{ scale }] }}>
+                <MaterialIcons name='playlist-add' size={48} style={{ paddingLeft: 15, color: 'white' }}></MaterialIcons>
+            </Animated.View>
         )
     }
 
     addQueue(song) {
-        this.props.addQSong(song)
+        this.props.addQ(song)
         this.close()
     }
 
@@ -73,8 +72,8 @@ class SwipeableRow extends React.Component {
         return (
             <Swipeable
                 ref={this.updateRef}
-                renderRightActions={(prop, drag) => this.rightAction(prop, drag, song)}
-                renderLeftActions={(prop, drag) => this.leftAction(prop, drag)}
+                renderRightActions={(prog, drag) => this.rightAction(prog, drag, song)}
+                renderLeftActions={(prog, drag) => this.leftAction(prog, drag)}
                 onSwipeableLeftOpen={() => this.addQueue(song)}
             >
                 <Song
@@ -92,7 +91,6 @@ class SwipeableRow extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    addQSong: (song) => dispatch(addQSong(song)),
     deleteSong: (name) => dispatch(deleteSong(name)),
     deleteQueue: (name) => dispatch(deleteQueue(name))
 })
@@ -100,9 +98,14 @@ const mapDispatchToProps = dispatch => ({
 export default connect(null, mapDispatchToProps)(SwipeableRow);
 
 const styles = StyleSheet.create({
-    leftAction: {
+    rightAction: {
         backgroundColor: 'red',
         justifyContent: 'center',
         flex: 1
     },
+    leftAction: {
+        flexDirection: 'row',
+        alignItems: "center",
+        width: DEVICE_WIDTH * .25
+    }
 })

@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 class DownloadAnim extends React.Component {
     reset() {
-        setTimeout(() => this.props.finish(), 2000)
+        setTimeout(() => this.props.finish(), this.props.time)
     }
 
     render() {
@@ -17,12 +17,10 @@ class DownloadAnim extends React.Component {
         return (
             <View style={styles.container}>
                 {this.props.state ?
-                    <FadeAnimation >
+                    <FadeAnimation time={this.props.time}>
                         <View style={styles.animation}>
-                            {/* {this.props.downloaded ? */}
                             <Ionicons name='ios-checkmark-circle-outline' size={96} style={styles.icon}></Ionicons>
                             {/* <Octicons name='x' size={96} style={styles.icon}></Octicons> */}
-                            {/* } */}
                             <Text style={styles.text}>{this.props.text}</Text>
                         </View>
                     </FadeAnimation> :

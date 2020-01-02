@@ -1,17 +1,40 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Header from '../components/Header'
 import SongBar from '../components/SongBar'
 import SwipeableRow from '../components/SwipeableRow'
+import DownloadAnim from '../components/DownloadAnim';
 
 import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
+import { addQSong } from '../store'
+
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 
 class Downloads extends React.Component {
+    constructor() {
+        super()
+        this.addQueue = this.addQueue.bind(this)
+        this.state = {
+            show: false
+        }
+    }
+
     static navigationOptions = {
         header: null
+    }
+
+    addQueue(song) {
+        if (!this.state.show) {
+            this.props.addQSong(song)
+            this.setState({ show: true })
+        }
+    }
+
+    animationFinish = () => {
+        this.setState({ show: false })
     }
 
     render() {
@@ -28,6 +51,7 @@ class Downloads extends React.Component {
                             renderItem={result => {
                                 return (
                                     <SwipeableRow key={result.index}
+                                        addQ={this.addQueue}
                                         item={result.item}
                                         playback={methods.playback}
                                     >
@@ -40,6 +64,11 @@ class Downloads extends React.Component {
                             <Text style={{ color: '#b8bece', fontSize: 16, fontWeight: '600' }}>Your downloaded songs will appear here</Text>
                         </View>
                     }
+
+                    <View style={{ position: 'absolute', alignSelf: "center", top: DEVICE_HEIGHT * .35 }}>
+                        <DownloadAnim time={1000} state={this.state.show} finish={this.animationFinish} text={'Added to Queue'}></DownloadAnim>
+                    </View>
+
                     {this.props.currentSong.name ?
                         <TouchableOpacity onPress={() => navigate("CurrentSong", {
                             onPlayPause: methods.onPlayPause,
@@ -60,7 +89,7 @@ class Downloads extends React.Component {
                         <View></View>
                     }
                 </LinearGradient>
-            </View>
+            </View >
         )
     }
 }
@@ -73,11 +102,17 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(Downloads)
+const mapDispatchToProps = dispatch => {
+    return {
+        addQSong: (song) => dispatch(addQSong(song)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Downloads)
 
 const styles = StyleSheet.create({
     downloadContainer: {
-        flex: 1
+        flex: 1,
     },
     header: {
         width: '100%',

@@ -81,6 +81,9 @@ class Index extends Component {
                 if (this.props.currentSong.onQueue && !this.props.addedQueue.length) {
                     this.index++
                 }
+                if (!this.props.queue.length && !this.props.addedQueue.length) {
+                    this.props.pause()
+                }
                 this.onForward();
             }
         } else {
