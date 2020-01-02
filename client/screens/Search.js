@@ -235,7 +235,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(getSongs()),
         addSong: (fileName) =>
             dispatch(addSong(fileName)),
-        downloadAttempted: () => dispatch(downloadAttempted()),
+        downloadAttempted: () =>
+            dispatch(downloadAttempted()),
     }
 }
 

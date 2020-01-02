@@ -53,8 +53,8 @@ class Index extends Component {
 
     async componentDidMount() {
         (async () => {
-            const { exists } = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
-            if (!exists) {
+            const file = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}songs`)
+            if (!file.exists) {
                 await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}songs`)
             }
         })()

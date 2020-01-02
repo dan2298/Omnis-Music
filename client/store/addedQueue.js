@@ -94,8 +94,8 @@ const addedQueueReducer = (state = addedQueue, action) => {
     switch (action.type) {
         case ADD_SONG:
             return [...state, { ...action.song, onQueue: true }]
-        case DELETE_SONG:
-            return action.song
+        // case DELETE_SONG:
+        //     return action.song
         case ON_PICKED:
             return action.songs
         case FINISHED_SONG:
