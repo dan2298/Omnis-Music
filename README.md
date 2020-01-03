@@ -13,8 +13,6 @@ Welcome to **Omnis-Music**: An ios app for downloading music locally on your dev
 
 ## Views
 
-The home screen of the app is pre-populated with lists of the most popular and most recent articles saved by everyone in ReadMe's community of users.
-
 |     Search    |  Downloads    
 | ------------------------- |:-----------------------:|
-| ![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-search-screen.jpeg)|![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-download-screen.jpeg)| 
+| ![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-search-screen.png)|![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-download-screen.png)| 
