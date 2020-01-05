@@ -16,3 +16,5 @@ Welcome to **Omnis-Music**: An ios app for downloading music locally on your dev
 |     Search    |   Downloads   |   Playing   
 | ------------------------- |:-----------------------:|:-----------------------:|
 | ![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-searchScreen.png)|![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-downloadScreen.png)| ![Output sample](https://github.com/dan2298/Omnis-Music/blob/master/resources/Omnis-playingScreen.png)|
+
+## Features
