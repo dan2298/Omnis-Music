@@ -5,17 +5,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import { pauseCurrentSong, playSong, playNextSong, playPreviousSong, seek, changeRate } from '../store'
 import { MMSSfromMillis, imagePath } from '../util'
-
 import Header from '../components/Header'
 import AlbumArt from '../components/AlbumArt'
 import Controls from '../components/Controls'
-
 class CurrentSong extends React.Component {
     constructor() {
         super();
         this.play = this.play.bind(this)
     }
-
     play() {
         if(this.props.current.playing){
             this.props.pauseCurrentSong()
@@ -23,33 +20,32 @@ class CurrentSong extends React.Component {
             this.props.playSong()
         }
     }
-
     render() {
         const { goBack, navigate } = this.props.navigation
         const current = this.props.current
         return (
             <LinearGradient style={styles.container} colors={['rgb(60,60,60)', 'rgb(20,20,20)']}>
                 <Header navigation={this.props.navigation} onDownPress={goBack} onQueuePress={navigate} message={current.song.name}></Header>
-                <AlbumArt image={imagePath(current.song.imageFileName)}></AlbumArt>
-                <View style={styles.trackContainer}>
-                    <View style={styles.detailsWrapper}>
-                        <Text numberOfLines={1} style={styles.title}>{current.song.name}</Text>
-                        <Text numberOfLines={1} style={styles.artist}>{current.song.artist}</Text>
-                    </View> 
-                </View>
-                <Slider 
-                    thumbImage={require('../img/thumb.png')} 
-                    minimumTrackTintColor='rgb(255,255,255)' 
-                    maximumValue={current.duration}
-                    onSlidingComplete={this.props.seek}
-                    value={current.currentTime}
-                    style={{ marginBottom: 0, marginTop: '7%', width: '91%'}}
-                />
-                <View style={{ flexDirection: "row" , bottom: 12}}>
-                    <Text style={{ color: 'white', marginRight: '36%', fontSize: 14, opacity: 0.7 }}>{MMSSfromMillis(current.currentTime)}</Text>
-                    <Text style={{ color: 'white', marginLeft: '36%', fontSize: 14, opacity: 0.7}}>{MMSSfromMillis(current.duration)}</Text>
-                </View>
-                <Controls playing={current.playing} play={this.play} playNext={this.props.playNextSong} playPrevious={this.props.playPreviousSong}></Controls>
+                    <AlbumArt image={imagePath(current.song.imageFileName)}></AlbumArt>
+                    <View style={styles.trackContainer}>
+                        <View style={styles.detailsWrapper}>
+                            <Text numberOfLines={1} style={styles.title}>{current.song.name}</Text>
+                            <Text numberOfLines={1} style={styles.artist}>{current.song.artist}</Text>
+                        </View> 
+                    </View>
+                    <Slider 
+                        thumbImage={require('../img/thumb.png')} 
+                        minimumTrackTintColor='rgb(255,255,255)' 
+                        maximumValue={current.duration}
+                        onSlidingComplete={this.props.seek}
+                        value={current.currentTime}
+                        style={{ marginBottom: 0, marginTop: '3%', width: '91%'}}
+                    />
+                    <View style={{ flexDirection: "row" , bottom: 12}}>
+                        <Text style={{ color: 'white', marginRight: '36%', fontSize: 14, opacity: 0.7 }}>{MMSSfromMillis(current.currentTime)}</Text>
+                        <Text style={{ color: 'white', marginLeft: '36%', fontSize: 14, opacity: 0.7}}>{MMSSfromMillis(current.duration)}</Text>
+                    </View>
+                    <Controls playing={current.playing} play={this.play} playNext={this.props.playNextSong} playPrevious={this.props.playPreviousSong}></Controls>
                 <View style={styles.rateContainer}>
                     <Text style={{color: 'white', fontSize: 18, marginRight: 20 }}>Rate:</Text>
                     <Slider 
@@ -67,13 +63,11 @@ class CurrentSong extends React.Component {
         )
     }
 }
-
 const mapStateToProps = (state) => {
     return {
         current: state.current,
     }
 }
-
 const mapDispatchToProps = dispatch => {
     return {
         pauseCurrentSong: () => dispatch(pauseCurrentSong()),
@@ -84,14 +78,11 @@ const mapDispatchToProps = dispatch => {
         changeRate: (rate) => dispatch(changeRate(rate))
     }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentSong)
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        // backgroundColor: "rgb(40,40,40)"
     },
     rowContainer: {
         flexDirection: "row",
@@ -108,7 +99,8 @@ const styles = StyleSheet.create({
         paddingLeft: 48,
         alignItems: 'center',
         paddingRight: 48,
-        paddingBottom: 4
+        paddingBottom: 4,
+        marginBottom: 10
     },
     detailsWrapper: {
         justifyContent: 'center',
@@ -133,5 +125,5 @@ const styles = StyleSheet.create({
         marginBottom: 50,
         marginRight: '5%',
         width: '70%'
-    }
+    },
 })

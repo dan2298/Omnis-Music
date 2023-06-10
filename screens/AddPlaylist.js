@@ -5,14 +5,14 @@ import { ScrollView } from 'react-native-gesture-handler';
 import PlaylistOption from '../components/PlaylistOption';
 import { connect } from 'react-redux'
 import { addToQueue, deleteSong } from '../store'
-
-
+​
+​
 class AddPlaylist extends React.Component {
     constructor() {
         super()
         this.state = {}
     }
-
+​
     render() {
         const { song, queue } = this.props.route.params
         const { goBack, navigate } = this.props.navigation
@@ -27,7 +27,9 @@ class AddPlaylist extends React.Component {
                         <TouchableOpacity>
                             <PlaylistOption name={'Add to Favorites'}></PlaylistOption>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            navigate('PlaylistSelector', { song })
+                        }}>
                             <PlaylistOption name={'Add to Playlist'}></PlaylistOption>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => { 
@@ -55,9 +57,9 @@ class AddPlaylist extends React.Component {
             </View>
         )
     }
-
+​
 }
-
+​
 const styles = StyleSheet.create({
     container: { 
         flex: 1,
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
         margin: '3%'
     },
     topContainer: {
-        marginTop: '30%',
+        marginTop: '15%',
         marginBottom: '5%',
         flexDirection: 'column',
         alignItems: 'center',
@@ -87,8 +89,8 @@ const styles = StyleSheet.create({
     bottomContainer: {
         flex: 1,
         borderTopColor: 'rgba(150,150,150,0.5)',
-        justifyContent: 'center',
-        marginTop: '8%'
+        justifyContent: 'flex-end',
+        marginBottom: '5%'
     },
     closeText: {
         color:'rgb(245, 245, 245)',
@@ -97,12 +99,12 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     }  
 })
-
+​
 const mapDispatchToProps = dispatch => {
     return {
         deleteSong: (song) => dispatch(deleteSong(song)),
         addToQueue: (song) => dispatch(addToQueue(song))
     }
 }
-
+​
 export default connect(null, mapDispatchToProps)(AddPlaylist)

@@ -38,7 +38,7 @@ class Songs extends React.Component {
     }
 
     tapOptions(song) {
-        this.props.navigation.navigate('AddPlaylist', {song, queue: this.onQueue});
+        this.props.navigation.navigate("AddToPlaylist", { song, queue: this.onQueue });
     }
 
     render() {
