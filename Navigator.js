@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import Home from './screens/Home'
 import Search from './screens/Search'
 import Songs from './screens/Songs'
@@ -12,15 +11,13 @@ import Song from './screens/Song'
 import Queue from './screens/Queue'
 import Playlist from './screens/Playlist'
 import AddPlaylist from './screens/AddPlaylist'
-
+import PlaylistSelector from './screens/PlaylistSelector';
 const Navigator = () => {
     const Tab = createBottomTabNavigator();
     const AppStack = createStackNavigator();
     const HomeStack = createStackNavigator();
     const SongStack = createStackNavigator();
     const PlaylistStack = createStackNavigator();
-    const AddPlaylistStack = createStackNavigator();
-
     const Tabs = () => (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -33,7 +30,6 @@ const Navigator = () => {
                     } else if (route.name === 'Songs') {
                       iconName = 'ios-albums'
                     }
-
                     return <Ionicons name={iconName} size={size} style={{marginTop: 5}} color={color} />;
                     },
                     // activeTintColor: 'red',
@@ -50,12 +46,11 @@ const Navigator = () => {
             <Tab.Screen name="Songs" component={PlaylistsStack} />
         </Tab.Navigator>
     )
-
     const HomesStack = () => {
       return (
         <HomeStack.Navigator>
           <HomeStack.Screen
-            name="Home"
+            name="MainHome"
             component={Home}
             options={{ headerShown: false }}
           />
@@ -67,7 +62,6 @@ const Navigator = () => {
         </HomeStack.Navigator>
       )
     }
-
     const PlaylistsStack = () => {
       return (
         <PlaylistStack.Navigator>
@@ -76,24 +70,28 @@ const Navigator = () => {
             component={Playlist}
             options={{ headerShown: false }}
           />
-          {/* <PlaylistStack.Screen
-            name="AddPlaylistStack"
-            component={AddPlaylistsStack}
-            options={{ headerShown: false }}  
-          /> */}
           <PlaylistStack.Screen
-            name="Songs"
+            name="PlaylistSongs"
             component={Songs}
             options={{ headerShown: false }}
+          />
+          <PlaylistStack.Screen
+            name="AddToPlaylist"
+            component={AddPlaylist}
+            options={{ headerShown: false }}  
+          />
+          <PlaylistStack.Screen
+            name="PlaylistSelector"
+            component={PlaylistSelector}
+            options={{ headerShown: false }}  
           />
         </PlaylistStack.Navigator>
       )
     }
-
     const SongsStack = () => (
         <SongStack.Navigator mode={'modal'}>
           <SongStack.Screen
-            name="Song"
+            name="CurrentSong"
             component={Song}
             options={{ headerShown: false }}
           />
@@ -104,38 +102,17 @@ const Navigator = () => {
           />
         </SongStack.Navigator>
     )
-
-    const AddPlaylistsStack = () => (
-      <AddPlaylistStack.Navigator mode={'modal'}>
-          {/* <AddPlaylistStack.Screen
-            name="Playlist"
-            component={PlaylistsStack}
-            options={{ headerShown: false }}
-          /> */}
-          <AddPlaylistStack.Screen
-            name="AddPlaylist"
-            component={AddPlaylist}
-            options={{ headerShown: false }}  
-          />
-      </AddPlaylistStack.Navigator>
-    )
-
     return (
       <NavigationContainer>
         <AppStack.Navigator mode={'modal'}>
           <AppStack.Screen
-            name="Home"
+            name="Tabs"
             component={Tabs}
             options={{ headerShown: false }}
           />
           <AppStack.Screen
             name="Song"
             component={SongsStack}
-            options={{ headerShown: false }}
-          />
-          <AppStack.Screen
-            name="AddPlaylist"
-            component={AddPlaylist}
             options={{ headerShown: false }}
           />
           <AppStack.Screen
@@ -147,5 +124,4 @@ const Navigator = () => {
       </NavigationContainer>
     )
 }
-
 export default Navigator;
