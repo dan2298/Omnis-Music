@@ -68,11 +68,7 @@ export function getSongsList(songs) {
     return async dispatch => {
         try {
             const lists = JSON.parse(await AsyncStorage.getItem('lists'));
-            if (!lists.length) {
-                
-            } else {
-                lists[0].songs = songs
-            }
+            lists[0].songs = songs
             await AsyncStorage.setItem('lists', JSON.stringify(lists))
             dispatch(gotSongsLists(lists))
         } catch (err) {

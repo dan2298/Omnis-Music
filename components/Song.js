@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import * as Progress from 'react-native-progress';
+import ProgressCircle from 'react-native-progress-circle'
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import RNFS  from 'react-native-fs';
@@ -21,7 +21,6 @@ class Song extends React.Component {
     async componentDidMount() {
         const fileName = convertFileName(this.props.song)
         const song = JSON.parse(await AsyncStorage.getItem(fileName))
-        console.log('is already song', song) 
         if(song) {
             if(song.artist === this.props.song.artist && song.name === this.props.song.name && song.image === this.props.song.image){
                 this.props.song.download = true;
@@ -30,9 +29,8 @@ class Song extends React.Component {
     }
 
     async download(song) {
-        console.log('here in DLLL ===================')
         const url = convertFileUrl(song)
-        console.log(url)
+
         if (song.type === 'Spotify') {
             this.props.addSpotDL(song)
         } else if (song.type === 'Youtube') {
@@ -40,6 +38,10 @@ class Song extends React.Component {
         } else if (song.type === 'Soundcloud') {
             this.props.addScDL(song)
         }
+
+        console.log('==========')
+        console.log('URL: ', url)
+        console.log('==========')
 
         try {
             await RNFS.downloadFile({
@@ -52,22 +54,18 @@ class Song extends React.Component {
                 console.log('BEGIN DOWNLOAD')
             },  
             progress: (res) => {
-                    let progressPercent = (res.bytesWritten / res.contentLength)*100; // to calculate in percentage
-                    // song.download = Number(progressPercent.toFixed(2))
-                    // this.props.downloadSong(song)
+                    let progressPercent = Number((res.bytesWritten / res.contentLength)*100).toFixed(2); // to calculate in percentage
+                    this.setState({ progress: progressPercent })
+                    this.props.downloadSong(song, progressPercent)
                 }
             })
             .promise.then((r) => {
-                console.log('=====================')
-                console.log('=====================')
-                console.log('=====================')
-                console.log('HERE', r)
-                song.download = true
-                this.props.downloadSong(song)
+                this.props.downloadSong(song, true)
                 this.props.downloaded(song)
+                console.log(r)
             });
         } catch (err) {
-            console.error('Error', err)
+            console.error('Error!', err)
         }
     }
 
@@ -82,9 +80,7 @@ class Song extends React.Component {
     }
 
     if (this.props.song.download !== undefined) {
-        console.log('here in DLL first')
         if(this.props.song.download === 0 && !this.props.song.start) {
-            console.log('here in DLL first second in IF')
             this.download(this.props.song);
         } 
     }
@@ -109,9 +105,15 @@ class Song extends React.Component {
 
                 {this.props.song.download !== undefined?
                 <View style={styles.downloadIndicator}>
-                    {this.props.song.download === true?                      
+                    {this.props.song.download === true ?                      
                         <View></View> :
-                        <Progress.Circle progress={this.props.song.download/100} size={18} thickness={2} style={styles.downloadIndicator}/> 
+                        <ProgressCircle
+                        percent={Number(this.state.progress)}
+                        radius={10}
+                        borderWidth={1}
+                        color="#3399FF"
+                        bgColor="rgb(30,30,30)"
+                        />
                     }
                 </View> :
                 <View></View>
@@ -134,8 +136,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        downloadSong: (song) =>
-            dispatch(downloadSong(song)),
+        downloadSong: (song, dl) =>
+            dispatch(downloadSong(song, dl)),
         addSpotDL: (song) =>
             dispatch(addSpotDL(song)),
         addYtDL: (song) =>

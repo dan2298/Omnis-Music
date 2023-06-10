@@ -1,6 +1,6 @@
 import axios from 'axios'
 import cheerio from 'react-native-cheerio'
-import RNFS from 'react-native-fs';
+import RNFS, { stat } from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { replaceElemInArr, convertFileName, convertImageName, imagePath }  from '../util'
 
@@ -123,9 +123,11 @@ const soundCloudReducer = (state = soundCloudSongs, action) => {
         case CLEARED_SC_SONGS:
             return [];
         case ADD_SC_SONG:
-            return replaceElemInArr(state, action.song)
+            const newState = replaceElemInArr(state, action.song)
+            return newState
         case ADD_SCDL:
-            return replaceElemInArr(state, action.song)
+            const newStateSC = replaceElemInArr(state, action.song)
+            return newStateSC
         default:
             return state;
     }

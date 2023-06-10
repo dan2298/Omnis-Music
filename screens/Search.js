@@ -68,21 +68,16 @@ class Search extends React.Component {
     }
 
     download = async (song) => {
-        console.log('1')
-        const url = convertFileUrl(song)
-        if (song.type !== 'Spotify') {
-            this.setState({ downloadAttempted: true })
-            if(!await AsyncStorage.getItem(convertFileName(song))){
-                console.log('2')
-                if (song.type === 'Spotify') {
-                    this.props.addSpotSong(song)
-                } else if (song.type === 'Youtube') {
-                    this.props.addYtSong(song)
-                } else if (song.type === 'Soundcloud') {
-                    this.props.addScSong(song)
-                }
-                this.props.startDownload(song)
+        this.setState({ downloadAttempted: true })
+        if(!await AsyncStorage.getItem(convertFileName(song))){
+            if (song.type === 'Spotify') {
+                this.props.addSpotSong(song)
+            } else if (song.type === 'Youtube') {
+                this.props.addYtSong(song)
+            } else if (song.type === 'Soundcloud') {
+                this.props.addScSong(song)
             }
+            this.props.startDownload(song)
         }
     }
 

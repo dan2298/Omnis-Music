@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
+import ProgressCircle from 'react-native-progress-circle';
 import Icon from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux'
@@ -30,7 +31,7 @@ class DownloadedSong extends React.Component {
                 {this.props.song.name ?
                 <TouchableOpacity style={{...styles.songContainer, borderBottomWidth: width}} onPress={() => this.props.tap(this.props.song, this.props.idx, this.props.list)}>
                     <View style={styles.container}>
-                        <Image style={styles.albumImg} source={{ uri: this.props.song.download === true ? imagePath(this.props.song.imageFileName) : this.props.song.image}}></Image>
+                        <Image style={styles.albumImg} source={{ uri: this.props.song.imageFileName === true ? imagePath(this.props.song.imageFileName) : this.props.song.image}}></Image>
                     </View>
                     <View style={styles.infoContainer}>
                         <View style={{ flexDirection: "row" }}>
@@ -45,7 +46,15 @@ class DownloadedSong extends React.Component {
                         <Text style={{ color: color, fontWeight: '500', fontSize: 12 }}>{this.props.song.type}</Text>
                     </View>
                     {this.props.song.download < 100 && this.props.song.download !== true ? 
-                        <Progress.Circle progress={Number(this.props.song.download)/100} size={20} thickness={2} style={styles.downloadIndicator}/> :
+                        <ProgressCircle
+                            percent={Number(this.props.song.download)/100}
+                            radius={10}
+                            borderWidth={1}
+                            color="#3399FF"
+                            shadowColor="rgb(50,50,50)"
+                            bgColor="rgb(30,30,30)"
+                            outerCircleStyle={styles.downloadIndicator}
+                        /> :
                         <TouchableOpacity style={{ marginTop:'6%' }} onPress={() => this.props.options(this.props.song)}>
                             <Icon name='dots-three-horizontal' size={18} style={styles.optionButtons}></Icon>
                         </TouchableOpacity>
@@ -96,7 +105,6 @@ const styles = StyleSheet.create({
     },
     optionButtons: {
         color:'#b8bece',
-        // marginTop: '6%',
         marginRight: '4%'
     },
     downloadIndicator: {

@@ -15,11 +15,19 @@ export function noDuplicateArrays(arr1, arr2) {
 }
 
 export function replaceElemInArr(arr, song) {
+    let found = false
+
     const newArr = arr.map(el => {
         if (el.name === song.name && el.artist === song.artist){
+            found = true
             return song
         } 
         return el
     })
+
+    if (!found) {
+        newArr.push(song)
+    }
+    
     return newArr;   
 }

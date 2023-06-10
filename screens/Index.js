@@ -11,9 +11,12 @@ class Index extends React.Component {
     async componentDidMount() {
         const songPath = `${RNFS.DocumentDirectoryPath}/songs`;
         const imagePath = `${RNFS.DocumentDirectoryPath}/images`;
-        await RNFS.unlink(songPath)
-        await RNFS.unlink(imagePath)
-        await AsyncStorage.clear()
+        // Clear songs from device
+        // =======================
+        // await RNFS.unlink(songPath)
+        // await RNFS.unlink(imagePath)
+        // await AsyncStorage.clear()
+        
         // AsyncStorage.removeItem('categories')
         // AsyncStorage.removeItem('releases')
         if (!await RNFS.exists(songPath)) {

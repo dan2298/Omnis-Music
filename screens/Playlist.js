@@ -67,7 +67,7 @@ class Playlist extends React.Component {
                     {/* <TouchableOpacity onPress={this.props.createList}> */}
                         <PlaylistContainer key={'key'} list={{ name: 'Create Playlist', songs: [] }} tap={this.createPlaylist}></PlaylistContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigate('Songs')}>
+                    <TouchableOpacity onPress={() => navigate('Songs', {list: this.props.playlists[0]})}>
                         <PlaylistContainer key={0} list={this.props.playlists[0]} tap={navigate}></PlaylistContainer>
                     </TouchableOpacity>
                     {this.props.playlists.map((list,idx) => {

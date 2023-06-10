@@ -42,7 +42,8 @@ const downloadState = {
 const downloadReducer = (state = downloadState, action) => {
     switch (action.type) {
         case DOWNLOAD_SUCCESS:
-            return { ...state, downloadedNames: [...state.downloadedNames, action.name] }
+            const downloadedNames = [...state.downloadedNames, action.name]
+            return Object.assign({ downloadedNames }, state)
         case DOWNLOAD_ERROR:
             return { ...state, downloadedError: [...action.song] }
         default:

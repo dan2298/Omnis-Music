@@ -1,8 +1,9 @@
-import RNFS from 'react-native-fs';
+const RNFS = require('react-native-fs');
+import { produce } from "immer"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { replaceElemInArr, convertFileName, convertImageName, noDuplicateArrays, songPath, imagePath } from '../util'
 import { createList, addToList, getSongsList, getLists } from './lists'
-const originalSongPath = `${RNFS.DocumentDirectoryPath}/songs`
+const originalSongPath = `${RNFS.DocumentDirectoryPath}/songs/`
 
 const GOT_SONGS = 'GOT_SONGS'
 const DOWNLOAD_STARTED = 'DOWNLOAD_STARTED'
@@ -34,9 +35,10 @@ const downloadStarted = (song) => {
     }
 }
 
-const downloaded = (song) => ({
+const downloaded = (song, dl) => ({
     type: DOWNLOADED_SONG,
-    song
+    song, 
+    dl
 })
 
 
@@ -45,7 +47,6 @@ export function getSongs() {
     return async dispatch => {
         try {
             const songs = await RNFS.readdir(originalSongPath)
-            console.log(songs)
             if (songs.length) {
                 const newSongs = songs.map(async (song, idx) => {
                     const info = JSON.parse(await AsyncStorage.getItem(song))
@@ -104,32 +105,26 @@ export function getSongs() {
 export function startDownload(song) {
     return async (dispatch) => {
         try {
-            console.log('here in startDownload')
             const iname = convertImageName(song)
             await RNFS.downloadFile({ fromUrl: song.image, toFile: imagePath(iname) })
             const sname = convertFileName(song)
-            song.fileName = sname
-            song.download = 0;
-            song.date = String(new Date())
-            console.log(song)
-            dispatch(downloadStarted(song))
+            dispatch(downloadStarted(Object.assign({fileName: sname, imageFileName: iname, download: 0, date: String(new Date())}, song)))
         } catch (err) {
             console.log(err)
         }
     }
 }
 
-export function downloadSong (song) {
+export function downloadSong (song, download) {
     //add to playlist instead of song
     return async (dispatch) => {
         try {
-            if(song.download === true) {
-                const iname = convertImageName(song)
-                song.imageFileName = iname
-                await AsyncStorage.setItem(song.fileName, JSON.stringify(song))
-                dispatch(addToList(song, 'All Songs'))
-            }
-            dispatch(downloaded(song)) 
+            if (download === true) {
+                const newSong = {...song, download: true, imageFileName: convertImageName(song) }
+                await AsyncStorage.setItem(song.fileName, JSON.stringify(newSong))
+                dispatch(addToList(newSong, 'All Songs'))
+            } 
+            dispatch(downloaded(song, download))
         } catch (err) {
             console.log(err)
         }
@@ -162,13 +157,17 @@ const songs = []
 const songReducer = (state = songs, action) => {
     switch (action.type) {
         case GOT_SONGS:
-            if(state.length === 0) return [...action.songs]
+            if(state.length === 0) return action.songs
             const newSongs = noDuplicateArrays(state, action.songs)
-            return [...state, ...newSongs]
+            return newSongs
         case DOWNLOAD_STARTED:
-            return [action.song, ...state]
+            return produce(state, songs => {
+                songs.push(action.song)
+            })
         case DOWNLOADED_SONG:
-            return replaceElemInArr(state, action.song)
+            return produce(state, songs => {
+                songs.push( Object.assign(action.song, { download: action.dl }))
+            })
         case DELETE_SONG:
             return action.songs
         default:

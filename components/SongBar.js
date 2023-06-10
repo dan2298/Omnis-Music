@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux'
 import { playSong, playNextSong, pauseCurrentSong, updateDuration, updatePlayTime } from '../store'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as Progress from 'react-native-progress';
+import ProgressBar from 'react-native-progress/Bar';
 
 import { songPath, imagePath } from '../util'
 
@@ -28,7 +28,7 @@ class SongBar extends React.Component {
         const current = this.props.current
         return (
                 <View style={{...styles.container, display: current.song.fileName ? 'flex' : 'none'}}>
-                    <Progress.Bar progress={current.currentTime ? current.currentTime/current.duration : 0} width={null} height={.6} borderRadius={0} color={'rgb(150,150,150)'}></Progress.Bar>
+                    <ProgressBar progress={current.currentTime ? current.currentTime/current.duration : 0} width={null} height={.6} borderRadius={0} color={'rgb(150,150,150)'}></ProgressBar>
                         <View style={styles.subContainer}>
                         <Image style={{height:52, width:52}} source={{uri: imagePath(current.song.imageFileName)}}></Image>
                         <View style={styles.text}>

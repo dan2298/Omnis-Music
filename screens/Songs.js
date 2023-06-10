@@ -62,7 +62,7 @@ class Songs extends React.Component {
                         <Text style={styles.headerTitle}>{listName.toUpperCase()}</Text>
                     <View style={{ width: 32}}></View>
                 </View>
-                {this.props.songs.length ?
+                {songList.length ?
                 <View style={{flex: 1}}>
                     <ScrollView>
                         <DownloadedSongList onQueue={this.onQueue} tap={this.start} options={this.tapOptions} 

@@ -1,6 +1,7 @@
 import MusicControl from 'react-native-music-control';
 import { getQueue } from './queue'
 import { getCurrentList } from './currentList'
+import { produce } from "immer"
 
 const SET_SONG = 'SET_SONG';
 const RESET_STATE = 'RESET_STATE';
@@ -259,6 +260,7 @@ export function updateCurrent(lists){
     return async (dispatch, getState) => {
         const { current } = getState()
         let idx = -1
+        // Update index of current song after download of new song
         for(let i = 0; i < lists[0].songs.length; i++) {
             if (lists[0].songs[i].fileName === current.song.fileName){
                 idx = i;
@@ -303,7 +305,9 @@ const currentPlayingReducer = (state = current, action) => {
         case SET_LIST:
             return {...state, currentList: action.list}
         case UPDATE_CURRENT:
-            return {...state, currentList: action.list, songIndex: action.idx}
+            return produce(state, lists => {
+                return Object.assign(lists, { currentList: action.list, songIndex: action.idx })
+            })
         default:
             return state
     }

@@ -46,7 +46,7 @@ render() {
 
 const mapStateToProps = state => {
     return {
-        // songs: state.songs,
+        songs: state.songs,
     }
 }
 
