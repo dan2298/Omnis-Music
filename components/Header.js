@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     paddingRight: 18,
     flexDirection: 'row',
-    marginTop: '9%'
+    marginTop: '10%'
   },
   message: {
     flex: 1,

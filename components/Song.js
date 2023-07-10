@@ -15,15 +15,16 @@ class Song extends React.Component {
         super()
         this.state = {
             progress: '',
+            download: false
         }
     }
 
     async componentDidMount() {
         const fileName = convertFileName(this.props.song)
         const song = JSON.parse(await AsyncStorage.getItem(fileName))
-        if(song) {
+        if (song) {
             if(song.artist === this.props.song.artist && song.name === this.props.song.name && song.image === this.props.song.image){
-                this.props.song.download = true;
+                this.setState({ download: true })
             }
         }
     }
@@ -87,13 +88,19 @@ class Song extends React.Component {
     
     return (
             <View>
-            <TouchableOpacity style={styles.songContainer} onPress={() => this.props.tap(this.props.song)}>
+            <TouchableOpacity style={styles.songContainer} onPress={() => {
+                if (this.state.download === true || this.props.song.download === true ) {
+                    console.log('IN IF')
+                } else {
+                    this.props.tap(this.props.song)
+                }
+            }}>
                 <View style={styles.container}>
                     <Image style={styles.albumImg} source={{ uri: this.props.song.image }}></Image>
                 </View>
                 <View style={styles.infoContainer}>
                     <View style={{ flexDirection: "row" }}>
-                        {this.props.song.download === true ?
+                        {this.state.download === true || this.props.song.download === true ?
                             <Icon name='ios-checkmark-circle' style={{color: '#0244de', marginRight:5, marginTop: 1}} size={16}></Icon> :
                             <View></View>
                         }
@@ -153,9 +160,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Song)
 
 const styles = StyleSheet.create({
     container: {
-        shadowColor: "rgb(50,50,50)",
-        shadowOffset: { width: 1},
-        shadowOpacity: 0.5,
+        
     },
     albumImg: {
         width: 50,

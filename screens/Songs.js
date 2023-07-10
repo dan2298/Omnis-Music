@@ -17,6 +17,7 @@ class Songs extends React.Component {
         }
         this.start = this.start.bind(this)
         this.tapOptions = this.tapOptions.bind(this)
+        this.onQueue = this.onQueue.bind(this)
         this.animationFinish = this.animationFinish.bind(this)
     }
     
@@ -50,8 +51,9 @@ class Songs extends React.Component {
         } else {
             songList = this.props.songs
             listName = 'All Songs'
-        }
+        }  
 
+        const removePlaylist = this.props.route.params.removePlaylist
         const { goBack, navigate } = this.props.navigation
         return ( 
             <View style={{ flex: 1, backgroundColor:'rgb(20,20,20)' }}>
@@ -65,7 +67,7 @@ class Songs extends React.Component {
                 {songList.length ?
                 <View style={{flex: 1}}>
                     <ScrollView>
-                        <DownloadedSongList onQueue={this.onQueue} tap={this.start} options={this.tapOptions} 
+                        <DownloadedSongList remove={removePlaylist} onQueue={this.onQueue} tap={this.start} options={this.tapOptions} 
                         songs={songList} list={listName} currentSong={this.props.current.song.id}></DownloadedSongList>
                         {/* refresh={this.props.getSongs}  */}
                     </ScrollView>

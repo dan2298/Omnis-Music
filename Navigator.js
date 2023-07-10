@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './screens/Home'
@@ -12,6 +12,8 @@ import Queue from './screens/Queue'
 import Playlist from './screens/Playlist'
 import AddPlaylist from './screens/AddPlaylist'
 import PlaylistSelector from './screens/PlaylistSelector';
+import { ModalPresentationIOS } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
+
 const Navigator = () => {
     const Tab = createBottomTabNavigator();
     const AppStack = createStackNavigator();
@@ -78,18 +80,18 @@ const Navigator = () => {
           <PlaylistStack.Screen
             name="AddToPlaylist"
             component={AddPlaylist}
-            options={{ headerShown: false }}  
+            options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}  
           />
           <PlaylistStack.Screen
             name="PlaylistSelector"
             component={PlaylistSelector}
-            options={{ headerShown: false }}  
+            options={{...TransitionPresets.ModalSlideFromBottomIOS, cardOverlayEnabled: true, headerShown: false }}  
           />
         </PlaylistStack.Navigator>
       )
     }
     const SongsStack = () => (
-        <SongStack.Navigator mode={'modal'}>
+        <SongStack.Navigator>
           <SongStack.Screen
             name="CurrentSong"
             component={Song}
@@ -98,13 +100,23 @@ const Navigator = () => {
           <SongStack.Screen
             name="Queue"
             component={Queue}
-            options={{ headerShown: false }}
+            options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}
+          />
+          <SongStack.Screen
+            name="AddToPlaylistSong"
+            component={AddPlaylist}
+            options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}  
+          />
+          <SongStack.Screen
+            name="PlaylistSelectorSong"
+            component={PlaylistSelector}
+            options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}  
           />
         </SongStack.Navigator>
     )
     return (
       <NavigationContainer>
-        <AppStack.Navigator mode={'modal'}>
+        <AppStack.Navigator >
           <AppStack.Screen
             name="Tabs"
             component={Tabs}
@@ -113,7 +125,7 @@ const Navigator = () => {
           <AppStack.Screen
             name="Song"
             component={SongsStack}
-            options={{ headerShown: false }}
+            options={{ ...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}
           />
           <AppStack.Screen
             name="Queue"

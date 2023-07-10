@@ -15,6 +15,7 @@ class Queue extends React.Component {
         super()
         this.state = {}
         this.play = this.play.bind(this)
+        this.tapOptions = this.tapOptions.bind(this)
     }
 
     play() {
@@ -23,6 +24,10 @@ class Queue extends React.Component {
         } else {
             this.props.playSong()
         }
+    }
+
+    tapOptions(song) {
+        this.props.navigation.navigate("AddToPlaylistSong", { song, queue: this.onQueue });
     }
 
     render() {
@@ -36,7 +41,7 @@ class Queue extends React.Component {
                     <ScrollView>
                     <View style={styles.subContainer}>
                         <Text style={styles.subheaderText}>Now Playing</Text>
-                        <DownloadedSong song={this.props.current.song} highlighted={true} dl={false} tap={goBack}></DownloadedSong>
+                        <DownloadedSong options={this.tapOptions}  song={this.props.current.song} highlighted={true} dl={false} tap={goBack}></DownloadedSong>
                     </View>
                     {this.props.queue.length ? 
                     <View style={styles.subContainer}>

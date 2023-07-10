@@ -26,6 +26,7 @@ class Search extends React.Component {
         }
         this.searchInputHandler = this.searchInputHandler.bind(this)
         this.animationFinish = this.animationFinish.bind(this)
+        this.clearSearch = this.clearSearch.bind(this)
     }
 
     searchInputHandler = input => {

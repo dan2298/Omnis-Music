@@ -25,7 +25,6 @@ function addedToQueue(song) {
 
 export function addToQueue (song) {
     return async (dispatch) => {
-        song.onQueue = true;
         dispatch(addedToQueue(song))
     }
 }
@@ -52,8 +51,6 @@ export function deleteSongQueue(song) {
             // remove song from entire queue
             const queue = getState().queue
             const newQueue = []
-            console.log(song)
-            console.log('=========')
             for (let i = 0; i < queue.length; i++) {
                 console.log(queue[i])
                 if(song.fileName !== queue[i].fileName){
@@ -72,8 +69,7 @@ const queue = []
 const queueReducer = (state = queue, action) => {
     switch (action.type) {
         case ADD_QUEUE:
-            state.push(action.song)
-            return state
+            return [...state, action.song]
         case GOT_QUEUE:
             return action.songs
         case DELETE_QUEUE:

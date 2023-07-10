@@ -49,13 +49,12 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        height: '14.5%',
+        height: '14%',
         backgroundColor: "rgb(40,40,40)",
         borderBottomColor: "rgb(60,60,60)",
         borderBottomWidth: .5
     },
     searchBarContainer: {
-        justifyContent: "center",
         alignItems: "center",
         marginTop: 50,
         marginLeft: 12,

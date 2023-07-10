@@ -8,11 +8,13 @@ import { MMSSfromMillis, imagePath } from '../util'
 import Header from '../components/Header'
 import AlbumArt from '../components/AlbumArt'
 import Controls from '../components/Controls'
+
 class CurrentSong extends React.Component {
     constructor() {
         super();
         this.play = this.play.bind(this)
     }
+
     play() {
         if(this.props.current.playing){
             this.props.pauseCurrentSong()
@@ -20,6 +22,7 @@ class CurrentSong extends React.Component {
             this.props.playSong()
         }
     }
+
     render() {
         const { goBack, navigate } = this.props.navigation
         const current = this.props.current
@@ -78,11 +81,13 @@ const mapDispatchToProps = dispatch => {
         changeRate: (rate) => dispatch(changeRate(rate))
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentSong)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
+        // backgroundColor: "rgb(40,40,40)"
     },
     rowContainer: {
         flexDirection: "row",
@@ -99,8 +104,7 @@ const styles = StyleSheet.create({
         paddingLeft: 48,
         alignItems: 'center',
         paddingRight: 48,
-        paddingBottom: 4,
-        marginBottom: 10
+        paddingBottom: 4
     },
     detailsWrapper: {
         justifyContent: 'center',

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux'
 import { songPath, imagePath }  from '../util'
-​
+
 class DownloadedSong extends React.Component {
     constructor() {
         super()
@@ -13,7 +13,7 @@ class DownloadedSong extends React.Component {
             progress: ''
         }
     }
-​
+
     render() {
         let color;
         const song = this.props.song
@@ -25,7 +25,7 @@ class DownloadedSong extends React.Component {
         } else if (song.type === 'Soundcloud') {
             color = '#ff8924'
         }
-​
+
         return (
             <View>
                 {song.name ?
@@ -42,7 +42,7 @@ class DownloadedSong extends React.Component {
                             <Text numberOfLines={1} style={{ color: 'white' , fontSize: 15,
                              fontWeight: '500', color: song.name === this.props.current.song.name ? '#002df7' : 'white'}}>{song.name}</Text>
                         </View>
-                        <Text numberOfLines={1} style={{ color: 'rgb(180, 180, 180)', fontSize: 14}}>{song.artist}</Text>
+                        <Text numberOfLines={1} style={{ color: 'rgb(180, 180, 180)', fontSize: 13}}>{song.artist}</Text>
                         <Text style={{ color: color, fontWeight: '500', fontSize: 12 }}>{song.type}</Text>
                     </View>
                     {song.download < 100 && song.download !== true ? 
@@ -51,7 +51,6 @@ class DownloadedSong extends React.Component {
                             radius={10}
                             borderWidth={1}
                             color="#3399FF"
-                            shadowColor="rgb(50,50,50)"
                             bgColor="rgb(30,30,30)"
                             outerCircleStyle={styles.downloadIndicator}
                         /> :
@@ -61,14 +60,14 @@ class DownloadedSong extends React.Component {
                     }
                 </TouchableOpacity> :
                 <View>
-​
+
                 </View>
                 }
             </View>
         )
     }
 }
-​
+
 const mapStateToProps = state => {
     return {
         current: state.current,
@@ -76,14 +75,12 @@ const mapStateToProps = state => {
         songs: state.songs,
     }
 }
-​
+
 export default connect(mapStateToProps)(DownloadedSong)
-​
+
 const styles = StyleSheet.create({
     container: {
-        shadowColor: "rgb(50,50,50)",
-        shadowOffset: { width: 1},
-        shadowOpacity: 0.5,
+
     },
     albumImg: {
         width: 50,

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import DownloadedSong from './DownloadedSong';
 import Swipeable from 'react-native-swipeable-v1';
 import { connect } from 'react-redux'
-import { addToQueue, deleteSong } from '../store'
+import { addToQueue, deleteSong, removeFromList } from '../store'
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,7 +27,11 @@ const DownloadedSongList = props => {
                                 </View>
                             )}
                             onRightActionRelease={() => {
-                                props.deleteSong(song)
+                                if (props.remove) {
+                                    props.removeFromList(song, props.list)
+                                } else {
+                                    props.deleteSong(song)
+                                }
                             }}
                             onLeftActionRelease={() => {
                                 props.onQueue()
@@ -49,6 +53,7 @@ const DownloadedSongList = props => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        removeFromList: (song, name) => dispatch(removeFromList(song, name)),
         deleteSong: (song) => dispatch(deleteSong(song)),
         addToQueue: (song) => dispatch(addToQueue(song))
     }

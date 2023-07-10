@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import * as Progress from 'react-native-progress';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import { connect } from 'react-redux';
-// import { convertFileUrl, convertFileName, songPath }  from '../util'
-import Playlist from '../screens/Playlist';
-import { imagePath } from '../util';
+import PlaylistAlbumArt from './PlaylistAlbumArt'
 
 class PlaylistContainer extends React.Component {
     constructor() {
@@ -26,7 +22,9 @@ render() {
                     <View>
                         {this.props.list.name === 'All Songs' ?
                         <Image style={styles.albumImg} source={require('../img/liked-songs.png')}></Image> :
-                        <Image style={styles.albumImg} source={require('../img/emptyPlaylist.png')}></Image>
+                        this.props.list.songs.length > 0 ? 
+                            <PlaylistAlbumArt height={37.5} width={37.5} songs={this.props.list.songs}></PlaylistAlbumArt> :
+                            <Image style={styles.albumImg} source={require('../img/emptyPlaylist.png')}></Image>
                         }
                     </View>
                 }
@@ -54,9 +52,7 @@ export default connect(mapStateToProps)(PlaylistContainer)
 
 const styles = StyleSheet.create({
     container: {
-        shadowColor: "rgb(50,50,50)",
-        shadowOffset: { width: 1},
-        shadowOpacity: 0.5,
+
     },
     createContainer: {
         width: 75,
