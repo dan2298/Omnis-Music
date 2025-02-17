@@ -1,8 +1,6 @@
 import youtubeToken from '../youtube-token'
 import YTSearch from 'youtube-api-search'
 import he from 'he'
-import RNFS from 'react-native-fs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { replaceElemInArr, convertFileName, convertImageName, imagePath }  from '../util'
 
 const GOT_YT_SONGS = 'GOT_YT_SONGS';

@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { shuffleList, unShuffleList } from './currentList';
 import { updateCurrent } from './currentPlaying'
 
 const GOT_PLAYLIST = 'GOT_PLAYLIST';
 const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
 const ADD_TO_LIST = 'ADD_TO_LIST';
+const UPDATE_LIST = 'UPDATE_LIST';
 const REMOVE_FROM_LIST = 'REMOVE_FROM_LIST';
 const GOT_SONGS_LIST = 'GOT_SONGS_LIST';
 const DELETE_LIST = 'DELETE_LIST';
@@ -32,6 +34,52 @@ const deletedList = (lists) => ({
     type: DELETE_LIST,
     lists
 })
+
+const updateList = (lists) => ({
+    type: UPDATE_LIST,
+    lists
+})
+
+
+export function turnShuffleOn(playlist) {
+    return async dispatch => {
+        try {
+            const lists = JSON.parse(await AsyncStorage.getItem('lists'));
+            const newLists = lists.map(list => { 
+                if (playlist.name === list.name) {
+                    return { ...list, shuffle: true }
+                }
+                return list
+            })
+
+            await AsyncStorage.setItem('lists', JSON.stringify(newLists))
+            dispatch(updateList(newLists))
+            dispatch(shuffleList())
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}
+
+export function turnShuffleOff(playlist) {
+    return async dispatch => {
+        try {
+            const lists = JSON.parse(await AsyncStorage.getItem('lists'));
+            const newLists = lists.map(list => { 
+                if (playlist.name === list.name) {
+                    return { ...list, shuffle: false }
+                }
+                return list
+            })
+
+            await AsyncStorage.setItem('lists', JSON.stringify(newLists))
+            dispatch(updateList(newLists))
+            dispatch(unShuffleList())
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}
 
 export function getLists() {
     return async dispatch => {
@@ -140,11 +188,11 @@ export function createList(name) {
                   }
                 }
                 if (!listExists) {
-                  lists.push({ name: name.trim(), songs: [], image: [] });
+                  lists.push({ name: name.trim(), songs: [], image: [], shuffle: false });
                 }
             } else {
                 const newName = `My playlist #${lists.length}`
-                lists.push({name: newName, songs: [], image: []})
+                lists.push({name: newName, songs: [], image: [], shuffle: false })
             }
             await AsyncStorage.setItem('lists', JSON.stringify(lists))
             dispatch(createdList(lists))
@@ -154,21 +202,6 @@ export function createList(name) {
         }
     }
 }
-
-// export function deleteSong(song) {
-//     return async (dispatch, getState) => {
-//         try {
-//             const songs = getState().songs
-//             await RNFS.unlink(songPath(song.fileName))
-//             await RNFS.unlink(imagePath(song.imageFileName))
-//             await AsyncStorage.removeItem(song.fileName)
-//             const newSongs = songs.filter(el => el.fileName !== song.fileName && el.image !== song.image)
-//             dispatch(deletedSong(newSongs))
-//         } catch (err) {
-//             console.error(err)
-//         }
-//     }
-// }
 
 const playlists = []
 const playlistReducer = (state = playlists, action) => {
@@ -180,6 +213,8 @@ const playlistReducer = (state = playlists, action) => {
         case CREATE_PLAYLIST: 
             return [...state, ...action.list]
         case ADD_TO_LIST:
+            return action.lists
+        case UPDATE_LIST:
             return action.lists
         case REMOVE_FROM_LIST:
             return action.lists

@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Category from '../components/Category'
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 class Home extends React.Component {
     constructor() {
@@ -31,15 +31,15 @@ class Home extends React.Component {
 
     render() {
         const { navigate } = this.props.navigation
-        const categories = this.state.categories.length ? this.state.categories : this.props.categories.genres
-        const releases = this.state.releases.length ? this.state.releases : this.props.categories.releases
+        const categories = this.state.categories.length ? this.state.categories : []//this.props?.categories?.genres
+        const releases = this.state.releases.length ? this.state.releases : [] //this.props?.categories?.releases
         return (
             <LinearGradient start={{x: -1, y: -1.5 }} end={{x: 1, y: 0.5 }} style={{height:'100%', width: '100%'}} colors={['rgb(60, 60, 60)', 'rgb(20,20,20)']}>
                 <ScrollView>
                     <View style={styles.topHeader}>
                         <Text style={styles.topText}>Browse</Text>
                         <TouchableOpacity onPress={() => navigate('Settings')}>
-                            <Ionicons name={'ios-settings'} size={24} style={{margin: '1.5%', marginTop: '50%'}} color={'rgb(150,150,150)'}/>
+                            <Icon name='settings-sharp' size={24} style={{margin: '1.5%', marginTop: '12%'}} color={'rgb(150,150,150)'}/>
                         </TouchableOpacity>
                     </View>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>                    

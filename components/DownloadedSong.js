@@ -79,9 +79,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps)(DownloadedSong)
 
 const styles = StyleSheet.create({
-    container: {
-
-    },
     albumImg: {
         width: 50,
         height: 50,

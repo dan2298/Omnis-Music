@@ -37,8 +37,10 @@ const DownloadedSongList = props => {
                                 props.onQueue()
                                 props.addToQueue(song)
                             }}>
+                                <View key={idx}>
                                 <DownloadedSong options={props.options} tap={props.tap} song={song} idx={idx} width={1} list={props.list} 
                                 dl={true} highlighted={song.id === props.currentSong ? true: false }></DownloadedSong>
+                                </View>
                             </Swipeable>
                         )
                     })} 

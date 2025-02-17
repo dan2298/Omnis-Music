@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './screens/Home'
@@ -22,19 +23,16 @@ const Navigator = () => {
     const PlaylistStack = createStackNavigator();
     const Tabs = () => (
         <Tab.Navigator
+            // initialRouteName={Home}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === 'Home') {
-                      iconName = 'ios-home';
-                    } else if (route.name === 'Search') {
-                      iconName = 'ios-search';
-                    } else if (route.name === 'Songs') {
-                      iconName = 'ios-albums'
-                    }
-                    return <Ionicons name={iconName} size={size} style={{marginTop: 5}} color={color} />;
+                    if (route.name === 'Home') iconName = 'home';
+                    else if (route.name === 'Search') iconName = 'search';
+                    else if (route.name === 'Songs') iconName = 'albums'          
+                    return <Ionicons name={iconName} size={size} color={color} />;
                     },
-                    // activeTintColor: 'red',
+                    // tabBarActiveTintColor: 'rgb(15,50,241,0.10)',
                     inactiveTintColor: 'rgb(150,150,150)',
                     tabBarStyle: {
                         backgroundColor: 'rgb(40,40,40)',
@@ -115,25 +113,27 @@ const Navigator = () => {
         </SongStack.Navigator>
     )
     return (
-      <NavigationContainer>
-        <AppStack.Navigator >
-          <AppStack.Screen
-            name="Tabs"
-            component={Tabs}
-            options={{ headerShown: false }}
-          />
-          <AppStack.Screen
-            name="Song"
-            component={SongsStack}
-            options={{ ...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}
-          />
-          <AppStack.Screen
-            name="Queue"
-            component={Queue}
-            options={{ headerShown: false }}    
-          />
-        </AppStack.Navigator>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <AppStack.Navigator >
+            <AppStack.Screen
+              name="Tabs"
+              component={Tabs}
+              options={{ headerShown: false }}
+            />
+            <AppStack.Screen
+              name="Song"
+              component={SongsStack}
+              options={{ ...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false }}
+            />
+            <AppStack.Screen
+              name="Queue"
+              component={Queue}
+              options={{ headerShown: false }}    
+            />
+          </AppStack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
     )
 }
 export default Navigator;

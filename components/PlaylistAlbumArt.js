@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Dimensions,} from 'react-native';
+import { View, Image } from 'react-native';
 
 const PlaylistAlbumArt = ({songs, height, width}) => {
     const length = songs.length - 1

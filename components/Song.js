@@ -56,6 +56,7 @@ class Song extends React.Component {
             },  
             progress: (res) => {
                     let progressPercent = Number((res.bytesWritten / res.contentLength)*100).toFixed(2); // to calculate in percentage
+                    console.log(progressPercent)
                     this.setState({ progress: progressPercent })
                     this.props.downloadSong(song, progressPercent)
                 }
@@ -101,7 +102,7 @@ class Song extends React.Component {
                 <View style={styles.infoContainer}>
                     <View style={{ flexDirection: "row" }}>
                         {this.state.download === true || this.props.song.download === true ?
-                            <Icon name='ios-checkmark-circle' style={{color: '#0244de', marginRight:5, marginTop: 1}} size={16}></Icon> :
+                            <Icon name='checkmark-circle' style={{color: '#0244de', marginRight:5, marginTop: 1}} size={16}></Icon> :
                             <View></View>
                         }
                         <Text numberOfLines={1} style={{ color: 'white' , fontSize: 16, fontWeight: '400'}}>{this.props.song.name}</Text>
@@ -110,7 +111,7 @@ class Song extends React.Component {
                     <Text style={{ color: color, fontWeight: '500', fontSize: 12 }}>{this.props.song.type}</Text>
                 </View>
 
-                {this.props.song.download !== undefined?
+                {/* {this.props.song.download !== undefined?
                 <View style={styles.downloadIndicator}>
                     {this.props.song.download === true ?                      
                         <View></View> :
@@ -124,7 +125,7 @@ class Song extends React.Component {
                     }
                 </View> :
                 <View></View>
-                }
+                } */}
             </TouchableOpacity>
             </View>
         )

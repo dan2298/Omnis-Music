@@ -102,7 +102,7 @@ class Search extends React.Component {
                     <View style={styles.beforeSearch}>
                         <Text style={styles.middleText}>Search for songs to download</Text>
                     </View>
-            }
+                }
             <TouchableOpacity onPress={() => navigate('Song', {seek: this.seek})}>
                 <SongBar navigate={navigate}></SongBar>
             </TouchableOpacity>

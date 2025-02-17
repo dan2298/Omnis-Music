@@ -13,7 +13,7 @@ class Settings extends React.Component {
     }
 
     render() {
-        const arr = [1,2,3,4,5,6,7,8,9,10]
+        const arr = [1,2,3,4,5,6,7,8]
         const { goBack, navigate } = this.props.navigation
         return(
             <View style={styles.container}>
@@ -24,12 +24,12 @@ class Settings extends React.Component {
                         <Text style={styles.headerTitle}>{'Settings'}</Text>
                     <View style={{ width: 32}}></View>
                 </View>
-                {/* <LinearGradient colors={['rgb(60,60,60)', 'rgb(20,20,20)']}>
+                <LinearGradient colors={['rgb(60,60,60)', 'rgb(20,20,20)']}>
                     <View style={styles.topContainer}>
                         <Text style={styles.titleText}>Settings</Text>
                         <Icon name='settings' size={250} style={styles.icon}></Icon>
                     </View>
-                </LinearGradient> */}
+                </LinearGradient>
                 <View style={styles.bottom}>
                     {arr.map((el, idx) => {
                         return (
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         width:'100%',
-        paddingTop: 10,
+        paddingTop: 15,
         paddingBottom: 10,
         paddingLeft: 12,
         paddingRight: 12,

@@ -1,8 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Keyboard } from 'react-native'
-import { songPath, imagePath }  from '../util'
-import { ScrollView } from 'react-native-gesture-handler';
-import SongOption from '../components/SongOption';
 import { connect } from 'react-redux'
 import { addToList, addToQueue, deleteSong } from '../store'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -58,7 +55,7 @@ class PlaylistSelector extends React.Component {
                 <View style={styles.searchContainer}>
                     <View style={this.state.input || this.state.searched ? styles.searchBarAfterContainer : styles.searchBarContainer}>
                         <TouchableOpacity onPress={this.search}>
-                            <Ionicons name='ios-search' size={24} color='#b8bece' style={{ padding: 4 }}></Ionicons>
+                            <Ionicons name='search' size={24} color='#b8bece' style={{ padding: 4 }}></Ionicons>
                         </TouchableOpacity>
                         <TextInput
                             placeholder="Find playlist"
@@ -74,7 +71,7 @@ class PlaylistSelector extends React.Component {
                                 this.textInput.clear()
                                 this.softClear()
                             }}>
-                                <Ionicons name='ios-close' size={28} color='#b8bece' style={{ padding: 2, paddingBottom: 0 }}></Ionicons>
+                                <Ionicons name='close' size={28} color='#b8bece' style={{ padding: 2, paddingBottom: 0 }}></Ionicons>
                             </TouchableOpacity> :
                             <View style={{ paddingLeft: 16, padding: 2, paddingBottom: 3 }}></View>
                         }
@@ -127,7 +124,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         backgroundColor:'rgba(30,30,30,0.95)',
         flexDirection: 'row',
-        paddingTop: '6%',
+        paddingTop: '10%',
         paddingLeft: '5%',
     },
     titleText: {

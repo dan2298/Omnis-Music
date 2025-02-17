@@ -1,6 +1,6 @@
 import MusicControl from 'react-native-music-control';
 import { getQueue } from './queue'
-import { getCurrentList } from './currentList'
+import { getCurrentList, shuffleList } from './currentList'
 import { produce } from "immer"
 
 const SET_SONG = 'SET_SONG';
@@ -12,12 +12,12 @@ const UPDATE_SEEK = 'UPDATE_SEEK';
 const DONE_SEEK = 'DONE_SEEK';
 const SET_RATE = 'SET_RATE';
 const SET_LIST = 'SET_LIST';
+const SET_INDEX = 'SET_INDEX';
 const UPDATE_CURRENT = 'UPDATE_CURRENT';
 
-const setCurrentSong = (index, song, list) => {    
+const setCurrentSong = (song, list) => {    
     return {
         type: SET_SONG,
-        index, 
         song,
         list
     }
@@ -31,7 +31,14 @@ const updatedCurrent = (list, idx) => {
     }
 }
 
-const setCurrentList = (list) => {
+export const setCurrentIdx = (index) => {
+    return {
+        type: SET_INDEX,
+        index
+    }
+}
+
+export const setCurrentList = (list) => {
     return {
         type: SET_LIST,
         list
@@ -88,6 +95,15 @@ const doneSeeking = (seek) => {
     }
 }
 
+export function getCurrentIdx() {
+    return async (dispatch) => {
+        try {
+            dispatch(updateSeek(time, true));
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}
 
 export function seek(time) {
     return async (dispatch) => {
@@ -146,18 +162,65 @@ export function pauseCurrentSong() {
     }
 }
 
-export function setSong(song, idx, list) {
+export function setNewSong(song, idx, list) {
     return async (dispatch, getState) => {    
         try {
-            const { lists } = getState()
+            const { lists, current } = getState()
             dispatch(resetState())
-            dispatch(setCurrentSong(idx, song, list))
+            if (current.songIndex === -1) dispatch(setCurrentIdx(idx))
+            dispatch(setCurrentSong(song, list))
             for (let i = 0; i < lists.length; i++) {
                 if (list === lists[i].name){
-                    dispatch(setCurrentList(lists[i].songs))
+                    if (lists[i].shuffle) {
+                        dispatch(shuffleList())
+                    } else {
+                        dispatch(setCurrentList(lists[i]))
+                    }
                     break;
                 }
             }
+
+
+            MusicControl.enableControl('play', true)
+            MusicControl.enableControl('pause', true)
+            MusicControl.enableControl('nextTrack', true)
+            MusicControl.enableControl('previousTrack', true)
+            MusicControl.enableControl('changePlaybackPosition', true)
+            MusicControl.handleAudioInterruptions(true);
+            MusicControl.enableBackgroundMode(true);
+    
+            MusicControl.on('play', () => dispatch(playSong()));
+            MusicControl.on('pause', () => dispatch(pauseCurrentSong()));
+            MusicControl.on('nextTrack', () => dispatch(playNextSong()));
+            MusicControl.on('previousTrack', () => dispatch(playPreviousSong()));
+            MusicControl.on('changePlaybackPosition', (time) => dispatch(seek(time)));
+
+            MusicControl.setNowPlaying({
+                title: song.name,
+                artwork: song.image || "",
+                artist: song.artist || "",
+                genre: song.genre || "",
+            })
+
+            MusicControl.updatePlayback({
+                state: MusicControl.STATE_PLAYING
+            });
+
+            dispatch(updatePlaying(true));
+        } catch (err) {
+            console.log(err)
+        }
+    }
+}
+
+export function setSong(song, idx, list) {
+    return async (dispatch, getState) => {    
+        try {
+            const { current } = getState()
+            dispatch(resetState())
+            dispatch(setCurrentSong(song, list))
+            dispatch(setCurrentIdx(idx))
+            dispatch(setCurrentList(current.currentList))
 
             MusicControl.enableControl('play', true)
             MusicControl.enableControl('pause', true)
@@ -199,21 +262,23 @@ export function playNextSong() {
             if(queue[0].fileName === current.song.fileName) {
                 dispatch(getQueue())
                 dispatch(seek(0))
+                dispatch(updatePlayTime(0))
             } else {
                 dispatch(getQueue())
                 dispatch(setSong(queue[0], idx, current.playlist))
             }
         } else {
-            if(idx+1 === current.currentList.length){
+            console.log('current in thing', current)
+            if(idx+1 === current.currentList.songs.length){
                 MusicControl.updatePlayback({
                     state: MusicControl.STATE_PAUSED,
                 });
                 dispatch(updatePlaying(false))
                 // dispatch(updatePlayTime(0))
              } else {
-                const song = current.currentList[idx+1]
+                const song = current.currentList.songs[idx+1]
                 dispatch(setSong(song, idx+1, current.playlist));
-                dispatch(getCurrentList(idx+1))
+                // dispatch(getCurrentList(idx+1))
             }
         }
     }
@@ -227,9 +292,9 @@ export function playPreviousSong() {
             dispatch(seek(0))
         } else {
             if(songIndex !== 0) {
-                const song = currentList[songIndex-1]
+                const song = currentList.songs[songIndex-1]
                 dispatch(setSong(song, songIndex-1, playlist));
-                dispatch(getCurrentList(songIndex-1))
+                // dispatch(getCurrentList(songIndex-1))
             }
         }
     }
@@ -287,7 +352,9 @@ const current = {
 const currentPlayingReducer = (state = current, action) => {
     switch (action.type) {
         case SET_SONG:
-            return { ...state, songIndex: action.index, song: action.song, playlist: action.list }
+            return { ...state, song: action.song, playlist: action.list }
+        case SET_INDEX:
+            return { ...state, songIndex: action.index }
         case RESET_STATE:
             return current
         case UPDATE_PLAYING:
@@ -303,7 +370,7 @@ const currentPlayingReducer = (state = current, action) => {
         case SET_RATE:
             return { ...state, rate: action.rate }
         case SET_LIST:
-            return {...state, currentList: action.list}
+            return {...state, currentList: action.list }
         case UPDATE_CURRENT:
             return produce(state, lists => {
                 return Object.assign(lists, { currentList: action.list, songIndex: action.idx })

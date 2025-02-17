@@ -19,7 +19,7 @@ class DownloadAnim extends React.Component {
                 {this.props.state ?
                     <FadeAnimation time={this.props.time}>
                         <View style={styles.animation}>
-                            <Ionicons name='ios-checkmark-circle-outline' size={96} style={styles.icon}></Ionicons>
+                            <Ionicons name='checkmark-circle-outline' size={96} style={styles.icon}></Ionicons>
                             {/* <Octicons name='x' size={96} style={styles.icon}></Octicons> */}
                             <Text style={styles.text}>{this.props.text}</Text>
                         </View>

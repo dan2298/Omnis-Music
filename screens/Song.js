@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
-import { pauseCurrentSong, playSong, playNextSong, playPreviousSong, seek, changeRate } from '../store'
+import { pauseCurrentSong, playSong, playNextSong, playPreviousSong, seek, turnShuffleOn, turnShuffleOff, changeRate } from '../store'
 import { MMSSfromMillis, imagePath } from '../util'
 import Header from '../components/Header'
 import AlbumArt from '../components/AlbumArt'
@@ -13,6 +13,7 @@ class CurrentSong extends React.Component {
     constructor() {
         super();
         this.play = this.play.bind(this)
+        this.shuffle = this.shuffle.bind(this)
     }
 
     play() {
@@ -20,6 +21,14 @@ class CurrentSong extends React.Component {
             this.props.pauseCurrentSong()
         } else {
             this.props.playSong()
+        }
+    }
+
+    shuffle() {
+        if (this.props.current.currentList.shuffle) {
+            this.props.turnShuffleOff(this.props.current.currentList)
+        } else {
+            this.props.turnShuffleOn(this.props.current.currentList)
         }
     }
 
@@ -48,7 +57,7 @@ class CurrentSong extends React.Component {
                         <Text style={{ color: 'white', marginRight: '36%', fontSize: 14, opacity: 0.7 }}>{MMSSfromMillis(current.currentTime)}</Text>
                         <Text style={{ color: 'white', marginLeft: '36%', fontSize: 14, opacity: 0.7}}>{MMSSfromMillis(current.duration)}</Text>
                     </View>
-                    <Controls playing={current.playing} play={this.play} playNext={this.props.playNextSong} playPrevious={this.props.playPreviousSong}></Controls>
+                    <Controls playing={current.playing} play={this.play} playNext={this.props.playNextSong} playPrevious={this.props.playPreviousSong} isShuffleOn={current.currentList.shuffle} onPressShuffle={this.shuffle}></Controls>
                 <View style={styles.rateContainer}>
                     <Text style={{color: 'white', fontSize: 18, marginRight: 20 }}>Rate:</Text>
                     <Slider 
@@ -77,6 +86,8 @@ const mapDispatchToProps = dispatch => {
         playSong: () => dispatch(playSong()),
         playNextSong: () => dispatch(playNextSong()),
         playPreviousSong: () => dispatch(playPreviousSong()),
+        turnShuffleOn: (list) => dispatch(turnShuffleOn(list)),
+        turnShuffleOff: (list) => dispatch(turnShuffleOff(list)),
         seek: (time) => dispatch(seek(time)),
         changeRate: (rate) => dispatch(changeRate(rate))
     }
@@ -87,7 +98,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        // backgroundColor: "rgb(40,40,40)"
     },
     rowContainer: {
         flexDirection: "row",

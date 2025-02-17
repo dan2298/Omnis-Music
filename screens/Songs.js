@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import DownloadedSongList from '../components/DownloadedSongList';
-import { getSongs, setSong, getCurrentList, seek } from '../store'
+import { getSongs, setNewSong, getCurrentList, seek } from '../store'
 import { ScrollView } from 'react-native-gesture-handler';
 import SongBar from '../components/SongBar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -33,7 +33,7 @@ class Songs extends React.Component {
         if(this.props.current.song.fileName === song.fileName){
             this.props.seek(0);
         } else {
-            this.props.setSong(song, idx, list)
+            this.props.setNewSong(song, idx, list)
             this.props.getCurrentList(idx)
         }
     }
@@ -101,7 +101,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         getSongs: () => dispatch(getSongs()),
-        setSong: (song, index, list) => dispatch(setSong(song, index, list)),
+        setNewSong: (song, index, list) => dispatch(setNewSong(song, index, list)),
         playNextSong: () => dispatch(playNextSong()),
         updateDuration: (data) => dispatch(updateDuration(data)),
         updatePlayTime: (time) => dispatch(updatePlayTime(time)),

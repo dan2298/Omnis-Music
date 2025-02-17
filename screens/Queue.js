@@ -44,25 +44,25 @@ class Queue extends React.Component {
                         <DownloadedSong options={this.tapOptions}  song={this.props.current.song} highlighted={true} dl={false} tap={goBack}></DownloadedSong>
                     </View>
                     {this.props.queue.length ? 
-                    <View style={styles.subContainer}>
-                        <Text style={styles.subheaderText}>Next In Queue</Text>
-                        {this.props.queue.map((item, idx) => {
-                            return (
-                                <QueueSong name={item.name} artist={item.artist} key={idx}></QueueSong>
-                            )
-                        })}
-                    </View>
-                    : <View></View> }
-                    <View style={styles.subContainer}>
-                        <Text style={styles.subheaderText}>Next From: {this.props.current.playlist}</Text>
                         <View style={styles.subContainer}>
-                        {this.props.currentList.map((item, idx) => {
-                            return (
-                                <QueueSong name={item.name} artist={item.artist} key={idx}></QueueSong>
-                            )
-                        })}
-                    </View>
-                    </View>
+                            <Text style={styles.subheaderText}>Next In Queue</Text>
+                            {this.props.queue.map((item, idx) => {
+                                return (
+                                    <QueueSong name={item.name} artist={item.artist} key={idx}></QueueSong>
+                                )
+                            })}
+                        </View>
+                        : <View></View> }
+                        <View style={styles.subContainer}>
+                            <Text style={styles.subheaderText}>Next From: {this.props.current.playlist}</Text>
+                            <View style={styles.subContainer}>
+                            {this.props.currentList.map((item, idx) => {
+                                return (
+                                    <QueueSong name={item.name} artist={item.artist} key={idx}></QueueSong>
+                                )
+                            })}
+                            </View>
+                        </View>
                     </ScrollView>
                     <Controls playing={current.playing} play={this.play} playNext={this.props.playNextSong} playPrevious={this.props.playPreviousSong}></Controls>
                     <View style={{ marginBottom: '10%' }}></View>

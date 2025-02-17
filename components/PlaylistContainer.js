@@ -15,14 +15,14 @@ render() {
         <View>
             <TouchableOpacity style={styles.songContainer}>
                 <View style={styles.container}>
-                {this.props.list.name === 'Create Playlist'? 
+                {this.props?.list?.name === 'Create Playlist'? 
                     <View style={styles.createContainer}>
-                        <Icon style={styles.addIcon} name={'ios-add'} size={50}></Icon>
+                        <Icon style={styles.addIcon} name={'add'} size={50}></Icon>
                     </View> : 
                     <View>
-                        {this.props.list.name === 'All Songs' ?
+                        {this.props?.list?.name === 'All Songs' ?
                         <Image style={styles.albumImg} source={require('../img/liked-songs.png')}></Image> :
-                        this.props.list.songs.length > 0 ? 
+                        this.props?.list?.songs?.length > 0 ? 
                             <PlaylistAlbumArt height={37.5} width={37.5} songs={this.props.list.songs}></PlaylistAlbumArt> :
                             <Image style={styles.albumImg} source={require('../img/emptyPlaylist.png')}></Image>
                         }
@@ -30,10 +30,10 @@ render() {
                 }
                 </View>
                 <View style={{flexDirection: 'column'}}>
-                    <Text numberOfLines={1} style={{ color: 'white' , fontSize: 16, fontWeight: '400'}}>{this.props.list.name}</Text>
-                    {this.props.list.name === 'Create Playlist'? 
+                    <Text numberOfLines={1} style={{ color: 'rgba(220,220,220,0.9)', fontSize: 16, fontWeight: '400'}}>{this.props?.list?.name}</Text>
+                    {this.props?.list?.name === 'Create Playlist'? 
                         <View></View> :
-                        <Text style={{ color: 'rgba(200,200,200,0.6)' , fontSize: 14,}}>{this.props.list.songs.length} songs</Text>
+                        <Text style={{ color: 'rgba(200,200,200,0.6)' , fontSize: 14,}}>{this.props?.list?.songs?.length} songs</Text>
                     }
                 </View>
             </TouchableOpacity>

@@ -19,7 +19,7 @@ class QueueAnimation extends React.Component {
                 {this.props.state ?
                     <FadeAnimation time={this.props.time}>
                         <View style={styles.animation}>
-                            <Ionicons name='ios-checkmark' size={84} style={styles.icon}></Ionicons>
+                            <Ionicons name='checkmark' size={84} style={styles.icon}></Ionicons>
                             <Text style={styles.text}>{this.props.text}</Text>
                         </View>
                     </FadeAnimation> :

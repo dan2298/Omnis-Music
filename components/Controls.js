@@ -2,14 +2,22 @@ import React from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 const { width, height } = Dimensions.get('window');
 
-const Controls = ({ playing, shuffleOn, repeatOn, play, playNext, playPrevious,
-    onBack, onForward, onPressShuffle, onPressRepeat, forwardDisabled,}) => (
+const Controls = ({ playing, play, playNext, playPrevious, onPressShuffle, onPressRepeat, forwardDisabled, isShuffleOn }) => {
+  return (
   <View style={styles.container}>
     <TouchableOpacity activeOpacity={0.0} onPress={onPressShuffle}>
-        <Ionicons name='ios-shuffle' size={24} style={{color:'white', paddingRight: '3%'}}></Ionicons>
+      { isShuffleOn ? 
+        <View style={styles.shuffleContainer}>
+          <Ionicons name='shuffle' size={24} style={{ color: isShuffleOn ? '#002df7': 'white', paddingRight: '3%'}}></Ionicons>
+          <FontAwesome name='circle' size={7} style={{ color: '#002df7', paddingRight: '3%', marginTop: '-10%'}}></FontAwesome> 
+        </View>
+        :
+        <Ionicons name='shuffle' size={24} style={{ color: isShuffleOn ? '#002df7': 'white', paddingRight: '3%'}}></Ionicons>
+      }
     </TouchableOpacity>
     <View style={{width: 40}} />
     <TouchableOpacity onPress={playPrevious}>
@@ -39,7 +47,7 @@ const Controls = ({ playing, shuffleOn, repeatOn, play, playNext, playPrevious,
         <Icon name='repeat' size={18} style={{color:'white', paddingLeft: '3%'}}></Icon>
     </TouchableOpacity>
   </View>
-);
+)};
 
 export default Controls;
 
@@ -49,6 +57,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 8,
+  },
+  shuffleContainer: {
+    alignItems: 'center',
+    marginTop: '5%'
   },
   playButton: {
     height: 72,

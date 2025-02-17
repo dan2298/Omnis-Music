@@ -23,7 +23,7 @@ class AddPlaylist extends React.Component {
                         <Text numberOfLines={1} style={{...styles.titleText, color: 'rgba(255,255,255,0.5)', fontWeight: '500', marginTop: '0%'}}>{song.artist}</Text>
                     </View>
                     <View style={styles.optionContainer}>
-                        <SongOption name={'Add to Favorites'} iconName={'heart-outline'}></SongOption>
+                        <SongOption name={'Add to Favorites'} iconName={'heart-outline'} action={() => console.log('FAVORITES')}></SongOption>
                         <SongOption name={'Add to Playlist'} iconName={'playlist-plus'} navigate={navigate} song={song}></SongOption>
                         {/* <TouchableOpacity onPress={() => { 
                             this.props.addToQueue(song);
@@ -31,7 +31,7 @@ class AddPlaylist extends React.Component {
                             queue();
                         }}> */}
                         <SongOption name={'Add to Queue'} iconName={'queue-music'} back={true} action={this.props.addToQueue} song={song} goBack={goBack}></SongOption>
-                        {/* <PlaylistOption name={'Go to Queue'}></PlaylistOption> */}
+                        {/* <SongOption name={'Go to Queue'}></SongOption> */}
                         <SongOption name={'Remove Song'} iconName={'remove-circle-outline'} back={true} action={this.props.deleteSong} song={song} goBack={goBack}></SongOption>
                     </View>
                     {/* </ScrollView> */}

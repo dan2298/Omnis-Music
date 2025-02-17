@@ -6,11 +6,16 @@ import Home from './Home'
 
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { check, PERMISSIONS, request } from 'react-native-permissions';
 
 class Index extends React.Component {
     async componentDidMount() {
+        // console.log(RNFS.DocumentDirectoryPath)
         const songPath = `${RNFS.DocumentDirectoryPath}/songs`;
         const imagePath = `${RNFS.DocumentDirectoryPath}/images`;
+        // console.log('songPath:', songPath)
+        // console.log('imagePath:', imagePath)
+
         // Clear songs from device
         // =======================
         // await RNFS.unlink(songPath)
@@ -19,8 +24,14 @@ class Index extends React.Component {
         
         // AsyncStorage.removeItem('categories')
         // AsyncStorage.removeItem('releases')
+
         if (!await RNFS.exists(songPath)) {
-            await RNFS.mkdir(songPath)
+            try {
+                await RNFS.mkdir(songPath)
+            } catch (err) {
+                console.log(err)
+            }
+
             this.forceUpdate()
         }
 

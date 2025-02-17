@@ -13,9 +13,10 @@ class Playlist extends React.Component {
     constructor() {
         super()
         this.state = {
-            
+            isModalVisible: false
         }
         this.seek = this.seek.bind(this)
+        this.audioRef = React.createRef();
     }
 
     onPlayProgress = ({ currentTime, playableDuration }) => {
@@ -32,16 +33,17 @@ class Playlist extends React.Component {
 
     seek(time) {
         time = Math.round(time);
-        this.refs.audio && this.refs.audio.seek(time);
+        this.audioRef.current && this.audioRef.current.seek(time);
         this.props.seeked()
     }
 
     render() {
         const video = (
             <Video source={{uri: songPath(this.props.current.song.fileName) }}
-                ref="audio"
+                ref={this.audioRef}
                 volume={1}
                 muted={false}
+                rate={this.props.current.rate}
                 paused={!this.props.current.playing}
                 playInBackground={true}
                 playWhenInactive={true}
@@ -57,31 +59,33 @@ class Playlist extends React.Component {
         }
 
         const { navigate } = this.props.navigation
-        // const [isModalVisible, setIsModalVisible] = React.useState(false);
 
-        let isModalVisible = false
-        const handleModal = () => !isModalVisible;
+        const handleModal = () => {
+            this.setState({ isModalVisible: !this.state.isModalVisible })
+        }
 
         return(
             <View style={styles.container}>
                 <View style={{flex: 1}}>
-                    <Text style={{color: 'white', fontSize: 24, margin: '8%', marginTop: '13%', textAlign: 'center'}}>Songs</Text>
+                    <View style={{marginTop: '25%'}}></View>
                     <ScrollView>
-                    {/* <TouchableOpacity onPress={() => this.props.deleteList('My playlist #4')}> */}
-                    <TouchableOpacity onPress={handleModal}>
-                        <PlaylistContainer key={'key'} list={{ name: 'Create Playlist', songs: [] }} tap={this.createPlaylist}></PlaylistContainer>
+                    {/* <TouchableOpacity onPress={() => this.props.deleteList('My playlist #3')}> */}
+                    {/* <TouchableOpacity onPress={handleModal} ></TouchableOpacity> */}
+                    <TouchableOpacity onPress={() => this.props.createList()}>
+                        <PlaylistContainer key={'key'} list={{ name: 'Create Playlist', songs: [] }}></PlaylistContainer>
                     </TouchableOpacity>
-                    <Modal isVisible={isModalVisible}>
+
+                    {/* <Modal isVisible={this.state.isModalVisible}>
                         <View style={{ flex: 1 }}>
                             <Text>Hello!</Text>
                             <Button title="Hide modal" onPress={handleModal} />
                         </View>
-                    </Modal>
+                    </Modal> */}
 
                     <TouchableOpacity onPress={() => navigate('PlaylistSongs', {list: this.props.playlists[0]})}>
                         <PlaylistContainer key={0} list={this.props.playlists[0]} tap={navigate}></PlaylistContainer>
                     </TouchableOpacity>
-                    {this.props.playlists.map((list,idx) => {
+                    {this.props?.playlists?.map((list,idx) => {
                         if (idx) {
                             return (
                                 <TouchableOpacity key={idx} onPress={() => navigate('PlaylistSongs', { list, removePlaylist: true})}>

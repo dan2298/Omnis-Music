@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Omnis-Music",
+			"path": "."
+		},
+		{
+			"name": "ios",
+			"path": "../Music/ios"
+		}
+	],
+	"settings": {}
+}

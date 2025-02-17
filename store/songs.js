@@ -9,17 +9,11 @@ const GOT_SONGS = 'GOT_SONGS'
 const DOWNLOAD_STARTED = 'DOWNLOAD_STARTED'
 const DOWNLOADED_SONG = 'DOWNLOADED_SONG'
 const DELETE_SONG = 'DELETE_SONG'
-// const GOT_SHUFFLED_LIST = 'GET_SHUFFLED_LIST'
 
 const gotSongs = (songs) => ({
     type: GOT_SONGS,
     songs
 })
-
-// const gotShuffledList = songs => ({
-//     type: GOT_SHUFFLED_LIST,
-//     songs
-// })
 
 const deletedSong = (songs) => {
     return {
@@ -47,6 +41,7 @@ export function getSongs() {
     return async dispatch => {
         try {
             const songs = await RNFS.readdir(originalSongPath)
+            // console.log('songs in dir', songs)
             if (songs.length) {
                 const newSongs = songs.map(async (song, idx) => {
                     const info = JSON.parse(await AsyncStorage.getItem(song))
@@ -72,42 +67,14 @@ export function getSongs() {
     }
 }
 
-// export function shuffleList() {
-//     return async (dispatch, getState) => {
-//         try {
-//             const list = getState().songFiles.list
-//             const currSong = getState().currentSong
-
-//             const map = {}
-//             const newList = []
-//             //find current Song index
-//             for (let i = 0; i < list.length; i++) {
-//                 if (list[i].fileName === currSong.fileName) {
-//                     map[i] = list[i].fileName
-//                     newList.push(currSong)
-//                 }
-//             }
-//             //randomize songs 
-//             while (Object.keys(map).length !== list.length) {
-//                 const random = Math.floor(Math.random() * list.length)
-//                 if (!map[random]) {
-//                     map[random] = list[random].fileName
-//                     newList.push(list[random])
-//                 }
-//             }
-//             dispatch(gotShuffledList(newList))
-//         } catch (err) {
-//             console.error(err)
-//         }
-//     }
-// }
-
 export function startDownload(song) {
     return async (dispatch) => {
         try {
             const iname = convertImageName(song)
             await RNFS.downloadFile({ fromUrl: song.image, toFile: imagePath(iname) })
             const sname = convertFileName(song)
+            console.log('SONG INFO')
+            console.log(Object.assign({fileName: sname, imageFileName: iname, download: 0, date: String(new Date())}, song))
             dispatch(downloadStarted(Object.assign({fileName: sname, imageFileName: iname, download: 0, date: String(new Date())}, song)))
         } catch (err) {
             console.log(err)
@@ -119,6 +86,7 @@ export function downloadSong (song, download) {
     //add to playlist instead of song
     return async (dispatch) => {
         try {
+            console.log('download', download)
             if (download === true) {
                 const newSong = {...song, download: true, imageFileName: convertImageName(song) }
                 await AsyncStorage.setItem(song.fileName, JSON.stringify(newSong))

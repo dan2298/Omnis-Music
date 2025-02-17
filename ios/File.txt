@@ -1,0 +1,1 @@
+/Users/dan/APP/Music/node_modules/react-native-vector-icons/Fonts
